@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Ricerca</title>
+</head>
+<body>
+<h1>Ricerca</h1>
+<p>
+<form name="Ricerca" action="Ricerca.php" method="get">
+	<fieldset>
+	<legend>Ricerca Semplice</legend>
+		<input type="text" name="parametriRicerca" size="40" />
+		<input type="submit" value="Cerca" />
+	</fieldset>
+</form>
+</p>
+
+<p>
+<form name="Ricerca Avanzata" action="Ricerca.php" method="get">
+	<fieldset>
+	<legend>Ricerca Avanzata</legend>	
+ 	<br />
+ 	
+	<p>
+	<fieldset>
+	<legend>Campi dell'Intestazione</legend>
+		<p>
+		<label>Identificatore Completo : <input type="text" name="identificatore" /></label><br />
+	
+		<fieldset>
+		<legend>(in alternativa all'ID completo) Campi dell'Identificatore</legend>
+			<label>Classe di appartenenza:
+				<select name="classe" >
+	 			<option value="00" selected="selected" >(non specificata)</option>
+				<option value="A1">A1 - Allegato  </option>
+				<option value="DQ">DQ - Documento Qualità  </option>
+				<option value="OA">OA - Organizzazione Aziendale </option>
+				<option value="PO">PO - Procedura Operativa  </option>
+				<option value="DT">DT - Documento Tecnico </option>
+				<option value="RS">RS - Rapporto Statistico/Gestionale  </option>
+				<option value="VR">VR - Verbale Riunione </option>
+				<option value="EX">EX - Documento Esterno </option>
+				<option value="LN">LN - Legge/Norma  </option>
+				 </select><br />
+			 </label>
+			<label>Versione: <input type="text" name="versione" /></label><br />
+			<label>Anno: <input type="text" name="anno" /></label><br />
+			<label>Numero: <input type="text" name="numero" /></label><br />
+		</fieldset>
+	 	</p>
+		
+		<p>
+		<label>Data di Compilazione: <input type="text" name="data" /></label><br />
+	 
+		<label>Revisione del documento: <input type="text" name="revisione" /></label><br />
+		
+		<fieldset>
+		<legend>Stato</legend>
+ 			Bozza<input type="radio" name="stato" value="bozza" />
+			Approvato<input type="radio" name="stato" value="approvato" />
+			Obsoleto<input type="radio" name="stato" value="obsoleto" />
+		</fieldset>
+	
+		<label>Lingua: <input type="text" name="lingua" /></label><br />
+		</p>
+	</fieldset>
+	</p>
+
+	<p>
+	<fieldset>
+	<legend>Campi del Pié di Pagina</legend>
+		<p>
+		<label>Sede di Archiviazione: <input type="text" name="sede" /></label><br />
+	
+		<fieldset>
+		<legend>Livello di Confidenzialità</legend>
+			L0<input type="radio" name="livello" value="l0" />
+			L1<input type="radio" name="livello" value="l1" />
+			L2<input type="radio" name="livello" value="l2" />
+			Pubblico<input type="radio" name="livello" value="pubblico" />
+		</fieldset>
+	  
+		<label>Numero di Allegati: <input type="text" name="allegati" /></label><br />
+	
+		<label>Numero di Pagine del Documento: <input type="text" name="pagine" /></label><br />
+	  
+		<label>Approvato da: <input type="text" name="approvato" /></label><br />
+	
+		<label>Autore: <input type="text" name="autore" /></label><br />
+		</p>
+	</fieldset>
+	</p>
+	
+	<p>
+	<fieldset>
+	<legend>Parole da Ricercare nell'abstract del documento</legend>	
+	<input type="text" name="abstract" size="40" /><br />
+ 	</fieldset>
+	</p>
+
+	<p>
+	<fieldset>
+	<legend>Parole da Ricercare all'interno del documento</legend>	
+	<input type="text" name="doc" size="40" /><br />
+	</fieldset>
+	</p>
+	
+  
+	<input type="submit" value="Cerca" />
+
+	</fieldset>
+</form>
+</p>
+</body>
+</html>
