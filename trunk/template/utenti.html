@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Gestione Utenti</title>
+</head>
+<body>
+<h1>Gestione Utenti</h1>
+<h2> Selezione Operazione</h2>
+<form> 
+<fieldset>
+<legend>Seleziona Operazione </legend>
+Nuovo Utente<input type="radio" name="operazione" value="new"/>
+Elimina Utente<input type="radio" name="operazione" value="del"/>
+Modifica Dati<input type="radio" name="operazione" value="mod"/>
+</fieldset>
+</form>
+<h3>Inserisci Dati</h3>
+<form>
+  Nome Utente: <input type="text" name="username" size="15" /><br />
+  Password: <input type="password" name="password" size="15" /><br />
+  E-mail: <input type="text" name="mail" size="15" /><br />
+  Numero Telefono: <input type="text" name="numero" size="15" /><br />
+  Indirizzo: <input type="text" name="ind" size="15" /><br />
+  <fieldset>
+<legend>Operazioni Permesse </legend>
+Lettura <input type="radio" name="permessi" value="1"/>
+Scrittura <input type="radio" name="permessi" value="2"/>
+Entrambe <input type="radio" name="permessi" value="3"/>
+</fieldset>  
+  <div align="left">
+    <p><input type="submit" value="Salva" /></p>
+  </div>
+</form>
+</body>
+</html>
