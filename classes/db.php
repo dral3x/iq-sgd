@@ -1,6 +1,6 @@
 <?php
 
-require_once('config.php');
+include_once (dirname(__FILE__) . '/../config/db.php');
 
 class DBConnector {
     
@@ -8,12 +8,18 @@ class DBConnector {
     
     public function connect() {
     	if (!$this->attiva) {
-    		$connessione = mysql_connect($db_hostname, $db_username, $db_password) or die (mysql_error());
-    		mysq_select_db($db_database);
-    		$selezione = mysql_select_db($db_name, $connessione) or die (mysql_error());
-    	} else {
-    		return true;
+    		$connessione = mysql_connect(DBConfig::$db_hostname, DBConfig::$db_username, DBConfig::$db_password);
+    		if (!$connessione) {
+    			die('Could not connect: ' . mysql_error());
+			}
+			
+    		$selezione = mysql_select_db(DBConfig::$db_name, $connessione);
+    		if (!$selezione) {
+    			die('Could not select db: ' . mysql_error());
+			}
+			$attiva = true;
     	}
+    	return true;
     }
 
 	public function disconnect() {
