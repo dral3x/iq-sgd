@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <?php
 // inizializzazione della sessione
 session_start();
@@ -14,12 +13,12 @@ if (isset($_SESSION['login'])) {
 
 // controllo sul parametro d'invio
 if(isset($_POST['submit']) && (trim($_POST['submit']) == "Login")) { 
-	
-  // controllo sui parametri di autenticazione inviati
+
+	// controllo sui parametri di autenticazione inviati
   if( !isset($_POST['username']) || $_POST['username']=="" ) {
-    echo "Attenzione, inserire la username.";
+    $error_message = "Attenzione, inserire la username.";
   } elseif( !isset($_POST['password']) || $_POST['password'] =="") {
-    echo "Attenzione, inserire la password.";
+    $error_message = "Attenzione, inserire la password.";
   } else {
     // validazione dei parametri tramite filtro per le stringhe
     $username = trim(filter_var($_POST['username'], FILTER_SANITIZE_STRING));
@@ -35,7 +34,9 @@ if(isset($_POST['submit']) && (trim($_POST['submit']) == "Login")) {
     // interrogazione della tabella
     $auth = $data->query("SELECT id_login FROM login WHERE username_login = '$username' AND password_login = '$password'");
     // controllo sul risultato dell'interrogazione
-    if($data->rows($auth)==1) {
+    if($data->rows($auth)==0) {
+    	$error_message = "Login fallito!";
+    } else {
       // chiamata alla funzione per l'estrazione dei dati
       $res =  $data->extract_object($auth);
       // creazione del valore di sessione
@@ -46,24 +47,29 @@ if(isset($_POST['submit']) && (trim($_POST['submit']) == "Login")) {
       header("Location: ricerca.php");     
     }
   } 
-} else {
-  // form per l'autenticazione
-  ?><html>
+}
+
+// form per l'autenticazione
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Login</title>
 </head>
 <body>
+<?php
+if (isset($error_message)) {
+	echo '<p>'.$error_message.'</p>';
+}
+?>
 <h1>Accedi</h1>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
-  Nome Utente: <input type="text" name="username" size="15" /><br />
-  Password: <input type="password" name="password" size="15" /><br />
-  <div align="left">
-    <p><input type="submit" value="Login" /></p>
-  </div>
+Nome Utente: <input type="text" name="username" size="15" /><br />
+Password: <input type="password" name="password" size="15" /><br />
+<div align="left">
+<p><input type="submit" name="submit" value="Login" /></p>
+</div>
 </form>
 </body>
 </html>
-<?php
-}
-?>
