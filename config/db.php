@@ -1,11 +1,14 @@
 <?php
 
+// classe wrapper che contiene tutti i parametri necessari per eseguire le chiamate al DB
+
 class DBConfig {
 	
-	public static $db_hostname = 'localhost';
-	public static $db_username = 'root';
-	public static $db_password = '';
-	public static $db_name = 'sgd';
-
+	const hostname = "localhost";
+	const username = "root";
+	const password = "";
+	const name = "sgd";
+	
 }
+
 ?>
