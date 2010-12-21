@@ -1,6 +1,6 @@
 <?php
 
-include_once (dirname(__FILE__) . '/../config/db.php');
+require_once (dirname(__FILE__) . '/../config/db.php'); // DBConfig
 
 class DBConnector {
     
@@ -8,12 +8,12 @@ class DBConnector {
     
     public function connect() {
     	if (!$this->attiva) {
-    		$connessione = mysql_connect(DBConfig::$db_hostname, DBConfig::$db_username, DBConfig::$db_password);
+    		$connessione = mysql_connect(DBConfig::hostname, DBConfig::username, DBConfig::password);
     		if (!$connessione) {
     			die('Could not connect: ' . mysql_error());
 			}
 			
-    		$selezione = mysql_select_db(DBConfig::$db_name, $connessione);
+    		$selezione = mysql_select_db(DBConfig::name, $connessione);
     		if (!$selezione) {
     			die('Could not select db: ' . mysql_error());
 			}
@@ -35,15 +35,22 @@ class DBConnector {
 	
 	public function query($sql) {
 		if (isset($this->attiva)) {
-			$sql = mysql_query($sql) or die(mysql_error());
-			return $sql;
+			$result = mysql_query($sql);
+			if (!$result) {
+				die('Could not execute query: ' . mysql_error());
+			}
+			return $result;
 		} else {
 			return false;
 		}
 	}
 	
 	public function rows($result) {
-		return mysql_num_rows($result);
+		if (isset($this->attiva)) {
+			return mysql_num_rows($result);
+		} else {
+			return false;
+		}
 	}
 	
 	public function extract_object($result) {
