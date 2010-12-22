@@ -5,32 +5,23 @@
 <title>Ricerca</title>
 </head>
 <body>
-<?php
-echo Page::getHeader();
-
-if ($login->getErrorMessage()) {
-	echo '<p>' . $login->getErrorMessage() . '</p>';
-}
-?>
+<?php echo $ricerca->getHeader(); ?>
 <h1>Ricerca</h1>
+<?php if ($ricerca->typeOfSearch() == "simple") { ?> 
 <div>
-
-<!-- ###NB: forse bisogna cambiare 'method' da GET a POST e sistemare il valore di 'action' -->
-
-<form name="Ricerca" action="ricercaCreator.php" method="GET">
+<form name="RicercaSemplice" action="<?php echo $_SERVER['PHP_SELF'];  ?>" method="POST">
 	<fieldset>
 	<legend>Ricerca Semplice</legend>
-		<input type="text" name="parametriRicerca" size="40" />
-		<input type="submit" value="Cerca" />
+		<input type="text" name="parametriRicerca" size="40" <?php if (isset($_POST['parametriRicerca'])) echo 'value="'.$_POST['parametriRicerca'].'" '; ?>/>
+		<input type="submit" name="submit" value="Cerca" />
 	</fieldset>
 </form>
 </div>
 
-<div>
-
-<!-- ###NB: stessa cosa qui, 'method' da GET a POST e sistemare il valore di 'action' -->
-
-<form name="Ricerca Avanzata"  action="ricercaCreator.php" method="GET">
+<?php
+} else if ($ricerca->typeOfSearch() == "advanced") {
+?>
+<form name="RicercaAvanzata"  action="ricercaCreator.php" method="GET">
 	<fieldset>
 	<legend>Ricerca Avanzata</legend>	
  	<br />
@@ -138,6 +129,25 @@ if ($login->getErrorMessage()) {
 	</fieldset>
 </form>
 </div>
-<?php echo Page::getFooter(); ?>
+<?php
+}
+
+
+if (isset($search_error)) {
+	
+	echo '<div ="error">'.$search_error.'</div>';
+	
+} else if (isset($search_result)) {
+	// mostro l'elenco dei risultati
+	
+	echo '<div id="results">Ecco i risultati: <br />';
+//	foreach ($risultato in $search_result) {
+//		echo '<div id="single_result">'.$risultato.'</div>';
+//	}
+	echo '</div>';
+}
+
+// aggiungo footer
+echo $ricerca->getFooter(); ?>
 </body>
 </html>
