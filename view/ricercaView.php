@@ -5,9 +5,19 @@
 <title>Ricerca</title>
 </head>
 <body>
+<?php
+echo Page::getHeader();
+
+if ($login->getErrorMessage()) {
+	echo '<p>' . $login->getErrorMessage() . '</p>';
+}
+?>
 <h1>Ricerca</h1>
 <div>
-<form name="Ricerca" action="ricerca.php" method="get">
+
+<!-- ###NB: forse bisogna cambiare 'method' da GET a POST e sistemare il valore di 'action' -->
+
+<form name="Ricerca" action="ricercaCreator.php" method="GET">
 	<fieldset>
 	<legend>Ricerca Semplice</legend>
 		<input type="text" name="parametriRicerca" size="40" />
@@ -17,7 +27,10 @@
 </div>
 
 <div>
-<form name="Ricerca Avanzata"  action="ricerca.php" method="get">
+
+<!-- ###NB: stessa cosa qui, 'method' da GET a POST e sistemare il valore di 'action' -->
+
+<form name="Ricerca Avanzata"  action="ricercaCreator.php" method="GET">
 	<fieldset>
 	<legend>Ricerca Avanzata</legend>	
  	<br />
@@ -125,5 +138,6 @@
 	</fieldset>
 </form>
 </div>
+<?php echo Page::getFooter(); ?>
 </body>
 </html>
