@@ -1,6 +1,6 @@
 <?php
 
-require_once (dirname(__FILE__) . '/../config/db.php'); // DBConfig
+require_once (dirname(__FILE__) . '/../config/db_config.php'); // DBConfig
 
 class DBConnector {
     

@@ -6,20 +6,20 @@
 </head>
 <body>
 <?php
-echo Page::getHeader();
+echo $login->getHeader();
 
-if ($login->getErrorMessage()) {
-	echo '<p>' . $login->getErrorMessage() . '</p>';
+if (isset($error_message)) {
+	echo '<p>' . $error_message . '</p>';
 }
 ?>
 <h1>Accedi</h1>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
-Nome Utente: <input type="text" name="username" size="15" <?php if ($login->getUsername()) echo 'value="'.$login->getUsername().'"' ?>/><br />
+Nome Utente: <input type="text" name="username" size="15" <?php if (isset($username)) echo 'value="'.$username.'"' ?>/><br />
 Password: <input type="password" name="password" size="15" /><br />
 <div align="left">
 <p><input type="submit" name="submit" value="Login" /></p>
 </div>
 </form>
-<?php echo Page::getFooter(); ?>
+<?php echo $login->getFooter(); ?>
 </body>
 </html>

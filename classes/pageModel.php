@@ -8,7 +8,7 @@ class Page {
 	}
 	
 	public static function getHeader() {
-		return "<div id=\"header\">Questo è l'header della pagina</div>\n";
+		return "<div id=\"header\">Questo &egrave l'header della pagina</div>\n";
 	}
 	
 	public static function getFooter() {
