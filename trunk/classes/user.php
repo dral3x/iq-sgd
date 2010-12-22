@@ -4,13 +4,13 @@ require_once (dirname(__FILE__) . '/security_levels.php');
 
 class User {
 	
-	private $user_id;
-	private $username;
-	private $password;
-	private $security_level;
+	public $user_id;
+	public $username;
+	public $password;
+	public $security_level;
 	
 	// necessari user, pass e user_id, il livello di default  il pi basso... ossia accede ai soli documenti pubblici
-	public function __construct($user_id, $user, $pass, $level = SecurityLevel::LPublic) {
+	public function __construct($user_id, $user, $pass, $level = SecurityLevel::LPUBLIC) {
 		$this->username = $user;
 		$this->password = $pass;
 		$this->user_id = $user_id;
