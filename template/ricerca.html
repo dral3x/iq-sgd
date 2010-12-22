@@ -22,38 +22,44 @@
 	<legend>Ricerca Avanzata</legend>	
  	<br />
  	
-	<p>
+	
 		<fieldset>
 		<legend>Campi dell'Intestazione</legend>
+			
 			<p>
 			<label>Identificatore Completo : <input type="text" name="identificatore" /></label><br />
-		
+			</p>
+			
 			<fieldset>
 			<legend>(in alternativa all'ID completo) Campi dell'Identificatore</legend>
-				<label>Classe di appartenenza:
-					<select name="classe" >
-		 			<option value="00" selected="selected" >(non specificata)</option>
-					<option value="A1">A1 - Allegato  </option>
-					<option value="DQ">DQ - Documento Qualit&agrave;  </option>
-					<option value="OA">OA - Organizzazione Aziendale </option>
-					<option value="PO">PO - Procedura Operativa  </option>
-					<option value="DT">DT - Documento Tecnico </option>
-					<option value="RS">RS - Rapporto Statistico/Gestionale  </option>
-					<option value="VR">VR - Verbale Riunione </option>
-					<option value="EX">EX - Documento Esterno </option>
-					<option value="LN">LN - Legge/Norma  </option>
-					 </select><br />
-				 </label>
+				
+				<fieldset>
+				<legend>Classe di appartenenza:</legend>
+					<input type="checkbox" name="A1" value="A1" />A1 - Allegato  <br />
+					<input type="checkbox" name="DQ" value="DQ" />DQ - Documento per la Qualit&agrave;  <br />
+					<input type="checkbox" name="OA" value="OA" />OA - Organizzazione Aziendale <br />
+					<input type="checkbox" name="PO" value="PO" />PO - Procedura Operativa  <br />
+					<input type="checkbox" name="DT" value="DT" />DT - Documento Tecnico <br />
+					<input type="checkbox" name="RS" value="RS" />RS - Rapporto Statistico/Gestionale  <br />
+					<input type="checkbox" name="VR" value="VR" />VR - Verbale di Riunione <br />
+					<input type="checkbox" name="EX" value="EX" />EX - Documento Esterno <br />
+					<input type="checkbox" name="LN" value="LN" />LN - Legge/Norma  <br />
+				</fieldset>
+				
+				<p>
 				<label>Versione: <input type="text" name="versione" /></label><br />
 				<label>Anno: <input type="text" name="anno" /></label><br />
 				<label>Numero: <input type="text" name="numero" /></label><br />
+				</p>
+				
 			</fieldset>
-		 	</p>
+		 	
 			
 			<p>
 			<label>Data di Compilazione: <input type="text" name="data" /></label><br />
-		 
+			
 			<label>Revisione del documento: <input type="text" name="revisione" /></label><br />
+			</p>
 			
 			<fieldset>
 			<legend>Stato</legend>
@@ -61,11 +67,13 @@
 				<input type="checkbox" name="approvato" value="approvato"/>Approvato<br />
 				<input type="checkbox" name="obsoleto" value="obsoleto"/>Obsoleto<br />
 			</fieldset>
-		
+			
+			<p>
 			<label>Lingua: <input type="text" name="lingua" /></label><br />
 			</p>
+			
 		</fieldset>
-	</p>
+	
 
 	<p>
 		<fieldset>
@@ -80,7 +88,9 @@
 				<input type="checkbox" name="l2" value="l2"/>L2<br />
 				<input type="checkbox" name="pubblico" value="pubblico"/>Pubblico<br />
 			</fieldset>
-		  
+		  	</p>
+		  	
+		  	<p>
 			<label>Numero di Allegati: <input type="text" name="allegati" /></label><br />
 		
 			<label>Numero di Pagine del Documento: <input type="text" name="pagine" /></label><br />
@@ -89,6 +99,8 @@
 		
 			<label>Autore: <input type="text" name="autore" /></label><br />
 			</p>
+			
+			
 		</fieldset>
 	</p>
 	
