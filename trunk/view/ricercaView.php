@@ -12,16 +12,19 @@
 <form name="RicercaSemplice" action="<?php echo $_SERVER['PHP_SELF'];  ?>" method="POST">
 	<fieldset>
 	<legend>Ricerca Semplice</legend>
-		<input type="text" name="parametriRicerca" size="40" <?php if (isset($_POST['parametriRicerca'])) echo 'value="'.$_POST['parametriRicerca'].'" '; ?>/>
-		<input type="submit" name="submit" value="Cerca" />
+		<input type="text" name="parametroRicerca" size="40" <?php if (isset($_POST['parametroRicerca'])) echo 'value="'.$_POST['parametroRicerca'].'" '; ?>/>
+		<input type="submit" name="submit" value="Ricerca Semplice" />
 	</fieldset>
 </form>
 </div>
 
+<br />
+
+<div>
 <?php
 } else if ($ricerca->typeOfSearch() == "advanced") {
 ?>
-<form name="RicercaAvanzata"  action="ricercaCreator.php" method="GET">
+<form name="RicercaAvanzata"  action="ricerca.php" method="POST">
 	<fieldset>
 	<legend>Ricerca Avanzata</legend>	
  	<br />
@@ -124,7 +127,7 @@
 	
 		<br />
   
-	<input type="submit" value="Cerca" />
+	<input type="submit" name="submit" value="Ricerca Avanzata" />
 
 	</fieldset>
 </form>
