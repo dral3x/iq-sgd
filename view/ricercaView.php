@@ -1,18 +1,22 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Ricerca</title>
-</head>
-<body>
-<?php echo $ricerca->getHeader(); ?>
+<?php 
+// aggiungo header
+$page_title = "Ricerca";
+include (dirname(__FILE__) . '/headerView.php');
+?>
 <h1>Ricerca</h1>
-<?php if ($ricerca->typeOfSearch() == "simple") { ?> 
+<?php
+
+if (isset($error_message)) {
+	echo '<div id="error">' . $error_message . '</div>';
+}
+
+if ($ricerca->typeOfSearch() == "simple") { ?> 
 <div>
 <form name="RicercaSemplice" action="<?php echo $_SERVER['PHP_SELF'];  ?>" method="POST">
 	<fieldset>
 	<legend>Ricerca Semplice</legend>
 		<input type="text" name="parametroRicerca" size="40" <?php if (isset($_POST['parametroRicerca'])) echo 'value="'.$_POST['parametroRicerca'].'" '; ?>/>
+		<input type="hidden" name="search_type" value="simple" />
 		<input type="submit" name="submit" value="Ricerca Semplice" />
 	</fieldset>
 </form>
@@ -29,7 +33,6 @@
 	<legend>Ricerca Avanzata</legend>	
  	<br />
  	
-	
 		<fieldset>
 		<legend>Campi dell'Intestazione</legend>
 			
@@ -61,7 +64,6 @@
 				
 			</fieldset>
 		 	
-			
 			<p>
 			<label>Data di Compilazione: <input type="text" name="data" /></label><br />
 			
@@ -97,7 +99,6 @@
 				<input type="checkbox" name="pubblico" value="pubblico"/>Pubblico<br />
 			</fieldset>
 		  	
-		  	
 		  	<p>
 			<label>Numero di Allegati: <input type="text" name="allegati" /></label><br />
 		
@@ -107,7 +108,6 @@
 		
 			<label>Autore: <input type="text" name="autore" /></label><br />
 			</p>
-			
 			
 		</fieldset>
 	
@@ -126,7 +126,8 @@
 		</fieldset>
 	
 		<br />
-  
+ 
+ 	<input type="hidden" name="search_type" value="advanced" />
 	<input type="submit" name="submit" value="Ricerca Avanzata" />
 
 	</fieldset>
@@ -134,7 +135,6 @@
 </div>
 <?php
 }
-
 
 if (isset($search_error)) {
 	
@@ -151,6 +151,5 @@ if (isset($search_error)) {
 }
 
 // aggiungo footer
-echo $ricerca->getFooter(); ?>
-</body>
-</html>
+include (dirname(__FILE__) . '/footerView.php');
+?>

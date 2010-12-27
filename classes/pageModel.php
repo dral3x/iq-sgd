@@ -1,20 +1,26 @@
 <?php
 
+require_once (dirname(__FILE__) . '/loginModel.php');
+
 class Page {
 	
+	private $session;
+	 
 	public function __construct() {
 		// inizializzazione della sessione
 		session_start();
+		
+		// controllo che la sessione sia valida
+		$this->session = new LoginSession();
+		if (!$this->session->userIsLogged()) { // un utente è arrivato qua senza essere loggato, lo rispedisco a fare il login
+			header("Location: login.php");
+		}
 	}
 	
-	public static function getHeader() {
-		return "<div id=\"header\">Questo &egrave l'header della pagina</div>\n";
+	public function getSessionUser() {
+		return $this->session->getUser();
 	}
-	
-	public static function getFooter() {
-		return "<div id=\"footer\"></div>\n";
-	}
-	
+
 }
 
 ?>

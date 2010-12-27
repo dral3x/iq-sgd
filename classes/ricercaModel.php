@@ -6,37 +6,24 @@ require_once (dirname(__FILE__) . '/loginModel.php');
 require_once (dirname(__FILE__) . '/db_connector.php');
 
 class Ricerca extends Page {
-	
-	private $session;
-	
+		
 	protected $search_result;
 	protected $search_error;
+	protected $search_type;
 	
 	public function __construct() {
 		parent::__construct();
-
-		// controllo che la sessione sia valida
-		$this->session = new LoginSession();
-		if (!$this->session->userIsLogged()) { // un utente è arrivato qua senza essere loggato, lo rispedisco a casa
-			header("Location: login.php");
-		}
-
 	}
-	
-	public function getSessionUser() {
-		return $this->session->getUser();
-	}
-	
 	
 	// ricerca semplice: crea la query da sottoporre a interrogateDB()
 	public function doSimpleSearch($keys) {
 		$queryString = 'SELECT ';
 		
-		/* TO DO:
+		/* TODO:
 		 * estrae chiavi di ricerca da $keys e le concatena a $queryString
 		 */
 		
-		interrogateDB($queryString);
+		$this->interrogateDB($queryString);
 	}
 	
 	// ricerca avanzata: crea la query da sottoporre a interrogateDB()
@@ -44,16 +31,16 @@ class Ricerca extends Page {
 	public function doAdvancedSearch() {
 		$queryString = 'SELECT ';
 		
-		/* TO DO:
+		/* TODO:
 		 * estrae chiavi di ricerca dai vari $_POST[''] e le concatena a $queryString
 		 */
 		
-		interrogateDB($queryString);
+		$this->interrogateDB($queryString);
 	}
 	
 	
 	//esegue l'interrogazione del DB attraverso la query fornita
-	public function interrogateDB($queryString)
+	public function interrogateDB($queryString) {
 		// istanza della classe
 		$dbc = new DBConnector();
 		// chiamata alla funzione di connessione
@@ -62,7 +49,7 @@ class Ricerca extends Page {
 		$raw_data = $dbc->query($queryString);
 		
 		/* hack momentaneo finché il db non è pronto */
-			$this->search_result = ['Documento DQ','Allegato A1'];
+		$this->search_result = array('Documento DQ','Allegato A1');
 		/* hack momentaneo finché il db non è pronto */
 		
 	/*
@@ -83,17 +70,30 @@ class Ricerca extends Page {
 	// true se nessun parametro della ricerca avanzata è stato impostato
 	// false se almeno un parametro della ricerca avanzato è stato impostato
 	//	NB: usa $_POST per comodità  (DA CONTROLLARE SE FUNZIONA!)
+	// ATTENZIONE!!!!
+	// il modello non deve accedere alle variabili globali $_POST o $_GET... solo il controller deve farlo.
+	// questo controllo va fatto in ricerca.php ... crea una funzione a posta e usala lˆ!
 	public function noParameterIsSet() {
 		//controlli sui vari $_POST['']
 		return false;
 	}
 	
+	// ritorna il tipo di ricerca che l'utente vuole
 	public function typeOfSearch() {
-		return "simple";
+		if (!isset($this->search_type)) {
+			$this->search_type = "simple";
+		}
+		return $this->search_type;
 		// bisogna gestire il caso in cui si voglia una ricerca acanzata
 		// return "advanced";
+		// Fatto!
 	}
 	
+	public function setSearchType($type) {
+		if (($type == "simple") || ($type == "advanced")) {
+			$this->search_type = $type;
+		}
+	}
 	
 }
 

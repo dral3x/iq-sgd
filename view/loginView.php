@@ -1,15 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Login</title>
-</head>
-<body>
 <?php
-echo $login->getHeader();
+// aggiungo header
+$page_title = "Login";
+include (dirname(__FILE__) . '/headerView.php');
 
 if (isset($error_message)) {
-	echo '<p>' . $error_message . '</p>';
+	echo '<div id="error">' . $error_message . '</div>';
 }
 ?>
 <h1>Accedi</h1>
@@ -20,6 +15,6 @@ Password: <input type="password" name="password" size="15" /><br />
 <p><input type="submit" name="submit" value="Login" /></p>
 </div>
 </form>
-<?php echo $login->getFooter(); ?>
-</body>
-</html>
+<?php 
+include (dirname(__FILE__) . '/footerView.php');
+?>
