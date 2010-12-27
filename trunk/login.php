@@ -38,6 +38,8 @@ if(isset($_POST['submit']) && (trim($_POST['submit']) == "Login")) {
 	}
 }
 
+$hide_menu = true;
+
 // carico la vista da mostrare all'utente
 require ('view/loginView.php');
 

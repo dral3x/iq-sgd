@@ -1,21 +1,20 @@
 <?php
 
-require_once (dirname(__FILE__) . '/pageModel.php');
-
 require_once (dirname(__FILE__) . '/db_connector.php');
 require_once (dirname(__FILE__) . '/user.php');
 require_once (dirname(__FILE__) . '/security_levels.php');
 
-class LoginSession extends Page {
+class LoginSession {
 
 	protected $user;
-	
 	protected $error_message;
 	
 	// costruttore, invocato con la new LoginSession()
 	public function __construct() {
-		parent::__construct();
+		// inizializzazione della sessione
+		session_start();
 		
+		// controllo se l'utente  giˆ stato loggato in precedenza
 		if (isset($_SESSION[user_logged])) {
 			$this->user = unserialize($_SESSION[user_logged]);
 		}
