@@ -6,33 +6,33 @@ require_once (dirname(__FILE__) . '/loginModel.php');
 require_once (dirname(__FILE__) . '/db_connector.php');
 
 class Ricerca extends Page {
-		
+	
 	protected $search_result;
 	protected $search_error;
 	protected $search_type;
 	
 	public function __construct() {
 		parent::__construct();
+		
+		// ricerca di tipo semplice per default
+		$this->setSimpleSearch();
 	}
 	
 	// ricerca semplice: crea la query da sottoporre a interrogateDB()
 	public function doSimpleSearch($keys) {
 		$queryString = 'SELECT ';
 		
-		/* TODO:
-		 * estrae chiavi di ricerca da $keys e le concatena a $queryString
+		/* TODO: estrae chiavi di ricerca da $keys e le concatena a $queryString
 		 */
 		
 		$this->interrogateDB($queryString);
 	}
 	
 	// ricerca avanzata: crea la query da sottoporre a interrogateDB()
-	//	NB: la ricerca usa $_POST per comodità  (DA CONTROLLARE SE FUNZIONA!)
-	public function doAdvancedSearch() {
-		$queryString = 'SELECT ';
+	public function doAdvancedSearch($partialQuery) {
+		$queryString = 'SELECT '.$partialQuery ;
 		
-		/* TODO:
-		 * estrae chiavi di ricerca dai vari $_POST[''] e le concatena a $queryString
+		/* TODO: concatena la query parziale a $queryString
 		 */
 		
 		$this->interrogateDB($queryString);
@@ -40,7 +40,7 @@ class Ricerca extends Page {
 	
 	
 	//esegue l'interrogazione del DB attraverso la query fornita
-	public function interrogateDB($queryString) {
+	public function interrogateDB($queryString)
 		// istanza della classe
 		$dbc = new DBConnector();
 		// chiamata alla funzione di connessione
@@ -75,24 +75,23 @@ class Ricerca extends Page {
 	// questo controllo va fatto in ricerca.php ... crea una funzione a posta e usala lˆ!
 	public function noParameterIsSet() {
 		//controlli sui vari $_POST['']
+		
+		
+		
 		return false;
 	}
 	
-	// ritorna il tipo di ricerca che l'utente vuole
-	public function typeOfSearch() {
-		if (!isset($this->search_type)) {
+	
+	public function setSimpleSearch() {
 			$this->search_type = "simple";
-		}
-		return $this->search_type;
-		// bisogna gestire il caso in cui si voglia una ricerca acanzata
-		// return "advanced";
-		// Fatto!
 	}
 	
-	public function setSearchType($type) {
-		if (($type == "simple") || ($type == "advanced")) {
-			$this->search_type = $type;
-		}
+	public function setAdvancedSearch() {
+			$this->search_type = "advanced";
+	}
+	
+	public function getTypeOfSearch() {
+		return $this->search_type;
 	}
 	
 }

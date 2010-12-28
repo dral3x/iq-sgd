@@ -1,4 +1,4 @@
-<?php 
+<?php
 // aggiungo header
 $page_title = "Ricerca";
 include (dirname(__FILE__) . '/headerView.php');
@@ -10,12 +10,12 @@ if (isset($error_message)) {
 	echo '<div id="error">' . $error_message . '</div>';
 }
 
-if ($ricerca->typeOfSearch() == "simple") { ?> 
+if ($ricerca->getTypeOfSearch() == "simple") { ?> 
 <div>
 <form name="RicercaSemplice" action="<?php echo $_SERVER['PHP_SELF'];  ?>" method="POST">
 	<fieldset>
 	<legend>Ricerca Semplice</legend>
-		<input type="text" name="parametroRicerca" size="40" <?php if (isset($_POST['parametroRicerca'])) echo 'value="'.$_POST['parametroRicerca'].'" '; ?>/>
+		<input type="text" name="parametroRicerca" size="40" <?php if (isset($_POST['parametroRicerca'])) echo 'value="'.$_POST['parametroRicerca'].'" '; ?> />
 		<input type="hidden" name="search_type" value="simple" />
 		<input type="submit" name="submit" value="Ricerca Semplice" />
 	</fieldset>
@@ -24,10 +24,11 @@ if ($ricerca->typeOfSearch() == "simple") { ?>
 
 <br />
 
-<div>
+
 <?php
-} else if ($ricerca->typeOfSearch() == "advanced") {
+} else if ($ricerca->getTypeOfSearch() == "advanced") {
 ?>
+<div>
 <form name="RicercaAvanzata"  action="ricerca.php" method="POST">
 	<fieldset>
 	<legend>Ricerca Avanzata</legend>	
@@ -45,21 +46,21 @@ if ($ricerca->typeOfSearch() == "simple") { ?>
 				
 				<fieldset>
 				<legend>Classe di appartenenza:</legend>
-					<input type="checkbox" name="A1" value="A1" />A1 - Allegato  <br />
-					<input type="checkbox" name="DQ" value="DQ" />DQ - Documento per la Qualit&agrave;  <br />
-					<input type="checkbox" name="OA" value="OA" />OA - Organizzazione Aziendale <br />
-					<input type="checkbox" name="PO" value="PO" />PO - Procedura Operativa  <br />
-					<input type="checkbox" name="DT" value="DT" />DT - Documento Tecnico <br />
-					<input type="checkbox" name="RS" value="RS" />RS - Rapporto Statistico/Gestionale  <br />
-					<input type="checkbox" name="VR" value="VR" />VR - Verbale di Riunione <br />
-					<input type="checkbox" name="EX" value="EX" />EX - Documento Esterno <br />
-					<input type="checkbox" name="LN" value="LN" />LN - Legge/Norma  <br />
+					<label><input type="checkbox" name="classe[]" value="A1" />A1 - Allegato</label><br />
+					<label><input type="checkbox" name="classe[]" value="DQ" />DQ - Documento per la Qualit&agrave;</label><br />
+					<label><input type="checkbox" name="classe[]" value="OA" />OA - Organizzazione Aziendale</label><br />
+					<label><input type="checkbox" name="classe[]" value="PO" />PO - Procedura Operativa</label><br />
+					<label><input type="checkbox" name="classe[]" value="DT" />DT - Documento Tecnico</label><br />
+					<label><input type="checkbox" name="classe[]" value="RS" />RS - Rapporto Statistico/Gestionale</label><br />
+					<label><input type="checkbox" name="classe[]" value="VR" />VR - Verbale di Riunione</label><br />
+					<label><input type="checkbox" name="classe[]" value="EX" />EX - Documento Esterno</label><br />
+					<label><input type="checkbox" name="classe[]" value="LN" />LN - Legge/Norma</label><br />
 				</fieldset>
 				
 				<p>
 				<label>Versione: <input type="text" name="versione" /></label><br />
-				<label>Anno: <input type="text" name="anno" /></label><br />
-				<label>Numero: <input type="text" name="numero" /></label><br />
+				<label>Anno: 	 <input type="text" name="anno" /></label><br />
+				<label>Numero: 	 <input type="text" name="numero" /></label><br />
 				</p>
 				
 			</fieldset>
@@ -72,9 +73,9 @@ if ($ricerca->typeOfSearch() == "simple") { ?>
 			
 			<fieldset>
 			<legend>Stato</legend>
-	 			<input type="checkbox" name="bozza" value="bozza"/>Bozza<br />
-				<input type="checkbox" name="approvato" value="approvato"/>Approvato<br />
-				<input type="checkbox" name="obsoleto" value="obsoleto"/>Obsoleto<br />
+	 			<label><input type="checkbox" name="stato[]" value="bozza" />Bozza</label><br />
+				<label><input type="checkbox" name="stato[]" value="approvato" />Approvato</label><br />
+				<label><input type="checkbox" name="stato[]" value="obsoleto" />Obsoleto</label><br />
 			</fieldset>
 			
 			<p>
@@ -93,10 +94,10 @@ if ($ricerca->typeOfSearch() == "simple") { ?>
 			
 			<fieldset>
 			<legend>Livello di Confidenzialit&agrave;</legend>
-				<input type="checkbox" name="l0" value="l0"/>L0<br />
-				<input type="checkbox" name="l1" value="l1"/>L1<br />
-				<input type="checkbox" name="l2" value="l2"/>L2<br />
-				<input type="checkbox" name="pubblico" value="pubblico"/>Pubblico<br />
+				<label><input type="checkbox" name="livello[]" value="l0" />L0</label><br />
+				<label><input type="checkbox" name="livello[]" value="l1" />L1</label><br />
+				<label><input type="checkbox" name="livello[]" value="l2" />L2</label><br />
+				<label><input type="checkbox" name="livello[]" value="pubblico" />Pubblico</label><br />
 			</fieldset>
 		  	
 		  	<p>
@@ -115,26 +116,32 @@ if ($ricerca->typeOfSearch() == "simple") { ?>
 	
 		<fieldset>
 		<legend>Parole da Ricercare nell'abstract del documento</legend>	
-			<input type="text" name="abstract" size="40" /><br />
+			<textarea name="abstract" rows="2" cols="40"></textarea><br />
 	 	</fieldset>
 	
 		<br />
 	
 		<fieldset>
 		<legend>Parole da Ricercare all'interno del documento</legend>	
-			<input type="text" name="doc" size="40" /><br />
+			<textarea name="doc" rows="3" cols="40"></textarea><br />
 		</fieldset>
 	
 		<br />
  
- 	<input type="hidden" name="search_type" value="advanced" />
+	<input type="hidden" name="search_type" value="advanced" />
 	<input type="submit" name="submit" value="Ricerca Avanzata" />
 
 	</fieldset>
 </form>
 </div>
+
+<br />
+
+
+
 <?php
 }
+
 
 if (isset($search_error)) {
 	
