@@ -7,7 +7,7 @@ class DBConfig {
 	const hostname = "localhost";
 	const username = "root";
 	const password = "";
-	const name = "sgd";
+	const name = "demo";
 	
 }
 

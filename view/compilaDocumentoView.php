@@ -1,11 +1,9 @@
 <?php 
 // aggiungo header
-$page_title = "Visualizza documento";
+$page_title = "Compila documento (2 di 2)";
+$page_subtitle = "Compila i campi";
 include (dirname(__FILE__) . '/headerView.php');
 
-?>
-<h1><?=$page_title; ?></h1> 
-<?php 
 if (isset($error_message)) {
 	echo '<div id="error">' . $error_message . '</div>';
 }
@@ -14,7 +12,7 @@ if (isset($error_message)) {
 if (isset($document)) {
 ?>
 <fieldset>
-	<legend>Documento Visualizzato</legend>
+	<legend>Documento da compilare</legend>
 	<?php
 	// mostro l'elenco di tutti i campi
 	foreach ($document->getFields() as $field => $content) {

@@ -3,7 +3,7 @@
 $page_title = "Ricerca";
 include (dirname(__FILE__) . '/headerView.php');
 ?>
-<h1>Ricerca</h1>
+<h1><?=$page_title; ?></h1>
 <?php
 
 if (isset($error_message)) {

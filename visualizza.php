@@ -38,12 +38,15 @@ if (isset($_GET['document_id'])) {
 	if ($_GET['type'] == "draft_documents") {
 		// recupero i documenti di tipo draft da modello
 		$documents = $visualizza->retrieveDraftDocuments();
+		$page_title = "Bozze di documento";
 	} else if ($_GET['type'] == "waiting_approval_documents") {
 		// recupero i documenti che aspettano la mia approvazione
 		$documents = $visualizza->retrieveWaitingApprovalDocuments();
+		$page_title = "Documenti in attesa di approvazione";
 	} else {
 		$error_message = "Nessun tipo di documento valido è stato selezionato.";
 	}
+	
 	
 	// carico la vista da mostrare all'utente
 	require ('view/visualizzaElencoView.php');

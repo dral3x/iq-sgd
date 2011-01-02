@@ -25,7 +25,7 @@ if(isset($_POST['submit']) && (trim($_POST['submit']) == "Login")) {
 		// salvataggio dei parametri dopo il filtraggio
 		$username = trim(filter_var($_POST['username'], FILTER_SANITIZE_STRING));
 		$password = trim(filter_var($_POST['password'], FILTER_SANITIZE_STRING));
-		$password = sha1($password);
+		//$password = sha1($password); /* FIXME: la password per ora va messa in chiaro nel db ma in futuro verrˆ salvato l'hash della password */
 
 		if ($login->verifyUsernameAndPassword($username, $password)) {
 			// login eseguito con successo!

@@ -1,29 +1,33 @@
 <?php
 // aggiungo header
+$page_title = "Compila documento (1 di 2)";
+$page_subtitle = "Scegli il modello da compilare";
+
 include (dirname(__FILE__) . '/headerView.php');
 ?>
 <h1><?=$page_title; ?></h1> 
-<?php 
+<?php
+
 if (isset($error_message)) {
 	echo '<div id="error">' . $error_message . '</div>';
 } else {
 
 ?>
 <fieldset>
-	<legend>Documenti richiesti</legend>
+	<legend><?=$page_subtitle; ?></legend>
 	<?php
 	// se ci sono documenti, li mostro in forma di elenco
-	if (isset($documents) && count($documents)>0) {
+	if (isset($models) && count($models)>0) {
 		echo '<div id="container">'."\n";
-		foreach ($documents as $document) {
+		foreach ($models as $model) {
 			echo '<div id="row">';
-			echo '<div id="left"><a href="visualizza.php?document_id='.$document->getID().'"><b>'.$document->getTitle().'</b></a> di '.$document->getAuthor().'</div>';
+			echo '<div id="left"><a href="compila.php?model_id='.$model->getID().'"><b>'.$model->getName().'</b></a></div>';
 			echo '</div>'."\n";
 		}
 		echo '</div>'."\n";
 	} else {
 		// non ci sono documenti
-		echo '<div id="empty">Nessun documento in questa categoria</div>'."\n";
+		echo '<div id="empty">Nessun modello disponibile</div>'."\n";
 	}
 	?>
 </fieldset>
