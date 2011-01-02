@@ -34,23 +34,24 @@ class LoginSession {
 			// chiamata alla funzione di connessione
 			$dbc->connect();
 			// interrogazione della tabella
-			$raw_data = $dbc->query('SELECT user_id, level FROM users WHERE username = "' . $username . '" AND password = "' . $password . '";');
+			$raw_data = $dbc->query('SELECT matricola, ruolo FROM utente WHERE username = "' . $username . '" AND passwd = "' . $password . '";');
+			// FIXME: la query  sbagliata...
 			
 			/* hack momentaneo finch il db non  pronto */
-			$this->user = new User('1', $username, $password, SecurityLevel::L0);
-			$_SESSION[user_logged] = serialize($this->user);
+			//$this->user = new User('1', $username, $password, SecurityLevel::L0);
+			//$_SESSION[user_logged] = serialize($this->user);
 			/* hack momentaneo finch il db non  pronto */
 			
-//			if ($dbc->rows($raw_data)==1) {
-//				// chiamata alla funzione per l'estrazione dei dati
-//				$res =  $dbc->extract_object($raw_data);
-//				// 	creazione del valore di sessione
-//				$this->user = new User($res->id_login, $username, $password, $res->level);
-//				$_SESSION[user_logged] = serialize($this->user);
-//				
-//			} else {
-//				$this->error_message = "Login fallito!";
-//			}
+			if ($dbc->rows($raw_data)==1) {
+				// chiamata alla funzione per l'estrazione dei dati
+				$res =  $dbc->extract_object($raw_data);
+				// 	creazione del valore di sessione
+				$this->user = new User($res->matricola, $username, $password, $res->ruolo);
+				$_SESSION[user_logged] = serialize($this->user);
+				
+			} else {
+				$this->error_message = "Login fallito!";
+			}
 			
 			// disconnessione da MySQL
 			$dbc->disconnect();

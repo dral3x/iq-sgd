@@ -10,15 +10,15 @@ $ricerca = new Ricerca();
 
 // controllo che tipo di ricerca vuole fare l'utente
 if (isset($_GET['type'])) {
-	if (($_GET['type'] == "simple")	{
+	if ($_GET['type'] == "simple")	{
 		$ricerca->setSimpleSearch();
-	} elseif ($_GET['type'] == "advanced")) {
+	} elseif ($_GET['type'] == "advanced") {
 		$ricerca->setAdvancedSearch();
 	}
 } elseif (isset($_POST['search_type'])) {
-	if (($_POST['search_type'] == "simple")	{
+	if ($_POST['search_type'] == "simple")	{
 		$ricerca->setSimpleSearch();
-	} elseif ($_POST['search_type'] == "advanced")) {
+	} elseif ($_POST['search_type'] == "advanced") {
 		$ricerca->setAdvancedSearch();
 	}
 }
@@ -78,7 +78,7 @@ function noParameterIsSet() {
 		if (trim($_POST['identificatore']) == "") return false;
 		
 		foreach($_POST['classe'] as $value) {
-			if isset($value) return false;
+			if (isset($value)) return false;
 		}
 		
 		if (trim($_POST['versione']) == "") return false;
@@ -90,7 +90,7 @@ function noParameterIsSet() {
 	if (trim($_POST['revisione']) == "") return false;
 	
 	foreach($_POST['stato'] as $value) {
-		if isset($value) return false;
+		if (isset($value)) return false;
 	}
 	
 	if (trim($_POST['lingua']) == "") return false;
@@ -101,7 +101,7 @@ function noParameterIsSet() {
 	if (trim($_POST['sede']) == "") return false;
 	
 	foreach($_POST['livello'] as $value) {
-		if isset($value) return false;
+		if (isset($value)) return false;
 	}
 	
 	if (trim($_POST['allegati']) == "") return false;

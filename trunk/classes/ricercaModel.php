@@ -40,7 +40,7 @@ class Ricerca extends Page {
 	
 	
 	//esegue l'interrogazione del DB attraverso la query fornita
-	public function interrogateDB($queryString)
+	public function interrogateDB($queryString) {
 		// istanza della classe
 		$dbc = new DBConnector();
 		// chiamata alla funzione di connessione
@@ -76,8 +76,7 @@ class Ricerca extends Page {
 	public function noParameterIsSet() {
 		//controlli sui vari $_POST['']
 		
-		
-		
+	
 		return false;
 	}
 	
