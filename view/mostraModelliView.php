@@ -5,7 +5,7 @@ $page_subtitle = "Scegli il modello da compilare";
 
 include (dirname(__FILE__) . '/headerView.php');
 ?>
-<h1><?=$page_title; ?></h1> 
+<h1><?php echo $page_title; ?></h1> 
 <?php
 
 if (isset($error_message)) {
@@ -13,8 +13,9 @@ if (isset($error_message)) {
 } else {
 
 ?>
+<div id="showModel">
 <fieldset>
-	<legend><?=$page_subtitle; ?></legend>
+	<legend><?php echo $page_subtitle; ?></legend>
 	<?php
 	// se ci sono documenti, li mostro in forma di elenco
 	if (isset($models) && count($models)>0) {
@@ -31,6 +32,7 @@ if (isset($error_message)) {
 	}
 	?>
 </fieldset>
+</div>
 <?php 
 } // fine else isset error_message
 

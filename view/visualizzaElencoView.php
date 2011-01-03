@@ -2,13 +2,14 @@
 // aggiungo header
 include (dirname(__FILE__) . '/headerView.php');
 ?>
-<h1><?=$page_title; ?></h1> 
+<h1><?php echo $page_title; ?></h1> 
 <?php 
 if (isset($error_message)) {
 	echo '<div id="error">' . $error_message . '</div>';
 } else {
 
 ?>
+<div id="viewList">
 <fieldset>
 	<legend>Documenti richiesti</legend>
 	<?php
@@ -27,6 +28,7 @@ if (isset($error_message)) {
 	}
 	?>
 </fieldset>
+</div>
 <?php 
 } // fine else isset error_message
 

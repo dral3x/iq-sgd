@@ -20,7 +20,7 @@ class Ricerca extends Page {
 	
 	// ricerca semplice: crea la query da sottoporre a interrogateDB()
 	public function doSimpleSearch($keys) {
-		$queryString = 'SELECT ';
+		$queryString = 'SELECT id FROM';
 		
 		/* TODO: estrae chiavi di ricerca da $keys e le concatena a $queryString
 		 */
@@ -30,7 +30,7 @@ class Ricerca extends Page {
 	
 	// ricerca avanzata: crea la query da sottoporre a interrogateDB()
 	public function doAdvancedSearch($partialQuery) {
-		$queryString = 'SELECT '.$partialQuery ;
+		$queryString = 'SELECT id FROM'.$partialQuery ;
 		
 		/* TODO: concatena la query parziale a $queryString
 		 */
@@ -64,22 +64,7 @@ class Ricerca extends Page {
 			
 		// disconnessione da MySQL
 		$dbc->disconnect();
-	}
-	
-	
-	// true se nessun parametro della ricerca avanzata è stato impostato
-	// false se almeno un parametro della ricerca avanzato è stato impostato
-	//	NB: usa $_POST per comodità  (DA CONTROLLARE SE FUNZIONA!)
-	// ATTENZIONE!!!!
-	// il modello non deve accedere alle variabili globali $_POST o $_GET... solo il controller deve farlo.
-	// questo controllo va fatto in ricerca.php ... crea una funzione a posta e usala lˆ!
-	public function noParameterIsSet() {
-		//controlli sui vari $_POST['']
-		
-	
-		return false;
-	}
-	
+	}	
 	
 	public function setSimpleSearch() {
 			$this->search_type = "simple";
