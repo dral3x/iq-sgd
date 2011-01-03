@@ -3,7 +3,7 @@
 $page_title = "Ricerca";
 include (dirname(__FILE__) . '/headerView.php');
 ?>
-<h1><?=$page_title; ?></h1>
+<h1><?php echo $page_title; ?></h1>
 <?php
 
 if (isset($error_message)) {
@@ -11,7 +11,7 @@ if (isset($error_message)) {
 }
 
 if ($ricerca->getTypeOfSearch() == "simple") { ?> 
-<div>
+<div id="search">
 <form name="RicercaSemplice" action="<?php echo $_SERVER['PHP_SELF'];  ?>" method="POST">
 	<fieldset>
 	<legend>Ricerca Semplice</legend>
@@ -28,7 +28,7 @@ if ($ricerca->getTypeOfSearch() == "simple") { ?>
 <?php
 } else if ($ricerca->getTypeOfSearch() == "advanced") {
 ?>
-<div>
+<div id="search">
 <form name="RicercaAvanzata"  action="ricerca.php" method="POST">
 	<fieldset>
 	<legend>Ricerca Avanzata</legend>	
@@ -145,7 +145,7 @@ if ($ricerca->getTypeOfSearch() == "simple") { ?>
 
 if (isset($search_error)) {
 	
-	echo '<div ="error">'.$search_error.'</div>';
+	echo '<div id="error">'.$search_error.'</div>';
 	
 } else if (isset($search_result)) {
 	// mostro l'elenco dei risultati

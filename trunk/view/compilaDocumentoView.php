@@ -8,9 +8,10 @@ if (isset($error_message)) {
 	echo '<div id="error">' . $error_message . '</div>';
 }
 
-// se la variabile $document  stata impostata dal modello... allora posso mostrarne il contenuto
+// se la variabile $document è stata impostata dal modello... allora posso mostrarne il contenuto
 if (isset($document)) {
 ?>
+<div id="fillDocument">
 <fieldset>
 	<legend>Documento da compilare</legend>
 	<?php
@@ -21,6 +22,7 @@ if (isset($document)) {
 	}
 	?>
 </fieldset>
+</div>
 <?php 
 } // isset document
 
