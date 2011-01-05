@@ -38,7 +38,7 @@ if ($ricerca->getTypeOfSearch() == "simple") { ?>
 		<legend>Campi dell'Intestazione</legend>
 			
 			<p>
-			<label>Identificatore Completo : <input type="text" name="identificatore" /></label><br />
+			<label>Identificatore Completo (NB: inserire il carattere "-" per separare le parti dell'id) : <input type="text" name="identificatore" /></label><br />
 			</p>
 			
 			<fieldset>
@@ -46,15 +46,15 @@ if ($ricerca->getTypeOfSearch() == "simple") { ?>
 				
 				<fieldset>
 				<legend>Classe di appartenenza:</legend>
-					<label><input type="checkbox" name="classe[]" value="A1" />A1 - Allegato</label><br />
-					<label><input type="checkbox" name="classe[]" value="DQ" />DQ - Documento per la Qualit&agrave;</label><br />
-					<label><input type="checkbox" name="classe[]" value="OA" />OA - Organizzazione Aziendale</label><br />
-					<label><input type="checkbox" name="classe[]" value="PO" />PO - Procedura Operativa</label><br />
-					<label><input type="checkbox" name="classe[]" value="DT" />DT - Documento Tecnico</label><br />
-					<label><input type="checkbox" name="classe[]" value="RS" />RS - Rapporto Statistico/Gestionale</label><br />
-					<label><input type="checkbox" name="classe[]" value="VR" />VR - Verbale di Riunione</label><br />
-					<label><input type="checkbox" name="classe[]" value="EX" />EX - Documento Esterno</label><br />
-					<label><input type="checkbox" name="classe[]" value="LN" />LN - Legge/Norma</label><br />
+					<label><input type="checkbox" name="classe[]" value="1" />A1 - Allegato</label><br />
+					<label><input type="checkbox" name="classe[]" value="2" />DQ - Documento per la Qualit&agrave;</label><br />
+					<label><input type="checkbox" name="classe[]" value="3" />OA - Organizzazione Aziendale</label><br />
+					<label><input type="checkbox" name="classe[]" value="4" />PO - Procedura Operativa</label><br />
+					<label><input type="checkbox" name="classe[]" value="5" />DT - Documento Tecnico</label><br />
+					<label><input type="checkbox" name="classe[]" value="6" />RS - Rapporto Statistico/Gestionale</label><br />
+					<label><input type="checkbox" name="classe[]" value="7" />VR - Verbale di Riunione</label><br />
+					<label><input type="checkbox" name="classe[]" value="8" />EX - Documento Esterno</label><br />
+					<label><input type="checkbox" name="classe[]" value="9" />LN - Legge/Norma</label><br />
 				</fieldset>
 				
 				<p>
@@ -94,10 +94,10 @@ if ($ricerca->getTypeOfSearch() == "simple") { ?>
 			
 			<fieldset>
 			<legend>Livello di Confidenzialit&agrave;</legend>
-				<label><input type="checkbox" name="livello[]" value="l0" />L0</label><br />
-				<label><input type="checkbox" name="livello[]" value="l1" />L1</label><br />
-				<label><input type="checkbox" name="livello[]" value="l2" />L2</label><br />
-				<label><input type="checkbox" name="livello[]" value="pubblico" />Pubblico</label><br />
+				<label><input type="checkbox" name="livello[]" value="0" />L0</label><br />
+				<label><input type="checkbox" name="livello[]" value="1" />L1</label><br />
+				<label><input type="checkbox" name="livello[]" value="2" />L2</label><br />
+				<label><input type="checkbox" name="livello[]" value="3" />Pubblico</label><br />
 			</fieldset>
 		  	
 		  	<p>

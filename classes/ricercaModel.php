@@ -20,7 +20,7 @@ class Ricerca extends Page {
 	
 	// ricerca semplice: crea la query da sottoporre a interrogateDB()
 	public function doSimpleSearch($keys) {
-		$queryString = 'SELECT id FROM';
+		$queryString = "SELECT documento.id FROM ";
 		
 		/* TODO: estrae chiavi di ricerca da $keys e le concatena a $queryString
 		 */
@@ -30,7 +30,7 @@ class Ricerca extends Page {
 	
 	// ricerca avanzata: crea la query da sottoporre a interrogateDB()
 	public function doAdvancedSearch($partialQuery) {
-		$queryString = 'SELECT id FROM'.$partialQuery ;
+		$queryString = "SELECT documento.id FROM ".$partialQuery ;
 		
 		/* TODO: concatena la query parziale a $queryString
 		 */
