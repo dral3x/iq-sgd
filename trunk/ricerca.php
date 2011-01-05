@@ -156,7 +156,7 @@ function getAdvancedKeys() {
 	$partialQuery = "";
 	
 	//TODO:parte della query riservata ad eventuali join con tabelle diverse da documento
-	$from = ""
+	$from = "";
 	
 	//contatore che segna quante condizioni che vanno separate da AND sono state inserite
 	$k = 0;
@@ -328,7 +328,7 @@ function getAdvancedKeys() {
 		$lingua = $_POST['lingua'];
 		$lng = "";
 		
-		switch() {
+		switch($lingua) {
 			case "IT":
 			case "italiano":
 			case "Italiano":
