@@ -105,7 +105,7 @@ if ($ricerca->getTypeOfSearch() == "simple") { ?>
 		
 			<label>Numero di Pagine del Documento: <input type="text" name="pagine" /></label><br />
 		  
-			<label>Approvato da: <input type="text" name="approvato" /></label><br />
+			<label>Approvato da: <input type="text" name="approvatore" /></label><br />
 		
 			<label>Autore: <input type="text" name="autore" /></label><br />
 			</p>

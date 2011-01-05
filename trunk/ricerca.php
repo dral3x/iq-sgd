@@ -105,7 +105,7 @@ function noParameterIsSet() {
 	
 	if (trim($_POST['allegati']) == "") return false;
 	if (trim($_POST['pagine']) == "") return false;
-	if (trim($_POST['approvato']) == "") return false;
+	if (trim($_POST['approvatore']) == "") return false;
 	if (trim($_POST['autore']) == "") return false;
 	
 	
@@ -119,7 +119,7 @@ function noParameterIsSet() {
 	 * NB: i tre cicli foreach precedenti sono riportati come sopra!
 	 * TODO: verificare se potrebbe funzionare CODICE ALTERNATIVO a tutti gli if
 	
-	$fields = array('identificatore','versione','anno','numero','data','revisione','lingua','sede','allegati','pagine','approvato','autore','abstract','doc');
+	$fields = array('identificatore','versione','anno','numero','data','revisione','lingua','sede','allegati','pagine','approvatore','autore','abstract','doc');
 	
 	foreach($fields as $field) {
 		if ( trim($_POST[$field]) == "" ) return false;
@@ -367,28 +367,19 @@ function getAdvancedKeys() {
 	}
 	
 	
-	/* 
-	 * TODO: fare controllo sui permessi dell'utente
-	 * 
-	 */
 	//livello di confidenzialità è impostata?
 	if ( isset($_POST['livello']) ) {
 		// TODO: livello di autorizzazione dell'utente:funziona così? 
 		$level = $_SESSION[user_logged]->getSecurityLevel();
 		
-		//NB: WORKAROUND che dipende da come sono stati messi i livelli nel DB
-		//nel db i livelli hanno numeri invertiti rispetto al modello security_levels? se si
-		//$level = 3 - $level;
-		
 		//contatore che segna quante condizioni che vanno separate da OR sono state inserite
 		$i = 0;
 		
 		foreach($_POST['livello'] as $value) {
-			//TODO:controllare! confronto dipende da come sono stati messi i livelli nel DB
-			if ( $value < $level ) {
+			if ( $value >= $level ) {
 				//controlla se esiste almeno una condizione 'AND' preimpostata
 				if ( ($k > 0) && ($i == 0) ) { $partialQuery.= " AND "; }
-		
+						
 				//controlla se esiste almeno una condizione 'OR' preimpostata
 				if ($i > 0) { $partialQuery.= " OR "; }
 				
@@ -424,12 +415,12 @@ function getAdvancedKeys() {
 		$k++;
 	}
 	
-	//TODO:query approvato
-	if ( isset($_POST['approvato']) ) {
+	//TODO:query approvatore
+	if ( isset($_POST['approvatore']) ) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
-		$_POST['approvato'];
+		$_POST['approvatore'];
 		
 		$k++;
 	}
@@ -462,6 +453,12 @@ function getAdvancedKeys() {
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
 		$_POST[''];
+		
+		/*
+		 WHERE campo LIKE "%parola%"
+
+		 ritorna tutto ciò che contiene parola, anche con altri caratteri prima o dopo 
+		 */
 		
 		$k++;
 	}
