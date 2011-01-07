@@ -4,6 +4,8 @@ require_once (dirname(__FILE__) . '/pageModel.php');
 
 require_once (dirname(__FILE__) . '/db_connector.php');
 require_once (dirname(__FILE__) . '/model.php');
+require_once (dirname(__FILE__) . '/document.php');
+require_once (dirname(__FILE__) . '/document_field.php');
 
 class Compilatore extends Page {
 	
@@ -11,7 +13,7 @@ class Compilatore extends Page {
 	
 	public function getModelsAvailable() {
 		$queryString = "SELECT id, nome FROM classe_documenti;";
-		// TODO: aggiungere vincolo sul livello di segretezza che l'utente ha
+		// TODO: aggiungere vincolo sul livello di confidenzialitˆ che l'utente ha
 		
 		// istanza della classe
 		$dbc = new DBConnector();
@@ -31,56 +33,18 @@ class Compilatore extends Page {
 		return $results;
 	}
 	
-	
-	public function getDocumentModel($id) {
-		// creo un oggetto Document con tutti i campi del modello, ma vuoti
-		// e lo restituisco
+	public function generateDocumentFromModelWithData($model, $fields) {
+		$doc = new Document();
+		$doc->setModelID($model->getID());
+		$doc->setField($model->getFields());
 		
-		return null;
-	}
-	
-	private function doInsertionQuerysAsTransaction($querys) {
-		// istanza della classe
-		$dbc = new DBConnector();
-		// chiamata alla funzione di connessione
-		$dbc->connect();
-		
-		// inizio la transazione
-		$dbc->begin_transaction();
-		
-		$success = true;
-		// ciclo di query
-		foreach ($querys as $query) {
-			// interrogazione della tabella
-			$success = $dbc->query($query, true);
-			if (!$success) {
-				$this->error_message = $dbc->getErrorMessage();
-				break;
+		foreach ($doc->getContent() as $field) {
+			if (isset($fields[$field->getID()])) {
+				$field->setContent($fields[$field->getID()]);
 			}
 		}
-
-		if (!$success) {
-			$dbc->rollback_transaction();
-		} else {
-			$dbc->commit();
-		}
-			
-		// disconnessione da MySQL
-		$dbc->disconnect();
 		
-		return $success;
+		return $doc;
 	}
-	
-	// restituisce true se l'operazione  andata a buon fine, false altrimenti
-	public function saveDocument($document) {
-		// controlla il documento
-		
-		// generale le query SQL da fare
-		$querys = array();
 
-		// eseguo tutte le query o niente
-		$success = $this->doInsertionQuerysAsTransaction($querys);
-		
-		return $success;
-	}
 }

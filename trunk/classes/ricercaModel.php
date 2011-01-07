@@ -4,7 +4,7 @@ require_once (dirname(__FILE__) . '/pageModel.php');
 require_once (dirname(__FILE__) . '/loginModel.php');
 
 require_once (dirname(__FILE__) . '/db_connector.php');
-
+require_once (dirname(__FILE__) . '/document.php');
 class Ricerca extends Page {
 	
 	protected $search_result;
@@ -20,12 +20,13 @@ class Ricerca extends Page {
 	
 	// ricerca semplice: crea la query da sottoporre a interrogateDB()
 	public function doSimpleSearch($keys) {
-		$queryString = "SELECT documento.id FROM ";
+		$queryString = "SELECT documento.id FROM documento;";
 		
 		/* TODO: estrae chiavi di ricerca da $keys e le concatena a $queryString
 		 */
 		
 		$this->interrogateDB($queryString);
+		return $this->search_result;
 	}
 	
 	// ricerca avanzata: crea la query da sottoporre a interrogateDB()
@@ -36,6 +37,7 @@ class Ricerca extends Page {
 		 */
 		
 		$this->interrogateDB($queryString);
+		return $this->search_result;
 	}
 	
 	
@@ -49,18 +51,19 @@ class Ricerca extends Page {
 		$raw_data = $dbc->query($queryString);
 		
 		/* hack momentaneo finché il db non è pronto */
-		$this->search_result = array('Documento DQ','Allegato A1');
+		//$this->search_result = array('Documento DQ','Allegato A1');
 		/* hack momentaneo finché il db non è pronto */
-		
-	/*
+	
 		if ($dbc->rows($raw_data)>0) {
 			// chiamata alla funzione per l'estrazione dei dati
-			$search_result =  $dbc->extract_object($raw_data);
+			$this->search_result = array();
+			while ($doc = $dbc->extract_object($raw_data)) {
+				array_push($this->search_result, new Document($doc->id));
+			}
 			unset($search_error);
 		} else {
 			$this->search_error = "La ricerca non ha prodotto risultati";
 		}
-	*/
 			
 		// disconnessione da MySQL
 		$dbc->disconnect();

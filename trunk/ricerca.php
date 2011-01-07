@@ -37,7 +37,7 @@ if (isset($_POST['submit'])) {
 		if (trim($_POST['parametroRicerca']) == "") {
 			$search_error = "Nessuna chiave di ricerca inserita";
 		} else {
-			$ricerca->doSimpleSearch($_POST['parametroRicerca']);
+			$search_result = $ricerca->doSimpleSearch($_POST['parametroRicerca']);
 		}
 	}
 	//l'utente ha richiesto una ricerca avanzata?
@@ -51,7 +51,7 @@ if (isset($_POST['submit'])) {
 		if (noParameterIsSet()) {
 			$search_error = "Nessuna chiave di ricerca inserita";
 		} else {
-			$ricerca->doAdvancedSearch( getAdvancedKeys() );
+			$search_result = $ricerca->doAdvancedSearch( getAdvancedKeys() );
 		}
 	}
 	

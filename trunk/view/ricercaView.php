@@ -149,12 +149,15 @@ if (isset($search_error)) {
 	
 } else if (isset($search_result)) {
 	// mostro l'elenco dei risultati
-	
-	echo '<div id="results">Ecco i risultati: <br />';
-//	foreach ($risultato in $search_result) {
-//		echo '<div id="single_result">'.$risultato.'</div>';
-//	}
+	echo '<fieldset><legend>Ecco i risultati:</legend>';
+	echo '<div id="container">'."\n";
+	foreach ($search_result as $document) {
+		echo '<div id="row">';
+		echo '<div id="left"><a href="visualizza.php?document_id='.$document->getID().'"><b>'.$document->getIdentifier().'</b></a> di '.$document->getAuthor().'</div>';
+		echo '</div>'."\n";
+	}
 	echo '</div>';
+	echo '</fieldset>';
 }
 
 // aggiungo footer

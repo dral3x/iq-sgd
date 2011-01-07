@@ -14,64 +14,86 @@ class VisualizzaDocumento extends Page {
 	// cerca nel db tutti i documenti il cui stato  Draft e l'autore  uguale all'utente loggato in questo momento
 	// restituisce un array di documenti
 	public function retrieveDraftDocuments() {
-//			// istanza della classe
-//			$dbc = new DBConnector();
-//			// chiamata alla funzione di connessione
-//			$dbc->connect();
-//			// interrogazione della tabella
-//			$raw_data = $dbc->query('SELECT document_id, title, level FROM documents WHERE author = "' . $this->getSessionUser()->user_id . '" AND state="Draft";');		
-//			
-//			if ($dbc->rows($raw_data)>0) {
-//				$documents = array();
-//				// chiamata alla funzione per l'estrazione dei dati
-//				while($res = $dbc->extract_object($raw_data, "Document")) {
-//					// 	creazione del valore di sessione
-//					$documents = new User($res->id_login, $username, $password, $res->level);
-//				}
-//			} else {
-//				$documents = array();
-//			}
-//			
-//			// disconnessione da MySQL
-//			$dbc->disconnect();
-		
-			/* hack momentaneo finch il db non  pronto */
-			$document = new Document("ID1", "Titolo documento draft", SecurityLevel::LPUBLIC);
-			$documents = array($document);
-			/* hack momentaneo finch il db non  pronto */
+		// istanza della classe
+		$dbc = new DBConnector();
+		// chiamata alla funzione di connessione
+		$dbc->connect();
+		// interrogazione della tabella
+		$sql = "SELECT DISTINCT d.id, d.versione, d.sede, d.liv_conf, a.mat_utente ".
+				"FROM documento AS d ".
+				"INNER JOIN autore AS a ON d.id = a.id_doc ".
+				"WHERE a.mat_utente = ".$this->getSessionUser()->user_id." AND d.stato LIKE '".DocumentState::BOZZA."'";
+		$raw_data = $dbc->query($sql);
 			
-			return $documents;
+		$documents = array();
+		
+		if ($dbc->rows($raw_data)>0) {
+			// aggiungo tutti i documenti all'array da restituire
+			while($res = $dbc->extract_object($raw_data)) {
+				array_push($documents, new Document($res->id));
+			}
+		}
+					
+		// disconnessione da MySQL
+		$dbc->disconnect();
+			
+		return $documents;
 	}
 	
 	// cerca nel db tutti i documenti il cui stato  WaitingApproval e il responsabile per l'approvazione  uguale all'utente loggato in questo momento
 	// restituisce un array di documenti
 	public function retrieveWaitingApprovalDocuments() {
-//			// istanza della classe
-//			$dbc = new DBConnector();
-//			// chiamata alla funzione di connessione
-//			$dbc->connect();
-//			// interrogazione della tabella
-//			$raw_data = $dbc->query('SELECT document_id, title, level FROM documents WHERE author = "' . $this->getSessionUser()->user_id . '" AND state="Draft";');		
-//			
-//			if ($dbc->rows($raw_data)>0) {
-//				$documents = array();
-//				// chiamata alla funzione per l'estrazione dei dati
-//				while($res = $dbc->extract_object($raw_data, "Document")) {
-//					// 	creazione del valore di sessione
-//					$documents = new User($res->id_login, $username, $password, $res->level);
-//				}
-//			} else {
-//				$documents = array();
-//			}
-//			
-//			// disconnessione da MySQL
-//			$dbc->disconnect();
+		// istanza della classe
+		$dbc = new DBConnector();
+		// chiamata alla funzione di connessione
+		$dbc->connect();
+		// interrogazione della tabella
+		$sql = "SELECT DISTINCT d.id ".
+				"FROM documento AS d ".
+				"WHERE d.approvatore LIKE '".$this->getSessionUser()->user_id."' AND d.stato LIKE '".DocumentState::DA_APPROVARE."';";
+		$raw_data = $dbc->query($sql);
 		
-			/* hack momentaneo finch il db non  pronto */
-			$document = new Document("ID2", "Titolo documento waitapproval", SecurityLevel::LPUBLIC);
-			$documents = array($document);
-			/* hack momentaneo finch il db non  pronto */
+		$documents = array();
+		
+		if ($dbc->rows($raw_data)>0) {
+			// aggiungo tutti i documenti all'array da restituire
+			while($res = $dbc->extract_object($raw_data)) {
+				array_push($documents, new Document($res->id));
+			}
+		}
 			
-			return $documents;		
+		// disconnessione da MySQL
+		$dbc->disconnect();
+			
+		return $documents;	
+	}
+	
+	// cerca nel db tutte le revisioni dello stesso documento specificato
+	// restituisce un array di documenti
+	public function retrieveAllRevisionsOfDocuments($document_id) {
+		// istanza della classe
+		$dbc = new DBConnector();
+		// chiamata alla funzione di connessione
+		$dbc->connect();
+		// interrogazione della tabella
+		$sql = "SELECT DISTINCT d.id ".
+				"FROM documento AS do ".
+				"INNER JOIN documento AS d ON do.classe = d.classe AND do.cont = d.cont ".
+				"WHERE do.id = ".$document_id.";";
+		$raw_data = $dbc->query($sql);
+		
+		$documents = array();
+		
+		if ($dbc->rows($raw_data)>0) {
+			// aggiungo tutti i documenti all'array da restituire
+			while($res = $dbc->extract_object($raw_data)) {
+				array_push($documents, new Document($res->id));
+			}
+		}
+			
+		// disconnessione da MySQL
+		$dbc->disconnect();
+			
+		return $documents;			
 	}
 }
