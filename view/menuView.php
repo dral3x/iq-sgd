@@ -9,9 +9,22 @@
 </ul>
 
 <ul>
-	<li><h2>Crea</h2>
+	<li><h2>Azioni</h2>
 		<ul>
-			<li><a href="compila.php" title="Create new document">Nuovo documento</a></li>
+			<?php
+			if (strpos($_SERVER['PHP_SELF'], "visualizza.php") && isset($_REQUEST['document_id'])) {
+				
+			?>
+			<li><a href="modifica.php?document_id=<?php echo $_REQUEST['document_id']; ?>" title="Edit document">Modifica documento</a></li>
+			<li><a href="#" title="New revision of this document">Crea nuova revisione</a></li>
+			<?php
+			} else if (strpos($_SERVER['PHP_SELF'], "modifica.php") && isset($_REQUEST['document_id'])) {
+			?>
+			<li><a href="visualizza.php?document_id=<?php echo $_REQUEST['document_id']; ?>" title="Back to view document">Annulla modifica</a></li>
+			<?php
+			}
+			?>
+			<li><a href="compila.php" title="Create new document">Crea un nuovo documento</a></li>
 		</ul>
 	</li>
 </ul>
@@ -19,6 +32,13 @@
 <ul>
   <li><h2>Visualizza</h2>
     <ul>
+    	<?php
+		if (strpos($_SERVER['PHP_SELF'], "visualizza.php") && isset($_REQUEST['document_id'])) {
+		?>
+		<li><a href="visualizza.php?type=revisions&document_id=<?php echo $_GET['document_id']; ?>" title="View all revisions">Mostra tutte le revisioni</a></li>
+		<?php
+		}
+		?>
       <li><a href="visualizza.php?type=draft_documents" title="View document">Bozze di documento</a></li>
       <li><a href="visualizza.php?type=waiting_approval_documents" title="Waiting approval documents">Documenti in attesa di approvazione</a></li>
     </ul>
@@ -37,6 +57,7 @@
 <ul>
   <li><h2>Profilo utente</h2>
   	<ul>
+  	  <li><a href="#" title="Profile page">Profilo di <?php $_ls = new LoginSession(); echo $_ls->getUser(); ?></a></li>
       <li><a href="login.php?action=logout" title="Logout user">Logout</a></li>
   	</ul>
   </li>

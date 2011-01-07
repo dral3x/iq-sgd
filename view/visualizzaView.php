@@ -10,6 +10,11 @@ if (isset($error_message)) {
 	echo '<div id="error">' . $error_message . '</div>';
 }
 
+if (isset($highlight_message)) {
+	echo '<div id="hightlight">' . $highlight_message . '</div>';
+}
+
+
 // se la variabile $document è stata impostata dal modello... allora posso mostrarne il contenuto
 if (isset($document)) {
 ?>
@@ -17,10 +22,24 @@ if (isset($document)) {
 <fieldset>
 	<legend>Documento Visualizzato</legend>
 	<?php
+	// mostro informationi base sul documento
+	?>
+	<fieldset>
+		<legend>Intestazione</legend>
+		<div id="field"><b>Data: </b> <?php echo $document->getCreationDay()."/".$document->getCreationMonth()."/".$document->getCreationYear();?><br /></div>
+		<div id="field"><b>ID.Doc: </b> <?php echo $document->getIdentifier(); ?><br /></div>
+		<div id="field"><b>Revisione: </b> <?php ?><br /></div>
+		<div id="field"><b>Lingua: </b> <?php ?><br /></div>
+		<div id="field"><b>Stato: </b> <?php ?><br /></div>
+		<div id="field"><b>Sede archiviazione: </b> <?php ?><br /></div>
+		<div id="field"><b>Liv. Confidenzialit: </b> <?php ?><br /></div>
+		<div id="field"><b>Autori: </b> <?php ?><br /></div>
+		<div id="field"><b>Approvatore: </b> <?php ?><br /></div>
+	</fieldset>
+	<?php 
 	// mostro l'elenco di tutti i campi
-	foreach ($document->getFields() as $field => $content) {
-		echo '<div id="field">'.$field.'</div>'."\n";
-		echo '<textarea id="field_content">'.$content.'</textarea>'."\n";
+	foreach ($document->getContent() as $field) {
+		echo '<div id="field"><b>'.$field->getName().'</b><br/>'.$field->getContent().'<br/><br/></div>'."\n";
 	}
 	?>
 </fieldset>

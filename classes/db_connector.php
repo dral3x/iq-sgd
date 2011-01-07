@@ -82,8 +82,7 @@ class DBConnector {
 	
 	public function extract_object($result) {
 		if (isset($this->attiva)) {
-			$objs = mysql_fetch_object($result);
-			return $objs;
+			return mysql_fetch_object($result);
 		} else {
 			return false;
 		}

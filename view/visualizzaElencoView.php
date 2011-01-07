@@ -18,7 +18,7 @@ if (isset($error_message)) {
 		echo '<div id="container">'."\n";
 		foreach ($documents as $document) {
 			echo '<div id="row">';
-			echo '<div id="left"><a href="visualizza.php?document_id='.$document->getID().'"><b>'.$document->getTitle().'</b></a> di '.$document->getAuthor().'</div>';
+			echo '<div id="left"><a href="visualizza.php?document_id='.$document->getID().'"><b>'.$document->getIdentifier().'</b></a> di '.$document->getAuthor().'</div>';
 			echo '</div>'."\n";
 		}
 		echo '</div>'."\n";

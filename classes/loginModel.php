@@ -34,7 +34,7 @@ class LoginSession {
 			// chiamata alla funzione di connessione
 			$dbc->connect();
 			// interrogazione della tabella
-			$raw_data = $dbc->query('SELECT matricola, ruolo FROM utente WHERE username = "' . $username . '" AND passwd = "' . $password . '";');
+			$raw_data = $dbc->query('SELECT matricola, nome, cognome, ruolo FROM utente WHERE username = "' . $username . '" AND passwd = "' . $password . '";');
 			// FIXME: la query  sbagliata...
 			
 			/* hack momentaneo finch il db non  pronto */
@@ -46,7 +46,7 @@ class LoginSession {
 				// chiamata alla funzione per l'estrazione dei dati
 				$res =  $dbc->extract_object($raw_data);
 				// 	creazione del valore di sessione
-				$this->user = new User($res->matricola, $username, $password, $res->ruolo);
+				$this->user = new User($res->matricola, $res->nome, $res->cognome, $username, $password, $res->ruolo);
 				$_SESSION[user_logged] = serialize($this->user);
 				
 			} else {
