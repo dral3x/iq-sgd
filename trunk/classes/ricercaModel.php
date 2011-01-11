@@ -19,11 +19,40 @@ class Ricerca extends Page {
 	}
 	
 	// ricerca semplice: crea la query da sottoporre a interrogateDB()
-	public function doSimpleSearch($keys) {
-		$queryString = "SELECT documento.id FROM documento;";
+	public function doSimpleSearch($strings) {
 		
-		/* TODO: estrae chiavi di ricerca da $keys e le concatena a $queryString
-		 */
+		//TODO: ric.semplice, controllare se "to lower case" serve
+		$strings = strtolower($strings);
+		
+		//splittare stringa
+		$keywords[] = explode(" ",$strings);
+		
+		$queryString = "SELECT DISTINCT d.id FROM documento AS d".
+						"INNER JOIN valori_campo_small AS vcs ON d.id = vcs.id_doc".
+						"INNER JOIN valori_campo_medium AS vcm ON d.id = vcm.id_doc".
+						"INNER JOIN valori_campo_long AS vcl ON d.id = vcl.id_doc".
+						"INNER JOIN campo AS c ON d.id = c.id".
+						"INNER JOIN classe_documenti AS cd ON cd.id = d.classe".
+						"WHERE ";
+		
+		//numero di parole inserite (per controllare se è già stata inserita una parola e serve AND)
+		$j = 0;
+		
+		foreach ( $keywords  as $key ) {
+			if ( $j > 0 ) {$queryString .= " AND "; }
+			
+			$key = "\'%$key%\'";
+			
+			$queryString .= "( vcs.valore_it LIKE  $key OR vcs.valore_eng LIKE  $key ".
+			"OR vcs.valore_de LIKE  $key OR vcm.valore_it LIKE  $key ".
+			"OR vcm.valore_eng LIKE  $key OR vcm.valore_de LIKE  $key ".
+			"OR vcl.valore_it LIKE  $key OR vcl.valore_eng LIKE  $key ".
+			"OR vcl.valore_de LIKE  $key OR c.nome_it LIKE  $key ".
+			"OR c.nome_eng LIKE  $key OR c.nome_de LIKE  $key ".
+			"OR cd.nome LIKE  $key ) ";
+			
+	   		$j++;
+		}
 		
 		$this->interrogateDB($queryString);
 		return $this->search_result;
@@ -31,10 +60,7 @@ class Ricerca extends Page {
 	
 	// ricerca avanzata: crea la query da sottoporre a interrogateDB()
 	public function doAdvancedSearch($partialQuery) {
-		$queryString = "SELECT documento.id FROM ".$partialQuery ;
-		
-		/* TODO: concatena la query parziale a $queryString
-		 */
+		$queryString = "SELECT DISTINCT d.id FROM documento AS d ".$partialQuery ;
 		
 		$this->interrogateDB($queryString);
 		return $this->search_result;

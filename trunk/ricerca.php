@@ -152,10 +152,10 @@ function noParameterIsSet() {
 //costruisce la parte della query contenente le chiavi di una ricerca avanzata
 function getAdvancedKeys() {
 	
-	// query parziale: "document WHERE "
-	$partialQuery = "";
+	// query parziale: "WHERE "
+	$partialQuery = "WHERE ";
 	
-	//TODO:parte della query riservata ad eventuali join con tabelle diverse da documento
+	//parte della query riservata ad eventuali join con tabelle diverse da documento
 	$from = "";
 	
 	//contatore che segna quante condizioni che vanno separate da AND sono state inserite
@@ -205,16 +205,16 @@ function getAdvancedKeys() {
 		}
 		
 		//condizione sulla classe
-		$partialQuery .= "documento.classe = $class" ;
+		$partialQuery .= "d.classe = $class" ;
 		
 		//condizione sulla versione
-		$partialQuery .= " AND documento.versione = $ver" ;
+		$partialQuery .= " AND d.versione = $ver" ;
 		
 		//condizione sull'anno
-		$partialQuery .= " AND documento.anno = $year" ;
+		$partialQuery .= " AND d.anno = $year" ;
 		
 		//condizione sul numero
-		$partialQuery .= " AND documento.id = $num" ;
+		$partialQuery .= " AND d.id = $num" ;
 		
 		//4 condizioni 'AND' inserite
 		$k += 4;
@@ -228,15 +228,17 @@ function getAdvancedKeys() {
 		//contatore che segna quante condizioni che vanno separate da OR sono state inserite
 		$i = 0;
 		
+		$partialQuery .= "( ";
 		foreach($_POST['classe'] as $value) {
 			//controlla se esiste almeno una condizione 'OR' preimpostata
 			if ($i > 0) { $partialQuery.= " OR "; }
 			
-			$partialQuery .= "documento.classe = $value" ;
+			$partialQuery .= "d.classe = $value" ;
 			
 			//condizione 'OR' inserita
 			$i++;
 		}
+		$partialQuery .= ") ";
 		
 		//condizione 'AND' inserita
 		$k++;
@@ -246,7 +248,7 @@ function getAdvancedKeys() {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
-		$partialQuery .= "documento.versione = ".$_POST['versione'];
+		$partialQuery .= "d.versione = ".$_POST['versione'];
 		
 		$k++;
 	}
@@ -255,7 +257,7 @@ function getAdvancedKeys() {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
-		$partialQuery .= "documento.anno = ".$_POST['anno'];
+		$partialQuery .= "d.anno = ".$_POST['anno'];
 		
 		$k++;
 	}
@@ -265,7 +267,7 @@ function getAdvancedKeys() {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
-		$partialQuery .= "documento.id = ".$_POST['numero'];
+		$partialQuery .= "d.id = ".$_POST['numero'];
 		
 		$k++;
 	}
@@ -280,23 +282,21 @@ function getAdvancedKeys() {
 		
 		list($giorno, $mese) = explode("/",$d);
 		
-		$partialQuery .= "documento.giorno = $giorno AND documento.mese = $mese";
+		$partialQuery .= "d.giorno = $giorno AND d.mese = $mese";
 		
 		$k += 2;
 	}
 	
 	
 	
-	/* TODO:revisione attualmente non individuata
 	if ( isset($_POST['revisione']) ) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
-		$partialQuery .= "documento.giorno = ".$_POST['revisione'];
+		$partialQuery .= "d.revisione = ".$_POST['revisione'];
 		
 		$k++;
 	}
-	*/
 	
 	
 	
@@ -309,15 +309,17 @@ function getAdvancedKeys() {
 		//contatore che segna quante condizioni che vanno separate da OR sono state inserite
 		$i = 0;
 		
+		$partialQuery .= "( ";
 		foreach($_POST['stato'] as $value) {
 			//controlla se esiste almeno una condizione 'OR' preimpostata
 			if ($i > 0) { $partialQuery.= " OR "; }
 			
-			$partialQuery .= "documento.stato = $value" ;
+			$partialQuery .= "d.stato = $value" ;
 			
 			//condizione 'OR' inserita
 			$i++;
 		}
+		$partialQuery .= ") ";
 		
 		//condizione 'AND' inserita
 		$k++;
@@ -350,7 +352,7 @@ function getAdvancedKeys() {
 			//controlla se esiste almeno una condizione 'AND' preimpostata
 			if ($k > 0) { $partialQuery.= " AND "; }
 		
-			$partialQuery .= "documento.supp_$lng = 1" ;
+			$partialQuery .= "d.supp_$lng = 1" ;
 			
 			$k++;
 		}
@@ -361,7 +363,7 @@ function getAdvancedKeys() {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
-		$partialQuery .= "documento.sede = ".$_POST['sede'];
+		$partialQuery .= "d.sede = ".$_POST['sede'];
 		
 		$k++;
 	}
@@ -378,17 +380,19 @@ function getAdvancedKeys() {
 		foreach($_POST['livello'] as $value) {
 			if ( $value >= $level ) {
 				//controlla se esiste almeno una condizione 'AND' preimpostata
-				if ( ($k > 0) && ($i == 0) ) { $partialQuery.= " AND "; }
+				if ( ($k > 0) && ($i == 0) ) { $partialQuery.= " AND ( "; }
+				elseif ($i == 0) { $partialQuery .= "( "; }
 						
 				//controlla se esiste almeno una condizione 'OR' preimpostata
 				if ($i > 0) { $partialQuery.= " OR "; }
 				
-				$partialQuery .= "documento.liv_conf = $value" ;
+				$partialQuery .= "d.liv_conf = $value" ;
 				
 				//condizione 'OR' inserita
 				$i++;
 			}
 		}
+		$partialQuery .= ") ";
 		
 		//condizione 'AND' inserita
 		if ($i>0) $k++;
@@ -399,13 +403,14 @@ function getAdvancedKeys() {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
-		$partialQuery .= "documento.allegati = ".$_POST['allegati'];
+		$partialQuery .= "d.allegati = ".$_POST['allegati'];
 		
 		$k++;
 	}
 	
 	
-	//TODO:query pagine
+	//TODO:query pagine non fattibile al momento
+	/*
 	if ( isset($_POST['pagine']) ) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
@@ -414,51 +419,100 @@ function getAdvancedKeys() {
 		
 		$k++;
 	}
+	*/
 	
-	//TODO:query approvatore
 	if ( isset($_POST['approvatore']) ) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
-		$_POST['approvatore'];
+		$from .= "INNER JOIN utente AS ua ON ua.matricola = d.approvatore ";
+		
+		$appr = strtolower( $_POST['approvatore'] );
+		list($name, $surname) = explode(" ",$appr);
+		
+		//potrei avere nome in $surname e cognome in $name
+		$partialQuery .= "(ua.nome LIKE \'$name\' OR ua.nome LIKE \'$surname\' OR ua.cognome LIKE \'$name\' OR ua.cognome LIKE \'$surname\') ";
 		
 		$k++;
 	}
 	
-	//TODO:query autore
 	if ( isset($_POST['autore']) ) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
-		$_POST['autore'];
+		//presenza di join
+		$from .= "INNER JOIN autore AS a ON d.id = a.id_doc INNER JOIN utente AS ub ON ub.matricola = a.mat_utente ";
+		
+		$auth = strtolower( $_POST['autore'] );
+		list($name, $surname) = explode(" ",$auth);
+		
+		//potrei avere nome in $surname e cognome in $name
+		$partialQuery .= "(ub.nome LIKE \'$name\' OR ub.nome LIKE \'$surname\' OR ub.cognome LIKE \'$name\' OR ub.cognome LIKE \'$surname\') ";
 		
 		$k++;
 	}
 	
-	
-	
-	//TODO:query ricerca all'interno dell'abstract
 	if ( isset($_POST['abstract']) ) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
-		$_POST[''];
+		$strings = ($_POST['abstract']);
+		
+		//splittare stringa
+		$keywords[] = explode(" ",$strings);
+		
+		// TODO: condizione usata: abstract è un campo di tipo medium
+		$from .= "INNER JOIN valori_campo_medium AS avcm ON d.id = avcm.id_doc ";
+		
+		$partialQuery .= "avcm.id_campo = 5 AND ";
+		
+		//numero di parole inserite (per controllare se è già stata inserita una parola e serve AND)
+		$j = 0;
+		
+		foreach ( $keywords  as $key ) {
+			if ( $j > 0 ) {$partialQuery .= " AND "; }
+			
+			$key = "\'%$key%\'";
+			
+			$partialQuery .= "( avcm.valore_it LIKE  $key OR avcm.valore_eng LIKE  $key OR avcm.valore_de LIKE  $key ) ";
+			
+	   		$j++;
+		}
 		
 		$k++;
 	}
-
-	//TODO:query ricerca all'interno del documento
+	
 	if ( isset($_POST['doc']) ) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
-		$_POST[''];
+		$strings = ($_POST['doc']);
 		
-		/*
-		 WHERE campo LIKE "%parola%"
-
-		 ritorna tutto ciò che contiene parola, anche con altri caratteri prima o dopo 
-		 */
+		//splittare stringa
+		$keywords[] = explode(" ",$strings);
+		
+		$from .= "INNER JOIN valori_campo_small AS vcs ON d.id = vcs.id_doc".
+				"INNER JOIN valori_campo_medium AS vcm ON d.id = vcm.id_doc".
+				"INNER JOIN valori_campo_long AS vcl ON d.id = vcl.id_doc";
+		
+		$partialQuery .= "vcm.id_campo != 5 AND ";
+		
+		//numero di parole inserite (per controllare se è già stata inserita una parola e serve AND)
+		$j = 0;
+		
+		foreach ( $keywords  as $key ) {
+			if ( $j > 0 ) {$partialQuery .= " AND "; }
+			
+			$key = "\'%$key%\'";
+			
+			$partialQuery .= "( vcs.valore_it LIKE  $key OR vcs.valore_eng LIKE  $key ".
+				"OR vcs.valore_de LIKE  $key OR vcm.valore_it LIKE  $key ".
+				"OR vcm.valore_eng LIKE  $key OR vcm.valore_de LIKE  $key ".
+				"OR vcl.valore_it LIKE  $key OR vcl.valore_eng LIKE  $key ".
+				"OR vcl.valore_de LIKE  $key ) ";
+			
+	   		$j++;
+		}
 		
 		$k++;
 	}
@@ -474,6 +528,8 @@ function getAdvancedKeys() {
 	}
 	*/
 	
+	//inserisce eventuali condizioni di join
+	$partialQuery = $from . $partialQuery ;
 
 	return $partialQuery;
 }
