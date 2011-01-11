@@ -19,7 +19,7 @@ class Document {
 	private $confidential_level;
 	private $approvatore;
 	private $authors;
-	
+
 	private $day;
 	private $month;
 	private $year;
@@ -94,39 +94,75 @@ class Document {
 		return $this->classID($classe).'-'.$revisione.'-'.$anno.'-'.str_pad($progressivo, 5, "0", STR_PAD_LEFT);
 	}
 	
-	private function retrieveGeneralInformation() {
-		// query sul db per estrarre le seguenti informazioni sul documento
-		// titolo del documento
-		// data di approvazione
-		// stato
-		// livello di confidenzialitˆ
+ 	private function retrieveGeneralInformation() {
+  // query sul db per estrarre le informazioni base sul documento
 
-		// istanza della classe
-		$dbc = new DBConnector();
-		// chiamata alla funzione di connessione
-		$dbc->connect();
-		// interrogazione della tabella
-		$sql = "SELECT * ".
-				"FROM documento AS d ".
-				"WHERE d.id = ".$this->id.";";
-		$raw_data = $dbc->query($sql);
-			
-		if ($dbc->rows($raw_data)==1) {
-			// chiamata alla funzione per l'estrazione dei dati
-			$res = $dbc->extract_object($raw_data);
-			$this->identifier = $this->generateIdentificator($res->classe, $res->versione, $res->anno, $res->cont); // creo l'identificatore "classico"
-			$this->state = $res->stato;
-			$this->confidential_level = $res->liv_conf;
-			$this->model_id = $res->classe;
-			$this->day = $res->giorno;
-			$this->month = $res->mese;
-			$this->year = $res->anno;
-		}
-			
-		// disconnessione da MySQL
-		$dbc->disconnect();
-	}
+  // istanza della classe
+ 	 $dbc = new DBConnector();
+ 	 $dbc->connect();
+  
+  // interrogazione della tabella
+ 	 $sql = "SELECT * ".
+  	  "FROM documento AS d ".
+ 	   "WHERE d.id = ".$this->id.";";
+ 	 $raw_data = $dbc->query($sql);
+   
+ 	if ($dbc->rows($raw_data)==1) {
+   // estraggo dal db...
+  	 $res = $dbc->extract_object($raw_data);
+   // estraggo e genero l'identificatore "classico" (vedi documentazione relativa)
+  	 $this->identifier = $this->generateIdentificator($res->classe, $res->versione, $res->anno, $res->cont);
+   
+   // stato
+ 	  $this->state = $res->stato;
+ 	  
+   // livello di confidenza
+ 	  $this->confidential_level = $res->liv_conf;
+   
+   // classe di appartenenza
+ 	  $this->model_id = $res->classe;
+ 	  
+   // data di creazione 
+ 	  $this->day = $res->giorno;
+ 	  $this->month = $res->mese;
+ 	  $this->year = $res->anno;
+   
+   // versione del documento
+  	 $this->version = $res->versione;
+   
+   // sede di archiviazione
+  	 $this->archived_location = $res->sede;
+   
+   // utente approvatore del documento
+  	 $this->approvatore = new User($res->approvatore);
+  	}
+   
+  // disconnessione dal db
+ 	 $dbc->disconnect();
+	 }
 	
+/*	public function getVersion() {
+		if (!isset($this->version)) {
+			$this->retrieveGeneralInformation();
+		}
+		return $this->version; 
+	}*/
+	 
+	public function getLocation() {
+		if (!isset($this->archived_location)) {
+			$this->retrieveGeneralInformation();
+		}
+		return $this->archived_location; 
+	}
+	 
+	public function getApprovatore() {
+		if (!isset($this->approvatore)) {
+			$this->retrieveGeneralInformation();
+		}
+		return $this->approvatore; 
+	}
+	 
+	 
 	private function retrieveCompleteDocument() {
 		// query sul db per estrarre tutte le informazioni mancanti sul documento
 		// tutti i contenuti inseriti nel documento, organizzati per chiavi (le chiavi saranno i nomi dei campi)
@@ -221,6 +257,10 @@ class Document {
 		$this->state = $state;
 	}
 	
+	public function getState() {
+		return $this->state;
+			}
+			
 	private function retrieveAuthors() {
 		// istanza della classe
 		$dbc = new DBConnector();
@@ -260,19 +300,19 @@ class Document {
 
 	public function canBeEditedBy($author) {
 		
-		// il documento  ancora una bozza?
+		// il documento  ancora una bozza?
 		if (!isset($this->state))
 			$this->retrieveGeneralInformation();
 		if ($this->state != DocumentState::BOZZA)
 			return false;
 			
-		// il livello di confidenza dell'utente  sufficiente?
+		// il livello di confidenza dell'utente  sufficiente?
 		if (!isset($this->confidential_level))
 			$this->retrieveGeneralInformation();
 		if ($author->getConfidentialLevel() > $this->confidential_level)
 			return false;
 		
-		// l'utente  tra gli autori?
+		// l'utente  tra gli autori?
 		if (!isset($this->authors))
 			$this->retrieveAuthors();
 		$found = false;
@@ -316,7 +356,7 @@ class Document {
 		return $success;
 	}
 	
-	// restituisce true se l'operazione  andata a buon fine, false altrimenti
+	// restituisce true se l'operazione  andata a buon fine, false altrimenti
 	public function saveDocumentIntoDB() {
 		// controlla il documento
 		
@@ -349,7 +389,7 @@ class Document {
 		
 		// inserimento gruppo di documento
 		// es INSERT INTO doc_gruppo(id_gruppo,id_doc) VALUES ('$id_gruppo','$id')
-		// TODO: in che gruppo dovrei mettere il documento? lo sceglie l'utente? Non  mica il livello di confidenzialitˆ questo...
+		// TODO: in che gruppo dovrei mettere il documento? lo sceglie l'utente? Non  mica il livello di confidenzialitˆ questo...
 		
 		// inserimento autori
 		foreach ($this->authors as $a) {
