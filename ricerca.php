@@ -167,7 +167,7 @@ function getAdvancedKeys() {
 	 */
 	
 	//identificatore completo è impostato?
-	if ( isset($_POST['identificatore']) ) {
+	if ( isset($_POST['identificatore']) && $_POST['identificatore']!="" ) {
 		$id = $_POST['identificatore'];
 		// separa la stringa dell'identificatore in 4 sottostringhe
 		// (i separatori devono essere caratteri '-')
@@ -205,16 +205,16 @@ function getAdvancedKeys() {
 		}
 		
 		//condizione sulla classe
-		$partialQuery .= "d.classe = $class" ;
+		$partialQuery .= "d.classe = $class " ;
 		
 		//condizione sulla versione
-		$partialQuery .= " AND d.versione = $ver" ;
+		$partialQuery .= " AND d.versione = $ver " ;
 		
 		//condizione sull'anno
-		$partialQuery .= " AND d.anno = $year" ;
+		$partialQuery .= " AND d.anno = $year " ;
 		
 		//condizione sul numero
-		$partialQuery .= " AND d.id = $num" ;
+		$partialQuery .= " AND d.id = $num " ;
 		
 		//4 condizioni 'AND' inserite
 		$k += 4;
@@ -228,23 +228,23 @@ function getAdvancedKeys() {
 		//contatore che segna quante condizioni che vanno separate da OR sono state inserite
 		$i = 0;
 		
-		$partialQuery .= "( ";
+		$partialQuery .= " ( ";
 		foreach($_POST['classe'] as $value) {
 			//controlla se esiste almeno una condizione 'OR' preimpostata
 			if ($i > 0) { $partialQuery.= " OR "; }
 			
-			$partialQuery .= "d.classe = $value" ;
+			$partialQuery .= "d.classe = $value " ;
 			
 			//condizione 'OR' inserita
 			$i++;
 		}
-		$partialQuery .= ") ";
+		$partialQuery .= " ) ";
 		
 		//condizione 'AND' inserita
 		$k++;
 	}
 	
-	if ( isset($_POST['versione']) ) {
+	if ( isset($_POST['versione'])  && $_POST['versione']!="" ) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
@@ -253,7 +253,7 @@ function getAdvancedKeys() {
 		$k++;
 	}
 	
-	if ( isset($_POST['anno']) ) {
+	if ( isset($_POST['anno']) && $_POST['anno']!="" ) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
@@ -263,7 +263,7 @@ function getAdvancedKeys() {
 	}
 	
 
-	if ( isset($_POST['numero']) ) {
+	if ( isset($_POST['numero']) && $_POST['numero']!="" ) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
@@ -274,7 +274,7 @@ function getAdvancedKeys() {
 	
 	
 	//data del tipo gg/mm
-	if ( isset($_POST['data']) ) {
+	if ( isset($_POST['data']) && $_POST['data']!="" ) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
@@ -289,7 +289,7 @@ function getAdvancedKeys() {
 	
 	
 	
-	if ( isset($_POST['revisione']) ) {
+	if ( isset($_POST['revisione']) && $_POST['revisione']!="" ) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
@@ -314,7 +314,7 @@ function getAdvancedKeys() {
 			//controlla se esiste almeno una condizione 'OR' preimpostata
 			if ($i > 0) { $partialQuery.= " OR "; }
 			
-			$partialQuery .= "d.stato = $value" ;
+			$partialQuery .= "d.stato = $value " ;
 			
 			//condizione 'OR' inserita
 			$i++;
@@ -326,7 +326,7 @@ function getAdvancedKeys() {
 	}
 	
 	
-	if ( isset($_POST['lingua']) ) {
+	if ( isset($_POST['lingua']) && $_POST['lingua']!="" ) {
 		$lingua = $_POST['lingua'];
 		$lng = "";
 		
@@ -359,7 +359,7 @@ function getAdvancedKeys() {
 	}
 	
 	
-	if ( isset($_POST['sede']) ) {
+	if ( isset($_POST['sede']) && $_POST['sede']!="" ) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
@@ -399,7 +399,7 @@ function getAdvancedKeys() {
 	}
 	
 	
-	if ( isset($_POST['allegati']) ) {
+	if ( isset($_POST['allegati']) && $_POST['allegati']!="" ) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
@@ -411,7 +411,7 @@ function getAdvancedKeys() {
 	
 	//TODO:query pagine non fattibile al momento
 	/*
-	if ( isset($_POST['pagine']) ) {
+	if ( isset($_POST['pagine']) && $_POST['pagine']!="" ) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
@@ -421,7 +421,7 @@ function getAdvancedKeys() {
 	}
 	*/
 	
-	if ( isset($_POST['approvatore']) ) {
+	if ( isset($_POST['approvatore']) && $_POST['approvatore']!="" ) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
@@ -431,12 +431,12 @@ function getAdvancedKeys() {
 		list($name, $surname) = explode(" ",$appr);
 		
 		//potrei avere nome in $surname e cognome in $name
-		$partialQuery .= "(ua.nome LIKE \'$name\' OR ua.nome LIKE \'$surname\' OR ua.cognome LIKE \'$name\' OR ua.cognome LIKE \'$surname\') ";
+		$partialQuery .= "(ua.nome LIKE '$name' OR ua.nome LIKE '$surname' OR ua.cognome LIKE '$name' OR ua.cognome LIKE '$surname') ";
 		
 		$k++;
 	}
 	
-	if ( isset($_POST['autore']) ) {
+	if ( isset($_POST['autore']) && $_POST['autore']!="" ) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
@@ -447,12 +447,12 @@ function getAdvancedKeys() {
 		list($name, $surname) = explode(" ",$auth);
 		
 		//potrei avere nome in $surname e cognome in $name
-		$partialQuery .= "(ub.nome LIKE \'$name\' OR ub.nome LIKE \'$surname\' OR ub.cognome LIKE \'$name\' OR ub.cognome LIKE \'$surname\') ";
+		$partialQuery .= "(ub.nome LIKE '$name' OR ub.nome LIKE '$surname' OR ub.cognome LIKE '$name' OR ub.cognome LIKE '$surname') ";
 		
 		$k++;
 	}
 	
-	if ( isset($_POST['abstract']) ) {
+	if ( isset($_POST['abstract']) && $_POST['abstract']!="" ) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
@@ -472,7 +472,7 @@ function getAdvancedKeys() {
 		foreach ( $keywords  as $key ) {
 			if ( $j > 0 ) {$partialQuery .= " AND "; }
 			
-			$key = "\'%$key%\'";
+			$key = "'%$key%'";
 			
 			$partialQuery .= "( avcm.valore_it LIKE  $key OR avcm.valore_eng LIKE  $key OR avcm.valore_de LIKE  $key ) ";
 			
@@ -482,7 +482,7 @@ function getAdvancedKeys() {
 		$k++;
 	}
 	
-	if ( isset($_POST['doc']) ) {
+	if ( isset($_POST['doc']) && $_POST['doc']!="" ) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
@@ -491,9 +491,9 @@ function getAdvancedKeys() {
 		//splittare stringa
 		$keywords[] = explode(" ",$strings);
 		
-		$from .= "INNER JOIN valori_campo_small AS vcs ON d.id = vcs.id_doc".
-				"INNER JOIN valori_campo_medium AS vcm ON d.id = vcm.id_doc".
-				"INNER JOIN valori_campo_long AS vcl ON d.id = vcl.id_doc";
+		$from .= "INNER JOIN valori_campo_small AS vcs ON d.id = vcs.id_doc ".
+				"INNER JOIN valori_campo_medium AS vcm ON d.id = vcm.id_doc ".
+				"INNER JOIN valori_campo_long AS vcl ON d.id = vcl.id_doc ";
 		
 		$partialQuery .= "vcm.id_campo != 5 AND ";
 		
@@ -503,7 +503,7 @@ function getAdvancedKeys() {
 		foreach ( $keywords  as $key ) {
 			if ( $j > 0 ) {$partialQuery .= " AND "; }
 			
-			$key = "\'%$key%\'";
+			$key = "'%$key%'";
 			
 			$partialQuery .= "( vcs.valore_it LIKE  $key OR vcs.valore_eng LIKE  $key ".
 				"OR vcs.valore_de LIKE  $key OR vcm.valore_it LIKE  $key ".
@@ -530,7 +530,7 @@ function getAdvancedKeys() {
 	
 	//inserisce eventuali condizioni di join
 	$partialQuery = $from . $partialQuery ;
-
+	
 	return $partialQuery;
 }
 
