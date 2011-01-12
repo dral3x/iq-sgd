@@ -18,11 +18,58 @@ if (isset($model)) {
 	<legend>Documento da compilare</legend>
 	<form name="CompilazioneDocumento" action="<?php echo $_SERVER['PHP_SELF'];  ?>" method="POST">
 	<?php
+	// mostro informationi base sul documento
+	?>
+	<fieldset>
+		<legend>Intestazione</legend>
+		<div id="field"><b>Data: </b> <?php
+		echo '<input type="text" name="creation_day" id="field_content" maxlength="2" size="3" value="'.date("j").'" />'."/\n";
+		echo '<input type="text" name="creation_month" id="field_content" maxlength="2" size="3" value="'.date("n").'" />'."/\n";
+		echo '<input type="text" name="creation_year" id="field_content" maxlength="4" size="5" value="'.date("Y").'" />'."\n";
+		?><br /></div>
+		<div id="field"><b>ID.Doc: </b> (sar&agrave; generato durante il salvataggio)<br /></div>
+		<div id="field"><b>Versione: </b> 
+			<input type="text" name="versione" id="field_content" maxlength="2" size="3" value="1.0" /><br />
+		</div>
+		<div id="field"><b>Lingua: </b>
+			<input type="radio" name="lingua" value="it" id="field_content" checked /> Italiano | 
+			<input type="radio" name="lingua" value="en" id="field_content" /> English |
+			<input type="radio" name="lingua" value="de" id="field_content" /> Deutsch<br />
+		</div>
+		<div id="field"><b>Stato: </b> <?php ?><br /></div>
+		<div id="field"><b>Sede archiviazione: </b>
+			<input type="text" name="sede" id="field_content" maxlength="30" /><br />
+		</div>
+		<div id="field"><b>Liv. Confidenzialit&agrave;: </b>
+			<input type="radio" name="liv_conf" value="0" id="field_content" /> L0 | 
+			<input type="radio" name="liv_conf" value="1" id="field_content" /> L1 |
+			<input type="radio" name="liv_conf" value="2" id="field_content" checked /> L2 |
+			<input type="radio" name="liv_conf" value="3" id="field_content" /> Pubblico<br />
+		</div>
+		<div id="field"><b>Autori: </b> <?php
+		$tutti_gli_utenti = $compila->getAllPossibleAuthors();
+		foreach ($tutti_gli_utenti as $autore) {
+			echo "<br />\n";
+			if ($compila->getSessionUser()->equals($autore)) {
+				echo '<input type="checkbox" name="autore_'.$autore->user_id.'" id="field_content" checked /> '.$autore->getDisplayName();
+			} else {
+				echo '<input type="checkbox" name="autore_'.$autore->user_id.'" id="field_content" /> '.$autore->getDisplayName();
+			}
+		}
+		?><br /></div>
+		<div id="field"><b>Approvatore: </b> <?php
+		foreach ($tutti_gli_utenti as $autore) {
+			echo "<br />\n";
+			echo '<input type="radio" name="approvatore" id="field_content" /> '.$autore->getDisplayName() . ' ';
+		}
+		?><br /></div>
+	</fieldset>
+	<?php
 	// mostro l'elenco di tutti i campi
 	foreach ($model->getFields() as $field) {
-		echo '<div id="field">'.$field->getName();
+		echo '<div id="field"><b>'.$field->getName();
 		if (!$field->isOptional()) echo "*";
-		echo '<br />'."\n";
+		echo '</b><br />'."\n";
 		if ($field->getType() == DocumentField::SMALL) {
 			echo '<input type="text" name="'.$field->getID().'" id="field_content" maxlength="30" size="50" />'."\n";
 		} else if ($field->getType() == DocumentField::MEDIUM) {
@@ -46,12 +93,56 @@ if (isset($model)) {
 <fieldset>
 	<legend>Documento da compilare</legend>
 	<form name="CompilazioneDocumento" action="<?php echo $_SERVER['PHP_SELF'];  ?>" method="POST">
+		<fieldset>
+		<legend>Intestazione</legend>
+		<div id="field"><b>Data: </b> <?php
+		echo '<input type="text" name="date_day" id="field_content" maxlength="2" size="3" value="'.$document->getCreationDay().'" />'."/\n";
+		echo '<input type="text" name="date_month" id="field_content" maxlength="2" size="3" value="'.$document->getCreationMonth().'" />'."/\n";
+		echo '<input type="text" name="date_year" id="field_content" maxlength="4" size="5" value="'.$document->getCreationYear().'" />'."\n";
+		?><br /></div>
+		<div id="field"><b>ID.Doc: </b> (sar&agrave; generato durante il salvataggio)<br /></div>
+		<div id="field"><b>Versione: </b> 
+			<input type="text" name="versione" id="field_content" maxlength="2" size="3" value="1.0" /><br />
+		</div>
+		<div id="field"><b>Lingua: </b>
+			<input type="radio" name="lingua" value="it" id="field_content" checked /> Italiano | 
+			<input type="radio" name="lingua" value="en" id="field_content" /> English |
+			<input type="radio" name="lingua" value="de" id="field_content" /> Deutsch<br />
+		</div>
+		<div id="field"><b>Stato: </b> <?php ?><br /></div>
+		<div id="field"><b>Sede archiviazione: </b>
+			<input type="text" name="sede" id="field_content" maxlength="30" /><br />
+		</div>
+		<div id="field"><b>Liv. Confidenzialit&agrave;: </b>
+			<input type="radio" name="liv_conf" value="0" id="field_content" /> L0 | 
+			<input type="radio" name="liv_conf" value="1" id="field_content" /> L1 |
+			<input type="radio" name="liv_conf" value="2" id="field_content" checked /> L2 |
+			<input type="radio" name="liv_conf" value="3" id="field_content" /> Pubblico<br />
+		</div>
+		<div id="field"><b>Autori: </b> <?php
+		$tutti_gli_utenti = $compila->getAllPossibleAuthors();
+		foreach ($tutti_gli_utenti as $autore) {
+			echo "<br />\n";
+			if ($compila->getSessionUser()->equals($autore)) {
+				echo '<input type="checkbox" name="autore_'.$autore->user_id.'" id="field_content" checked /> '.$autore->getDisplayName();
+			} else {
+				echo '<input type="checkbox" name="autore_'.$autore->user_id.'" id="field_content" /> '.$autore->getDisplayName();
+			}
+		}
+		?><br /></div>
+		<div id="field"><b>Approvatore: </b> <?php
+		foreach ($tutti_gli_utenti as $autore) {
+			echo "<br />\n";
+			echo '<input type="radio" name="approvatore" id="field_content" /> '.$autore->getDisplayName() . ' ';
+		}
+		?><br /></div>
+	</fieldset>
 	<?php
 	// mostro l'elenco di tutti i campi
 	foreach ($document->getContent() as $field) {
-		echo '<div id="field">'.$field->getName();
+		echo '<div id="field"><b>'.$field->getName();
 		if (!$field->isOptional()) echo "*";
-		echo '<br />'."\n";
+		echo '</b><br />'."\n";
 		if ($field->getType() == DocumentField::SMALL) {
 			echo '<input type="text" name="'.$field->getID().'" id="field_content" maxlength="30" size="50" value="'.$field->getContent().'" />'."\n";
 		} else if ($field->getType() == DocumentField::MEDIUM) {
