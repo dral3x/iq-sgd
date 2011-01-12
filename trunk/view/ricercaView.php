@@ -2,6 +2,32 @@
 // aggiungo header
 $page_title = "Ricerca";
 include (dirname(__FILE__) . '/headerView.php');
+
+
+//SPOSTATO da sotto
+if (isset($search_error)) {
+	
+	echo '<div id="error">'.$search_error.'</div>';
+	echo '<br/>';
+	
+} else if (isset($search_result)) {
+	// mostro l'elenco dei risultati
+	echo '<div id="result">'."\n";
+	echo '<fieldset><legend>Ecco i risultati:</legend>';
+	echo '<div id="container">'."\n";
+	foreach ($search_result as $document) {
+		echo '<div id="row">';
+		echo '<div id="left"><a href="visualizza.php?document_id='.$document->getID().'"><b>'.$document->getIdentifier().'</b></a> di '.$document->getAuthor().'</div>';
+		echo '</div>'."\n";
+	}
+	echo '</div>';
+	echo '</fieldset>';
+	echo '</div>';
+	echo '<br/>';
+}
+//SPOSTATO da sotto - END
+
+
 ?>
 <h1><?php echo $page_title; ?></h1>
 <?php
@@ -60,13 +86,13 @@ if ($ricerca->getTypeOfSearch() == "simple") { ?>
 				<p>
 				<label>Versione: <input type="text" name="versione" /></label><br />
 				<label>Anno: 	 <input type="text" name="anno" /></label><br />
-				<label>Numero: 	 <input type="text" name="numero" /></label><br />
+				<label>Numero: 	 <input type="text" name="cont" /></label><br />
 				</p>
 				
 			</fieldset>
 		 	
 			<p>
-			<label>Data di Compilazione: <input type="text" name="data" /></label><br />
+			Data di Compilazione - <label> giorno: <input type="text" name="giorno" /></label> <label> mese: <input type="text" name="mese" /></label><br />
 			
 			<label>Revisione del documento: <input type="text" name="revisione" /></label><br />
 			</p>
@@ -103,7 +129,7 @@ if ($ricerca->getTypeOfSearch() == "simple") { ?>
 		  	<p>
 			<label>Numero di Allegati: <input type="text" name="allegati" /></label><br />
 		
-			<label>Numero di Pagine del Documento: <input type="text" name="pagine" /></label><br />
+			<label>Numero di Pagine del Documento: <input style="background-color:lightgrey; text-align:center;" disabled value="(campo disabilitato)" type="text" name="pagine" /></label><br />
 		  
 			<label>Approvato da: <input type="text" name="approvatore" /></label><br />
 		
@@ -143,22 +169,12 @@ if ($ricerca->getTypeOfSearch() == "simple") { ?>
 }
 
 
-if (isset($search_error)) {
-	
-	echo '<div id="error">'.$search_error.'</div>';
-	
-} else if (isset($search_result)) {
-	// mostro l'elenco dei risultati
-	echo '<fieldset><legend>Ecco i risultati:</legend>';
-	echo '<div id="container">'."\n";
-	foreach ($search_result as $document) {
-		echo '<div id="row">';
-		echo '<div id="left"><a href="visualizza.php?document_id='.$document->getID().'"><b>'.$document->getIdentifier().'</b></a> di '.$document->getAuthor().'</div>';
-		echo '</div>'."\n";
-	}
-	echo '</div>';
-	echo '</fieldset>';
-}
+/*
+ * 
+ * qui si trovava il codice spostato sopra
+ * 
+ *
+ */
 
 // aggiungo footer
 include (dirname(__FILE__) . '/footerView.php');

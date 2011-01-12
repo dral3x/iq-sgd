@@ -59,12 +59,10 @@ if (isset($_POST['submit'])) {
 	
 }
 
-// se c'è un solo risultato, faccio un redirect su visualizza.php?document_id=<id documento>
-// se ci sono più risultati, allora mostro l'elenco tramite la view risultatiView.php
-// in tutti gli altri casi, mostro la view standard ricercaView.php
-
 // carico la vista da mostrare all'utente
 require ('view/ricercaView.php');
+
+
 
 
 //FUNZIONI
@@ -76,38 +74,23 @@ require ('view/ricercaView.php');
 // false: se almeno un parametro della ricerca avanzato è stato impostato
 function noParameterIsSet($ricerca) {
 		
-	//nessun campo dell'intestazione è stato impostato?
+	$fields = array('identificatore','versione','anno','cont','giorno','mese','revisione','lingua','sede','allegati',/*'pagine',*/'approvatore','autore','abstract','doc');
 	
-		//nessun campo dell'identificatore è stato impostato?
-		if (trim($_POST['identificatore']) != "") return false;
-		
-		if ( isset($_POST['classe']) ) {
-			foreach($_POST['classe'] as $value) {
-				if (isset($value)) return false;
-			}
-		}
-		
-		if (trim($_POST['versione']) != "") return false;
-		if (trim($_POST['anno']) != "") return false;
-		if (trim($_POST['numero']) != "") return false;
-		//a questo punto nessun campo dell'identificatore è stato impostato
-		
-	if (trim($_POST['data']) != "") return false;
-	if (trim($_POST['revisione']) != "") return false;
-	
-	if ( isset($_POST['stato']) ) {
-		foreach($_POST['stato'] as $value) {
-			if (isset($value)) return false;
-		}
+	foreach($fields as $field) {
+		//il campo in esame è stato impostato? se è così ritorna falso
+		if ( trim($_POST[$field]) != "" ) return false;
 	}
 	
-	if (trim($_POST['lingua']) != "") return false;
-
-
-	//nessun campo del pié di pagina è stato impostato?
+	$checkboxes = array('classe','stato');
 	
-	if (trim($_POST['sede']) != "") return false;
-	
+	// cicli foreach corrispondenti ai tre gruppi di checkbox
+	foreach($checkboxes as $checkbox) {
+		if ( isset($_POST[$checkbox]) ) {
+			foreach($_POST[$checkbox] as $value) {
+				if ( isset($value) ) return false;
+			}
+		}
+	}
 	
 	// TODO: livello di confidenzialità, messaggio di errore
 	if ( isset($_POST['livello']) ) {
@@ -123,41 +106,8 @@ function noParameterIsSet($ricerca) {
 		}
 	}
 	
-	if (trim($_POST['allegati']) != "") return false;
-	if (trim($_POST['pagine']) != "") return false;
-	if (trim($_POST['approvatore']) != "") return false;
-	if (trim($_POST['autore']) != "") return false;
 	
-	
-	if (trim($_POST['abstract']) != "") return false;
-	
-	if (trim($_POST['doc']) != "") return false;
-	
-	
-	
-	/* CODICE ALTERNATIVO a tutti gli if
-	 * NB: i tre cicli foreach precedenti sono riportati come sopra!
-	 * TODO: verificare se potrebbe funzionare CODICE ALTERNATIVO a tutti gli if
-	
-	$fields = array('identificatore','versione','anno','numero','data','revisione','lingua','sede','allegati','pagine','approvatore','autore','abstract','doc');
-	
-	foreach($fields as $field) {
-		if ( trim($_POST[$field]) != "" ) return false;
-	}
-	
-	// cicli foreach corrispondenti ai tre gruppi di checkbox
-	if ( isset($_POST['classe']) ) {
-		foreach($_POST['classe'] as $value) {
-				if isset($value) return false;
-		}
-	}
-	
-	if ( isset($_POST['stato']) ) {
-		foreach($_POST['stato'] as $value) {
-			if isset($value) return false;
-		}
-	}
-	
+	/*
 	if ( isset($_POST['livello']) ) {
 		// preleva il livello di confidenzialità dell'utente
 		$level = $ricerca->getSessionUser()->getConfidentialLevel();
@@ -166,10 +116,7 @@ function noParameterIsSet($ricerca) {
 			if ( isset($value) && ( $value >= $level ) ) return false;
 		}
 	}
-	
-	// FINE CODICE ALTERNATIVO
 	 */
-	
 	
 	//a questo punto nessuno dei precedenti parametri è stato impostato
 	return true;
@@ -178,7 +125,7 @@ function noParameterIsSet($ricerca) {
 	
 // NB:  per accedere al livello di confidenzialità
 //		devo passare $ricerca alla funzione, poiché non è un metodo!
-//costruisce la parte della query contenente le chiavi di una ricerca avanzata
+// costruisce la parte della query contenente le chiavi di una ricerca avanzata
 function getAdvancedKeys($ricerca) {
 	
 	// query parziale: "WHERE "
@@ -200,7 +147,7 @@ function getAdvancedKeys($ricerca) {
 		$id = $_POST['identificatore'];
 		// separa la stringa dell'identificatore in 4 sottostringhe
 		// (i separatori devono essere caratteri '-')
-		list($className, $ver, $year, $num) = explode("-",$id);
+		list($className, $ver, $year, $cont) = explode("-",$id);
 			
 		//controlli per trovare il numero corrispondente alla classe
 		switch($className) {
@@ -234,145 +181,82 @@ function getAdvancedKeys($ricerca) {
 		}
 		
 		//condizione sulla classe
-		$partialQuery .= "d.classe = $class " ;
+		$partialQuery .= "d.classe = $class" ;
 		
 		//condizione sulla versione
-		$partialQuery .= " AND d.versione = $ver " ;
+		$partialQuery .= " AND d.versione = $ver" ;
 		
 		//condizione sull'anno
-		$partialQuery .= " AND d.anno = $year " ;
+		$partialQuery .= " AND d.anno = $year" ;
 		
-		//condizione sul numero
-		$partialQuery .= " AND d.id = $num " ;
+		//condizione sul numero/contatore
+		$partialQuery .= " AND d.cont = $cont" ;
 		
 		//4 condizioni 'AND' inserite
 		$k += 4;
 	}
 	
 	
-	//identificatore in parti separate
+	$checkboxes = array('classe','stato');
 	
-	//classe è stata impostata?
-	if ( isset($_POST['classe']) ) {
-		//contatore che segna quante condizioni che vanno separate da OR sono state inserite
-		$i = 0;
-		
-		$partialQuery .= " ( ";
-		foreach($_POST['classe'] as $value) {
-			//controlla se esiste almeno una condizione 'OR' preimpostata
-			if ($i > 0) { $partialQuery.= " OR "; }
+	// parte della query riguardante classe e stato
+	foreach($checkboxes as $checkbox) {
+		//$checkbox è impostato?
+		if ( isset($_POST[$checkbox]) ) {
+			//controlla se esiste almeno una condizione 'AND' preimpostata
+			if ($k > 0) { $partialQuery.= " AND "; }
 			
-			$partialQuery .= "d.classe = '$value' " ;
+			//contatore che segna quante condizioni che vanno separate da OR sono state inserite
+			$i = 0;
 			
-			//condizione 'OR' inserita
-			$i++;
+			$partialQuery .= "( ";
+			foreach($_POST[$checkbox] as $value) {
+				//controlla se esiste almeno una condizione 'OR' preimpostata
+				if ($i > 0) { $partialQuery.= " OR "; }
+				
+				$partialQuery .= "d.$checkbox = '$value' " ;
+				
+				//condizione 'OR' inserita
+				$i++;
+			}
+			$partialQuery .= ") ";
+			
+			//condizione 'AND' inserita
+			$k++;
 		}
-		$partialQuery .= " ) ";
-		
-		//condizione 'AND' inserita
-		$k++;
-	}
 	
-	if ( isset($_POST['versione'])  && $_POST['versione']!="" ) {
-		//controlla se esiste almeno una condizione 'AND' preimpostata
-		if ($k > 0) { $partialQuery.= " AND "; }
-		
-		$partialQuery .= "d.versione = ".trim($_POST['versione']);
-		
-		$k++;
-	}
-	
-	if ( isset($_POST['anno']) && $_POST['anno']!="" ) {
-		//controlla se esiste almeno una condizione 'AND' preimpostata
-		if ($k > 0) { $partialQuery.= " AND "; }
-		
-		$partialQuery .= "d.anno = ".trim($_POST['anno']);
-		
-		$k++;
-	}
-	
-
-	if ( isset($_POST['numero']) && $_POST['numero']!="" ) {
-		//controlla se esiste almeno una condizione 'AND' preimpostata
-		if ($k > 0) { $partialQuery.= " AND "; }
-		
-		$partialQuery .= "d.id = ".trim($_POST['numero']);
-		
-		$k++;
-	}
+	}	
 	
 	
-	//data del tipo gg/mm
-	if ( isset($_POST['data']) && $_POST['data']!="" ) {
-		//controlla se esiste almeno una condizione 'AND' preimpostata
-		if ($k > 0) { $partialQuery.= " AND "; }
-		
-		$d = trim($_POST['data']);
-		
-		list($giorno, $mese) = explode("/",$d);
-		
-		$partialQuery .= "d.giorno = $giorno AND d.mese = $mese";
-		
-		$k += 2;
-	}
+	$fields = array('versione','anno','cont','giorno','mese','revisione','allegati');
 	
-	
-	
-	if ( isset($_POST['revisione']) && $_POST['revisione']!="" ) {
-		//controlla se esiste almeno una condizione 'AND' preimpostata
-		if ($k > 0) { $partialQuery.= " AND "; }
-		
-		$partialQuery .= "d.revisione = ".trim($_POST['revisione']);
-		
-		$k++;
-	}
-	
-	
-	
-	
-	//stato è impostato?
-	if ( isset($_POST['stato']) ) {
-		//controlla se esiste almeno una condizione 'AND' preimpostata
-		if ($k > 0) { $partialQuery.= " AND "; }
-		
-		//contatore che segna quante condizioni che vanno separate da OR sono state inserite
-		$i = 0;
-		
-		$partialQuery .= "( ";
-		foreach($_POST['stato'] as $value) {
-			//controlla se esiste almeno una condizione 'OR' preimpostata
-			if ($i > 0) { $partialQuery.= " OR "; }
+	foreach($fields as $field) {
+		if ( isset($_POST[$field])  && $_POST[$field]!="" ) {
+			//controlla se esiste almeno una condizione 'AND' preimpostata
+			if ($k > 0) { $partialQuery.= " AND "; }
 			
-			$partialQuery .= "d.stato = '$value' " ;
+			$partialQuery .= "d.$field = ".trim($_POST[$field]);
 			
-			//condizione 'OR' inserita
-			$i++;
+			$k++;
 		}
-		$partialQuery .= ") ";
-		
-		//condizione 'AND' inserita
-		$k++;
 	}
 	
 	
 	if ( isset($_POST['lingua']) && $_POST['lingua']!="" ) {
-		$lingua = trim($_POST['lingua']);
+		$lingua = strtolower(trim( $_POST['lingua'] ));
 		$lng = "";
 		
 		switch($lingua) {
-			case "IT":
+			case "it":
 			case "italiano":
-			case "Italiano":
 				$lng = "it";
 				break;
-			case "ENG":
+			case "eng":
 			case "inglese":
-			case "Inglese":
 				$lng = "eng";
 				break;
-			case "DE":
+			case "de":
 			case "tedesco":
-			case "Tedesco":
 				$lng = "de";
 				break;
 		}
@@ -387,12 +271,13 @@ function getAdvancedKeys($ricerca) {
 		}
 	}
 	
-	// TODO: sede, eventuale WHERE campo LIKE %chiave%
+	
+	// sede, campo LIKE %chiave%
 	if ( isset($_POST['sede']) && $_POST['sede']!="" ) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
-		$partialQuery .= "d.sede = ".trim($_POST['sede']);
+		$partialQuery .= "d.sede LIKE '%".trim($_POST['sede'])."%' ";
 		
 		$k++;
 	}
@@ -428,27 +313,6 @@ function getAdvancedKeys($ricerca) {
 	}
 	
 	
-	if ( isset($_POST['allegati']) && $_POST['allegati']!="" ) {
-		//controlla se esiste almeno una condizione 'AND' preimpostata
-		if ($k > 0) { $partialQuery.= " AND "; }
-		
-		$partialQuery .= "d.allegati = ".trim($_POST['allegati']);
-		
-		$k++;
-	}
-	
-	
-	//TODO:query pagine non fattibile al momento
-	/*
-	if ( isset($_POST['pagine']) && $_POST['pagine']!="" ) {
-		//controlla se esiste almeno una condizione 'AND' preimpostata
-		if ($k > 0) { $partialQuery.= " AND "; }
-		
-		$_POST['pagine'];
-		
-		$k++;
-	}
-	*/
 	
 	if ( isset($_POST['approvatore']) && $_POST['approvatore']!="" ) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
@@ -456,7 +320,7 @@ function getAdvancedKeys($ricerca) {
 		
 		$from .= "INNER JOIN utente AS ua ON ua.matricola = d.approvatore ";
 		
-		$appr = trim(strtolower( $_POST['approvatore'] ));
+		$appr = strtolower(trim( $_POST['approvatore'] ));
 		list($name, $surname) = explode(" ",$appr);
 		
 		//potrei avere nome in $surname e cognome in $name
@@ -472,7 +336,7 @@ function getAdvancedKeys($ricerca) {
 		//presenza di join
 		$from .= "INNER JOIN autore AS a ON d.id = a.id_doc INNER JOIN utente AS ub ON ub.matricola = a.mat_utente ";
 		
-		$auth = trim(strtolower( $_POST['autore'] ));
+		$auth = strtolower(trim( $_POST['autore'] ));
 		list($name, $surname) = explode(" ",$auth);
 		
 		//potrei avere nome in $surname e cognome in $name
@@ -480,6 +344,7 @@ function getAdvancedKeys($ricerca) {
 		
 		$k++;
 	}
+	
 	
 	if ( isset($_POST['abstract']) && $_POST['abstract']!="" ) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
@@ -490,7 +355,6 @@ function getAdvancedKeys($ricerca) {
 		//splittare stringa
 		$keywords = explode(" ",$strings);
 		
-		// TODO: condizione usata: abstract è un campo di tipo medium
 		$from .= "INNER JOIN valori_campo_medium AS avcm ON d.id = avcm.id_doc ";
 		
 		$partialQuery .= "avcm.id_campo = 5 AND ";
@@ -510,6 +374,7 @@ function getAdvancedKeys($ricerca) {
 		
 		$k++;
 	}
+	
 	
 	if ( isset($_POST['doc']) && $_POST['doc']!="" ) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
@@ -545,18 +410,7 @@ function getAdvancedKeys($ricerca) {
 		
 		$k++;
 	}
-	
-	/* template
-	if ( isset($_POST['']) ) {
-		//controlla se esiste almeno una condizione 'AND' preimpostata
-		if ($k > 0) { $partialQuery.= " AND "; }
 		
-		$_POST[''];
-		
-		$k++;
-	}
-	*/
-	
 	//inserisce eventuali condizioni di join
 	$partialQuery = $from . $partialQuery ;
 	
