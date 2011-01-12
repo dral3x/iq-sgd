@@ -21,7 +21,6 @@ class Ricerca extends Page {
 	// ricerca semplice: crea la query da sottoporre a interrogateDB()
 	public function doSimpleSearch($strings) {
 		
-		//TODO: ric.semplice, controllare se "to lower case" serve
 		$strings = $strings;
 		
 		//splittare stringa
@@ -38,6 +37,10 @@ class Ricerca extends Page {
 		//numero di parole inserite (per controllare se è già stata inserita una parola e serve AND)
 		$j = 0;
 		
+		//TODO: abilita revisione quando è pronta
+		$campi = array('versione','anno','cont',/*'revisione',*/'sede','allegati');
+		
+		
 		foreach ( $keywords  as $key ) {
 			if ( $j > 0 ) {$queryString .= " AND "; }
 			
@@ -49,8 +52,16 @@ class Ricerca extends Page {
 			"OR vcl.valore_it LIKE  $key OR vcl.valore_eng LIKE  $key ".
 			"OR vcl.valore_de LIKE  $key OR c.nome_it LIKE  $key ".
 			"OR c.nome_eng LIKE  $key OR c.nome_de LIKE  $key ".
-			"OR cd.nome LIKE  $key ) ";
+			"OR cd.nome LIKE  $key ";
 			
+			
+			foreach( $campi as $campo ) {
+				$queryString .= "OR d.$campo LIKE $key ";
+			}
+			
+			
+			$queryString .= ") ";
+
 	   		$j++;
 		}
 		
@@ -75,10 +86,6 @@ class Ricerca extends Page {
 		$dbc->connect();
 		// interrogazione della tabella
 		$raw_data = $dbc->query($queryString);
-		
-		/* hack momentaneo finché il db non è pronto */
-		//$this->search_result = array('Documento DQ','Allegato A1');
-		/* hack momentaneo finché il db non è pronto */
 	
 		if ($dbc->rows($raw_data)>0) {
 			// chiamata alla funzione per l'estrazione dei dati
@@ -107,15 +114,6 @@ class Ricerca extends Page {
 		return $this->search_type;
 	}
 	
-	/*
-	public function addError($err) {
-		$this->search_error .= $err;
-	}
-	
-	public function getError() {
-		return $this->search_error;
-	}
-	*/
 }
 
 ?>
