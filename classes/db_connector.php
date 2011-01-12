@@ -40,11 +40,16 @@ class DBConnector {
 			$result = mysql_query($sql, $this->connessione);
 			if (!$result) {
 				if ($skip_die) {
-					$this->error_message = 'Could not execute query: ' . mysql_error();
+					$this->error_message = 'Could not execute query: ' .$sql. ' <br/><br/>*error type:' . mysql_error();
+					//$this->error_message = 'Could not execute query: ' . mysql_error();
+				
 				} else {
-					die('Could not execute query: ' . mysql_error());
+					die('Could not execute query: ' .$sql. ' <br/><br/>*error type:' . mysql_error());
+					//die('Could not execute query: ' . mysql_error());
 				}
 			}
+			
+			//die('executing query: ' .$sql);
 			return $result;
 		} else {
 			return false;
