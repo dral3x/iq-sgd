@@ -12,13 +12,15 @@
 	<li><h2>Azioni</h2>
 		<ul>
 			<?php
-			if (strpos($_SERVER['PHP_SELF'], "visualizza.php") && isset($_REQUEST['document_id'])) {
+			if  (strpos($_SERVER['PHP_SELF'], "visualizza.php") && isset($_REQUEST['document_id']) && !isset($_GET['type'])) {
 				
 			?>
 			<li><a href="modifica.php?document_id=<?php echo $_REQUEST['document_id']; ?>" title="Edit document">Modifica documento</a></li>
 			<li><a href="#" title="New revision of this document">Crea nuova revisione</a></li>
+			<li><a href="#" title="Print this document">Stampa documento</a></li>
 			<?php
-			} else if (strpos($_SERVER['PHP_SELF'], "modifica.php") && isset($_REQUEST['document_id'])) {
+			}
+			if (strpos($_SERVER['PHP_SELF'], "modifica.php") && isset($_REQUEST['document_id'])) {
 			?>
 			<li><a href="visualizza.php?document_id=<?php echo $_REQUEST['document_id']; ?>" title="Back to view document">Annulla modifica</a></li>
 			<?php
@@ -57,7 +59,7 @@
 <ul>
   <li><h2>Profilo utente</h2>
   	<ul>
-  	  <li><a href="#" title="Profile page">Profilo di <?php $_ls = new LoginSession(); echo $_ls->getUser(); ?></a></li>
+  	  <li><a href="#" title="Profile page">Profilo di <?php $_ls = new LoginSession(); echo $_ls->getUser()->getDisplayName(); ?></a></li>
       <li><a href="login.php?action=logout" title="Logout user">Logout</a></li>
   	</ul>
   </li>

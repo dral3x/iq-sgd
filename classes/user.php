@@ -40,15 +40,18 @@ class User {
         //$this->connect();
     }
     
-    public function __toString() {
-    	return $this->getDisplayName();
-    }
+//    public function __toString() {
+//    	return $this->getDisplayName();
+//    }
 	
 	public function getConfidentialLevel() {
 		return $this->confidential_level;
 	}
 	
 	public function getDisplayName() {
+		if (!isset($this->name) || !isset($this->surname)) {
+			$this->retrieveBasicInformationFromDB();
+		}
 		return $this->name . ' ' . $this->surname;
 	}
 	

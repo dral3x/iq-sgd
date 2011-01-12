@@ -57,7 +57,7 @@ class Model {
 		}
 		
 		// disconnessione da MySQL
-		$dbc->disconnect();	
+		$dbc->disconnect();
 	}
 	
 	public function getName() {

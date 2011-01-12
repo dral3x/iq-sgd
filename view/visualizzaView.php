@@ -34,7 +34,7 @@ if (isset($document)) {
 		<div id="field"><b>Sede archiviazione: </b> <?php echo $document->getLocation(); ?><br /></div>
 		<div id="field"><b>Liv. Confidenzialit: </b> <?php echo $document->getConfidentialLevel();?><br /></div>
 		<div id="field"><b>Autori: </b> <?php echo $document->getAuthor(); ?><br /></div>
-		<div id="field"><b>Approvatore: </b> <?php $document->getApprovatore()?><br /></div>
+		<div id="field"><b>Approvatore: </b> <?php echo $document->getApprover()->getDisplayName(); ?><br /></div>
 	</fieldset>
 	<?php 
 	// mostro l'elenco di tutti i campi
