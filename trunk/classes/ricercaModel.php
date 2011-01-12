@@ -8,7 +8,7 @@ require_once (dirname(__FILE__) . '/document.php');
 class Ricerca extends Page {
 	
 	protected $search_result;
-	protected $search_error;
+	public $search_error;
 	protected $search_type;
 	
 	public function __construct() {
@@ -25,7 +25,7 @@ class Ricerca extends Page {
 		$strings = $strings;
 		
 		//splittare stringa
-		$keywords[] = explode(" ",$strings);
+		$keywords = explode(" ",$strings);
 		
 		$queryString = "SELECT DISTINCT d.id FROM documento AS d ".
 						"INNER JOIN valori_campo_small AS vcs ON d.id = vcs.id_doc ".
@@ -107,6 +107,15 @@ class Ricerca extends Page {
 		return $this->search_type;
 	}
 	
+	/*
+	public function addError($err) {
+		$this->search_error .= $err;
+	}
+	
+	public function getError() {
+		return $this->search_error;
+	}
+	*/
 }
 
 ?>

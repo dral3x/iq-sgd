@@ -41,6 +41,7 @@ if (isset($_POST['submit'])) {
 		}
 	}
 	//l'utente ha richiesto una ricerca avanzata?
+	// NB:quando chiama le due funzioni, deve passare l'oggetto $ricerca
 	elseif ($ricerca->getTypeOfSearch() == "advanced") {
 		
 		/* chiama la funzione che controlla se nessun parametro è stato impostato
@@ -48,10 +49,11 @@ if (isset($_POST['submit'])) {
 		 *  if (trim($_POST['parametriRicerca']) == "") {
 		 *  per la ricerca avanzata che ha più parametri
 		 */
-		if (noParameterIsSet()) {
-			$search_error = "Nessuna chiave di ricerca inserita";
+		if (noParameterIsSet($ricerca)) {
+			//potrebbe essere stato già impostato un errore (vedi livello di confidenzialità)
+			$search_error .= "Nessuna chiave di ricerca inserita";
 		} else {
-			$search_result = $ricerca->doAdvancedSearch( getAdvancedKeys() );
+			$search_result = $ricerca->doAdvancedSearch( getAdvancedKeys($ricerca) );
 		}
 	}
 	
@@ -67,51 +69,69 @@ require ('view/ricercaView.php');
 
 //FUNZIONI
 
+
+// NB:  per accedere al livello di confidenzialità
+//		devo passare $ricerca alla funzione, poiché non è un metodo!
 // true: se nessun parametro della ricerca avanzata è stato impostato
 // false: se almeno un parametro della ricerca avanzato è stato impostato
-function noParameterIsSet() {
+function noParameterIsSet($ricerca) {
 		
 	//nessun campo dell'intestazione è stato impostato?
 	
 		//nessun campo dell'identificatore è stato impostato?
-		if (trim($_POST['identificatore']) == "") return false;
+		if (trim($_POST['identificatore']) != "") return false;
 		
-		foreach($_POST['classe'] as $value) {
-			if (isset($value)) return false;
+		if ( isset($_POST['classe']) ) {
+			foreach($_POST['classe'] as $value) {
+				if (isset($value)) return false;
+			}
 		}
 		
-		if (trim($_POST['versione']) == "") return false;
-		if (trim($_POST['anno']) == "") return false;
-		if (trim($_POST['numero']) == "") return false;
+		if (trim($_POST['versione']) != "") return false;
+		if (trim($_POST['anno']) != "") return false;
+		if (trim($_POST['numero']) != "") return false;
 		//a questo punto nessun campo dell'identificatore è stato impostato
 		
-	if (trim($_POST['data']) == "") return false;
-	if (trim($_POST['revisione']) == "") return false;
+	if (trim($_POST['data']) != "") return false;
+	if (trim($_POST['revisione']) != "") return false;
 	
-	foreach($_POST['stato'] as $value) {
-		if (isset($value)) return false;
+	if ( isset($_POST['stato']) ) {
+		foreach($_POST['stato'] as $value) {
+			if (isset($value)) return false;
+		}
 	}
 	
-	if (trim($_POST['lingua']) == "") return false;
+	if (trim($_POST['lingua']) != "") return false;
 
 
 	//nessun campo del pié di pagina è stato impostato?
 	
-	if (trim($_POST['sede']) == "") return false;
+	if (trim($_POST['sede']) != "") return false;
 	
-	foreach($_POST['livello'] as $value) {
-		if (isset($value)) return false;
+	
+	// TODO: livello di confidenzialità, messaggio di errore
+	if ( isset($_POST['livello']) ) {
+		// preleva il livello di confidenzialità dell'utente
+		$level = $ricerca->getSessionUser()->getConfidentialLevel();
+		
+		foreach($_POST['livello'] as $value) {
+			if ( isset($value) ) {
+				if ( $value >= $level ) { return false; }
+				else { $ricerca->search_error .= "<br/>Non si disponde del livello di confidenzialit&agrave; necessario per ricercare documenti di livello L$value<br/>";
+				}
+			}
+		}
 	}
 	
-	if (trim($_POST['allegati']) == "") return false;
-	if (trim($_POST['pagine']) == "") return false;
-	if (trim($_POST['approvatore']) == "") return false;
-	if (trim($_POST['autore']) == "") return false;
+	if (trim($_POST['allegati']) != "") return false;
+	if (trim($_POST['pagine']) != "") return false;
+	if (trim($_POST['approvatore']) != "") return false;
+	if (trim($_POST['autore']) != "") return false;
 	
 	
-	if (trim($_POST['abstract']) == "") return false;
+	if (trim($_POST['abstract']) != "") return false;
 	
-	if (trim($_POST['doc']) == "") return false;
+	if (trim($_POST['doc']) != "") return false;
 	
 	
 	
@@ -122,22 +142,30 @@ function noParameterIsSet() {
 	$fields = array('identificatore','versione','anno','numero','data','revisione','lingua','sede','allegati','pagine','approvatore','autore','abstract','doc');
 	
 	foreach($fields as $field) {
-		if ( trim($_POST[$field]) == "" ) return false;
+		if ( trim($_POST[$field]) != "" ) return false;
 	}
 	
 	// cicli foreach corrispondenti ai tre gruppi di checkbox
-	foreach($_POST['classe'] as $value) {
+	if ( isset($_POST['classe']) ) {
+		foreach($_POST['classe'] as $value) {
+				if isset($value) return false;
+		}
+	}
+	
+	if ( isset($_POST['stato']) ) {
+		foreach($_POST['stato'] as $value) {
 			if isset($value) return false;
+		}
 	}
 	
-	foreach($_POST['livello'] as $value) {
-		if isset($value) return false;
+	if ( isset($_POST['livello']) ) {
+		// preleva il livello di confidenzialità dell'utente
+		$level = $ricerca->getSessionUser()->getConfidentialLevel();
+		
+		foreach($_POST['livello'] as $value) {
+			if ( isset($value) && ( $value >= $level ) ) return false;
+		}
 	}
-	
-	foreach($_POST['livello'] as $value) {
-		if isset($value) return false;
-	}
-	
 	
 	// FINE CODICE ALTERNATIVO
 	 */
@@ -148,9 +176,10 @@ function noParameterIsSet() {
 }
 	
 	
-	
+// NB:  per accedere al livello di confidenzialità
+//		devo passare $ricerca alla funzione, poiché non è un metodo!
 //costruisce la parte della query contenente le chiavi di una ricerca avanzata
-function getAdvancedKeys() {
+function getAdvancedKeys($ricerca) {
 	
 	// query parziale: "WHERE "
 	$partialQuery = "WHERE ";
@@ -233,7 +262,7 @@ function getAdvancedKeys() {
 			//controlla se esiste almeno una condizione 'OR' preimpostata
 			if ($i > 0) { $partialQuery.= " OR "; }
 			
-			$partialQuery .= "d.classe = $value " ;
+			$partialQuery .= "d.classe = '$value' " ;
 			
 			//condizione 'OR' inserita
 			$i++;
@@ -248,7 +277,7 @@ function getAdvancedKeys() {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
-		$partialQuery .= "d.versione = ".$_POST['versione'];
+		$partialQuery .= "d.versione = ".trim($_POST['versione']);
 		
 		$k++;
 	}
@@ -257,7 +286,7 @@ function getAdvancedKeys() {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
-		$partialQuery .= "d.anno = ".$_POST['anno'];
+		$partialQuery .= "d.anno = ".trim($_POST['anno']);
 		
 		$k++;
 	}
@@ -267,7 +296,7 @@ function getAdvancedKeys() {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
-		$partialQuery .= "d.id = ".$_POST['numero'];
+		$partialQuery .= "d.id = ".trim($_POST['numero']);
 		
 		$k++;
 	}
@@ -278,7 +307,7 @@ function getAdvancedKeys() {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
-		$d = $_POST['data'];
+		$d = trim($_POST['data']);
 		
 		list($giorno, $mese) = explode("/",$d);
 		
@@ -293,7 +322,7 @@ function getAdvancedKeys() {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
-		$partialQuery .= "d.revisione = ".$_POST['revisione'];
+		$partialQuery .= "d.revisione = ".trim($_POST['revisione']);
 		
 		$k++;
 	}
@@ -314,7 +343,7 @@ function getAdvancedKeys() {
 			//controlla se esiste almeno una condizione 'OR' preimpostata
 			if ($i > 0) { $partialQuery.= " OR "; }
 			
-			$partialQuery .= "d.stato = $value " ;
+			$partialQuery .= "d.stato = '$value' " ;
 			
 			//condizione 'OR' inserita
 			$i++;
@@ -327,7 +356,7 @@ function getAdvancedKeys() {
 	
 	
 	if ( isset($_POST['lingua']) && $_POST['lingua']!="" ) {
-		$lingua = $_POST['lingua'];
+		$lingua = trim($_POST['lingua']);
 		$lng = "";
 		
 		switch($lingua) {
@@ -358,21 +387,21 @@ function getAdvancedKeys() {
 		}
 	}
 	
-	
+	// TODO: sede, eventuale WHERE campo LIKE %chiave%
 	if ( isset($_POST['sede']) && $_POST['sede']!="" ) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
-		$partialQuery .= "d.sede = ".$_POST['sede'];
+		$partialQuery .= "d.sede = ".trim($_POST['sede']);
 		
 		$k++;
 	}
 	
 	
-	//livello di confidenzialità è impostata?
+	// livello di confidenzialità è impostato?
 	if ( isset($_POST['livello']) ) {
-		// TODO: livello di autorizzazione dell'utente:funziona così? 
-		$level = $_SESSION[user_logged]->getSecurityLevel();
+		// preleva il livello di confidenzialità dell'utente
+		$level = $ricerca->getSessionUser()->getConfidentialLevel();
 		
 		//contatore che segna quante condizioni che vanno separate da OR sono state inserite
 		$i = 0;
@@ -386,13 +415,13 @@ function getAdvancedKeys() {
 				//controlla se esiste almeno una condizione 'OR' preimpostata
 				if ($i > 0) { $partialQuery.= " OR "; }
 				
-				$partialQuery .= "d.liv_conf = $value" ;
+				$partialQuery .= "d.liv_conf = '$value' " ;
 				
 				//condizione 'OR' inserita
 				$i++;
 			}
 		}
-		$partialQuery .= ") ";
+		if ( ($value >= $level) ||  ($i > 0) ) { $partialQuery .= ") "; }
 		
 		//condizione 'AND' inserita
 		if ($i>0) $k++;
@@ -403,7 +432,7 @@ function getAdvancedKeys() {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
-		$partialQuery .= "d.allegati = ".$_POST['allegati'];
+		$partialQuery .= "d.allegati = ".trim($_POST['allegati']);
 		
 		$k++;
 	}
@@ -427,7 +456,7 @@ function getAdvancedKeys() {
 		
 		$from .= "INNER JOIN utente AS ua ON ua.matricola = d.approvatore ";
 		
-		$appr = strtolower( $_POST['approvatore'] );
+		$appr = trim(strtolower( $_POST['approvatore'] ));
 		list($name, $surname) = explode(" ",$appr);
 		
 		//potrei avere nome in $surname e cognome in $name
@@ -443,7 +472,7 @@ function getAdvancedKeys() {
 		//presenza di join
 		$from .= "INNER JOIN autore AS a ON d.id = a.id_doc INNER JOIN utente AS ub ON ub.matricola = a.mat_utente ";
 		
-		$auth = strtolower( $_POST['autore'] );
+		$auth = trim(strtolower( $_POST['autore'] ));
 		list($name, $surname) = explode(" ",$auth);
 		
 		//potrei avere nome in $surname e cognome in $name
@@ -459,7 +488,7 @@ function getAdvancedKeys() {
 		$strings = ($_POST['abstract']);
 		
 		//splittare stringa
-		$keywords[] = explode(" ",$strings);
+		$keywords = explode(" ",$strings);
 		
 		// TODO: condizione usata: abstract è un campo di tipo medium
 		$from .= "INNER JOIN valori_campo_medium AS avcm ON d.id = avcm.id_doc ";
@@ -489,7 +518,7 @@ function getAdvancedKeys() {
 		$strings = ($_POST['doc']);
 		
 		//splittare stringa
-		$keywords[] = explode(" ",$strings);
+		$keywords = explode(" ",$strings);
 		
 		$from .= "INNER JOIN valori_campo_small AS vcs ON d.id = vcs.id_doc ".
 				"INNER JOIN valori_campo_medium AS vcm ON d.id = vcm.id_doc ".
