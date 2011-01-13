@@ -23,6 +23,15 @@ if (isset($_GET['type'])) {
 	}
 }
 
+//azione che resetta tutti i campi
+if (isset($_POST['reset'])) {
+	
+	$fields = array('identificatore','classe','versione','anno','cont','giorno','mese','revisione','stato','lingua','sede','livello','allegati','approvatore','autore','abstract','doc');
+	foreach($fields as $field) {
+		unset($_POST[$field]);
+	}
+}
+
 //RICORDA: per impostazione default il tipo di ricerca è "simple" (vedi ricercaModel)
 
 /*controlla se l'utente ha inviato qualche parametro di ricerca e la esegue*/
@@ -35,9 +44,9 @@ if (isset($_POST['submit'])) {
 		
 		//controlla se il parametro di ricerca non è stato impostato
 		if (trim($_POST['parametroRicerca']) == "") {
-			$search_error = "Nessuna chiave di ricerca inserita";
+			$ricerca->setError("Nessuna chiave di ricerca inserita");
 		} else {
-			$search_result = $ricerca->doSimpleSearch($_POST['parametroRicerca']);
+			$results = $ricerca->doSimpleSearch($_POST['parametroRicerca']);
 		}
 	}
 	//l'utente ha richiesto una ricerca avanzata?
@@ -49,11 +58,13 @@ if (isset($_POST['submit'])) {
 		 *  if (trim($_POST['parametriRicerca']) == "") {
 		 *  per la ricerca avanzata che ha più parametri
 		 */
+		
+		
 		if (noParameterIsSet($ricerca)) {
-			//potrebbe essere stato già impostato un errore (vedi livello di confidenzialità)
-			$search_error .= "Nessuna chiave di ricerca inserita";
+			//potrebbe essere stato già impostato un Messaggio (vedi livello di confidenzialità)
+			if ( ! $ricerca->isSetMessage() ) { $ricerca->setError("Nessuna chiave di ricerca inserita"); }
 		} else {
-			$search_result = $ricerca->doAdvancedSearch( getAdvancedKeys($ricerca) );
+			$results = $ricerca->doAdvancedSearch( getAdvancedKeys($ricerca) );
 		}
 	}
 	
@@ -74,14 +85,14 @@ require ('view/ricercaView.php');
 // false: se almeno un parametro della ricerca avanzato è stato impostato
 function noParameterIsSet($ricerca) {
 		
-	$fields = array('identificatore','versione','anno','cont','giorno','mese','revisione','lingua','sede','allegati',/*'pagine',*/'approvatore','autore','abstract','doc');
+	$fields = array('identificatore','versione','anno','cont','giorno','mese','revisione','sede','allegati',/*'pagine',*/'approvatore','autore','abstract','doc');
 	
 	foreach($fields as $field) {
 		//il campo in esame è stato impostato? se è così ritorna falso
 		if ( trim($_POST[$field]) != "" ) return false;
 	}
 	
-	$checkboxes = array('classe','stato');
+	$checkboxes = array('classe','stato','lingua');
 	
 	// cicli foreach corrispondenti ai tre gruppi di checkbox
 	foreach($checkboxes as $checkbox) {
@@ -100,7 +111,7 @@ function noParameterIsSet($ricerca) {
 		foreach($_POST['livello'] as $value) {
 			if ( isset($value) ) {
 				if ( $value >= $level ) { return false; }
-				else { $ricerca->search_error .= "<br/>Non si disponde del livello di confidenzialit&agrave; necessario per ricercare documenti di livello L$value<br/>";
+				else { $ricerca->addMessage("Non si disponde del livello di confidenzialit&agrave; necessario per ricercare documenti di livello L$value<br/>");
 				}
 			}
 		}
@@ -148,7 +159,7 @@ function getAdvancedKeys($ricerca) {
 		// separa la stringa dell'identificatore in 4 sottostringhe
 		// (i separatori devono essere caratteri '-')
 		list($className, $ver, $year, $cont) = explode("-",$id);
-			
+		
 		//controlli per trovare il numero corrispondente alla classe
 		switch($className) {
 			case "A1":
@@ -197,9 +208,9 @@ function getAdvancedKeys($ricerca) {
 	}
 	
 	
-	$checkboxes = array('classe','stato');
+	$checkboxes = array('classe','stato','lingua');
 	
-	// parte della query riguardante classe e stato
+	// parte della query riguardante classe, stato e lingua
 	foreach($checkboxes as $checkbox) {
 		//$checkbox è impostato?
 		if ( isset($_POST[$checkbox]) ) {
@@ -214,7 +225,12 @@ function getAdvancedKeys($ricerca) {
 				//controlla se esiste almeno una condizione 'OR' preimpostata
 				if ($i > 0) { $partialQuery.= " OR "; }
 				
-				$partialQuery .= "d.$checkbox = '$value' " ;
+				//controllo necessario per lingua perchè query è diversa (lingua è distribuita su tre attributi)
+				if ($checkbox == 'lingua') {
+					$partialQuery .= "d.supp_$value = 1" ;
+				} else {
+					$partialQuery .= "d.$checkbox = '$value' " ;
+				}
 				
 				//condizione 'OR' inserita
 				$i++;
@@ -242,36 +258,6 @@ function getAdvancedKeys($ricerca) {
 	}
 	
 	
-	if ( isset($_POST['lingua']) && $_POST['lingua']!="" ) {
-		$lingua = strtolower(trim( $_POST['lingua'] ));
-		$lng = "";
-		
-		switch($lingua) {
-			case "it":
-			case "italiano":
-				$lng = "it";
-				break;
-			case "eng":
-			case "inglese":
-				$lng = "eng";
-				break;
-			case "de":
-			case "tedesco":
-				$lng = "de";
-				break;
-		}
-		
-		if ($lng != "") {
-			//controlla se esiste almeno una condizione 'AND' preimpostata
-			if ($k > 0) { $partialQuery.= " AND "; }
-		
-			$partialQuery .= "d.supp_$lng = 1" ;
-			
-			$k++;
-		}
-	}
-	
-	
 	// sede, campo LIKE %chiave%
 	if ( isset($_POST['sede']) && $_POST['sede']!="" ) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
@@ -283,10 +269,11 @@ function getAdvancedKeys($ricerca) {
 	}
 	
 	
+	// preleva il livello di confidenzialità dell'utente
+		$level = $ricerca->getSessionUser()->getConfidentialLevel();
+	
 	// livello di confidenzialità è impostato?
 	if ( isset($_POST['livello']) ) {
-		// preleva il livello di confidenzialità dell'utente
-		$level = $ricerca->getSessionUser()->getConfidentialLevel();
 		
 		//contatore che segna quante condizioni che vanno separate da OR sono state inserite
 		$i = 0;
@@ -311,7 +298,16 @@ function getAdvancedKeys($ricerca) {
 		//condizione 'AND' inserita
 		if ($i>0) $k++;
 	}
-	
+	// se non è stata impostata dall'utente alcuna condizione sui livelli di confidenzialità
+	// per default imposta la query in modo che possa accedere solo ai livelli concessi all'utente
+	else {
+		//controlla se esiste almeno una condizione 'AND' preimpostata
+		if ($k > 0) { $partialQuery.= " AND "; }
+		
+		$partialQuery .= "d.liv_conf >= '$level' ";
+		
+		$k++;
+	}	
 	
 	
 	if ( isset($_POST['approvatore']) && $_POST['approvatore']!="" ) {

@@ -84,17 +84,30 @@ Comportamento simil tabella
 #container {
 	width: 80%;
 	display: table;
+	margin: 1em;
 }
 
 #row {
 	display: table-row;
+	margin: 0;
 }
 
 #left,#right,#middle {
 	display: table-cell;
+	margin: 0;
 }
 
-/* fix per mandare a capo il contenuto della pagina */
+/* Regole di stile aggiunte */
+
+h1 {margin-left: 1.5em;}
+
+.campo {margin: 5px 2px; }
+
+/* margini + fix per mandare a capo il contenuto della pagina */
 #error, #result, #fillDocument, #showModel, #search, #viewList, #view {
+	margin-left: 3em;
+	width: 50em;
+	
+	/* fix per mandare a capo il contenuto della pagina */
 	clear: both;
 }

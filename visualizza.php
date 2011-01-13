@@ -24,7 +24,7 @@ if (isset($_GET['type'])) {
 		$documents = $visualizza->retrieveAllRevisionsOfDocuments($_GET['document_id']);
 		$page_title = "Tutte le revisioni del documento precedente";
 	} else {
-		$error_message = "Nessun tipo di documento valido è stato selezionato.";
+		$error_message = "Nessun tipo di documento valido &eacute; stato selezionato.";
 	}
 	
 	// carico la vista elenco da mostrare all'utente

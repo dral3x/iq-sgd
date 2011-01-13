@@ -10,7 +10,7 @@ if (isset($error_message)) {
 	echo '<div id="error">' . $error_message . '</div>';
 }
 
-// se la variabile $document  stata impostata dal modello... allora posso mostrarne il contenuto
+// se la variabile $document è stata impostata dal modello... allora posso mostrarne il contenuto
 if (isset($model)) {
 ?>
 <div id="fillDocument">
@@ -67,7 +67,7 @@ if (isset($model)) {
 	<?php
 	// mostro l'elenco di tutti i campi
 	foreach ($model->getFields() as $field) {
-		echo '<div id="field"><b>'.$field->getName();
+		echo '<div id="field"><b>'.htmlentities($field->getName());
 		if (!$field->isOptional()) echo "*";
 		echo '</b><br />'."\n";
 		if ($field->getType() == DocumentField::SMALL) {
