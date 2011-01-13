@@ -48,8 +48,6 @@ class DBConnector {
 					//die('Could not execute query: ' . mysql_error());
 				}
 			}
-			
-			//die('executing query: ' .$sql);
 			return $result;
 		} else {
 			return false;

@@ -32,14 +32,15 @@ if (isset($document)) {
 		<div id="field"><b>Lingua: </b> <?php ?><br /></div>
 		<div id="field"><b>Stato: </b> <?php  echo $document->getState();?><br /></div>
 		<div id="field"><b>Sede archiviazione: </b> <?php echo $document->getLocation(); ?><br /></div>
-		<div id="field"><b>Liv. Confidenzialit: </b> <?php echo $document->getConfidentialLevel();?><br /></div>
+		<div id="field"><b>Liv. Confidenzialit&agrave;: </b> <?php echo $document->getConfidentialLevel();?><br /></div>
 		<div id="field"><b>Autori: </b> <?php echo $document->getAuthor(); ?><br /></div>
 		<div id="field"><b>Approvatore: </b> <?php echo $document->getApprover()->getDisplayName(); ?><br /></div>
 	</fieldset>
+	<br/>
 	<?php 
 	// mostro l'elenco di tutti i campi
 	foreach ($document->getContent() as $field) {
-		echo '<div id="field"><b>'.$field->getName().'</b><br/>'.$field->getContent().'<br/><br/></div>'."\n";
+		echo '<div id="field"><b>'.htmlentities($field->getName()).'</b><br/>'.htmlentities($field->getContent()).'<br/><br/></div>'."\n";
 	}
 	?>
 </fieldset>

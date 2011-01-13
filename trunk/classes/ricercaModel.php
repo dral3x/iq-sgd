@@ -7,8 +7,9 @@ require_once (dirname(__FILE__) . '/db_connector.php');
 require_once (dirname(__FILE__) . '/document.php');
 class Ricerca extends Page {
 	
-	protected $search_result;
-	public $search_error;
+	public $search_result;
+	protected $search_error;
+	protected $search_msg;
 	protected $search_type;
 	
 	public function __construct() {
@@ -65,6 +66,10 @@ class Ricerca extends Page {
 	   		$j++;
 		}
 		
+		$level = $this->getSessionUser()->getConfidentialLevel();
+		
+		$queryString .= "AND d.liv_conf >= '$level' ";
+		
 		$this->interrogateDB($queryString);
 		return $this->search_result;
 	}
@@ -112,6 +117,32 @@ class Ricerca extends Page {
 	
 	public function getTypeOfSearch() {
 		return $this->search_type;
+	}
+	
+	// Errore
+	public function getError() {
+		return $this->search_error;
+	}
+	
+	public function setError($err) {
+		$this->search_error = $err;
+	}
+	
+	public function isSetError() {
+		return isset($this->search_error);
+	}
+	
+	//Messaggio
+	public function getMessage() {
+		return $this->search_msg;
+	}
+	
+	public function addMessage($mess) {
+		$this->search_msg .= $mess;
+	}
+	
+	public function isSetMessage() {
+		return isset($this->search_msg);
 	}
 	
 }
