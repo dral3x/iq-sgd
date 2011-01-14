@@ -1,10 +1,10 @@
 <?php
 
 require_once (dirname(__FILE__) . '/pageModel.php');
-require_once (dirname(__FILE__) . '/loginModel.php');
 
 require_once (dirname(__FILE__) . '/db_connector.php');
 require_once (dirname(__FILE__) . '/document.php');
+
 class Ricerca extends Page {
 	
 	public $search_result;

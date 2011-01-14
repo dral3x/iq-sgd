@@ -51,6 +51,7 @@ class LoginSession {
 				
 			} else {
 				$this->error_message = "Login fallito!";
+				unset($this->user);
 			}
 			
 			// disconnessione da MySQL
