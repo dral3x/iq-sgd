@@ -40,7 +40,7 @@ class Edit extends Page {
 		// versione
 		$doc->setVersion($fields['versione']);
 		// sede di archiviazione
-		$doc->setArchivedLocation($fields['sede']);
+		$doc->setLocation($fields['sede']);
 		// livello di confidenzialitˆ
 		$doc->setConfidentialLevel($fields['liv_conf']);
 		
@@ -52,8 +52,11 @@ class Edit extends Page {
 		}
 		
 		// aggiungo gli autori
-		$doc->addAuthor($this->getSessionUser());
-		// FIXME: non aggiungo gli autori veri...
+		$possible_author = $this->getAllPossibleAuthors();
+		foreach ($possible_author as $a) {
+			if ($fields['autore_' . $a->user_id] == "on")
+				$doc->addAuthor($a);			
+		}
 		
 		// approvatore
 		$doc->setApprover(new User($fields['approvatore']));

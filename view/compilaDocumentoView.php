@@ -10,7 +10,7 @@ if (isset($error_message)) {
 	echo '<div id="error">' . $error_message . '</div>';
 }
 
-// se la variabile $document è stata impostata dal modello... allora posso mostrarne il contenuto
+// se la variabile $document  stata impostata dal modello... allora posso mostrarne il contenuto
 if (isset($model)) {
 ?>
 <div id="fillDocument">
@@ -60,7 +60,7 @@ if (isset($model)) {
 		<div id="field"><b>Approvatore: </b> <?php
 		foreach ($tutti_gli_utenti as $autore) {
 			echo "<br />\n";
-			echo '<input type="radio" name="approvatore" id="field_content" /> '.$autore->getDisplayName() . ' ';
+			echo '<input type="radio" name="approvatore" id="field_content" value="'.$autore->user_id.'" /> '.$autore->getDisplayName() . ' ';
 		}
 		?><br /></div>
 	</fieldset>
