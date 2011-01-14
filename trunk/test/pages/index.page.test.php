@@ -1,7 +1,6 @@
 <?php
-require_once('simpletest/autorun.php');
-require_once('simpletest/web_tester.php');
-SimpleTest::prefer(new TextReporter());
+require_once(dirname(__FILE__).'/../simpletest/autorun.php');
+require_once(dirname(__FILE__).'/../simpletest/web_tester.php');
 
 class IndexWebTests extends WebTestCase {
 

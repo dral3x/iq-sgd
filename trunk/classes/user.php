@@ -2,6 +2,7 @@
 
 require_once (dirname(__FILE__) . '/security_levels.php');
 require_once (dirname(__FILE__) . '/db_connector.php');
+
 class User {
 	
 	public $user_id;
@@ -21,9 +22,9 @@ class User {
 			
 		$this->confidential_level = $level;
 		
-		if (is_null($name) || is_null($surname)) {
-			$this->retrieveBasicInformationFromDB();
-		} else {
+		if (!is_null($name) &&  !is_null($surname)) {
+		//	$this->retrieveBasicInformationFromDB();
+		//} else {
 			$this->name = $name;
 			$this->surname = $surname;
 		}
