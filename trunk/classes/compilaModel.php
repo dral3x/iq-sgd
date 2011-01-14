@@ -57,7 +57,7 @@ class Compilatore extends Page {
 	
 	public function generateDocumentFromModelWithData($model, $fields) {
 		// genero il nuovo documento
-		$doc = new Document(-1); // -1 significa che non ha ancora un ID prooprio, non  stato ancora salvato nel DB
+		$doc = new Document(-1); // -1 significa che non ha ancora un ID prooprio, non  stato ancora salvato nel DB
 		
 		// dico al documento che modello ha
 		$doc->setModelID($model->getID());
@@ -81,8 +81,12 @@ class Compilatore extends Page {
 		}
 		
 		// aggiungo gli autori
-		$doc->addAuthor($this->getSessionUser());
-		// FIXME: non aggiungo gli autori veri...
+	
+	 $possible_author = $this->getAllPossibleAuthors();
+  foreach ($possible_author as $a) {
+   if ($fields['autore_' . $a->user_id] == "on")
+    $doc->addAuthor($a);   
+  }	// FIXME: non aggiungo gli autori veri...
 		
 		// approvatore
 		$doc->setApprover($fields['approvatore']);

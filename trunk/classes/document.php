@@ -36,7 +36,7 @@ class Document {
 		if (!is_null($content)) $this->content = $content;
 	}
 	
-	// controlla se l'ID del documento è presente nel db
+	// controlla se l'ID del documento  presente nel db
 	public function isValidID() {
 		$exist = false;
 
@@ -52,7 +52,7 @@ class Document {
 			$raw_data = $dbc->query($sql);
 				
 			if ($dbc->rows($raw_data)==1) {
-				// c'è una sola riga, mi pare giusto!
+				// c' una sola riga, mi pare giusto!
 				$res = $dbc->extract_object($raw_data);
 				$exist = ($res->conteggio == 1);
 			}
@@ -397,19 +397,19 @@ class Document {
 	// controlla lo stato del documento, l'essere tra gli auturi ed avere un livello di confidenzialità sufficiente
 	public function canBeEditedBy($author) {
 		
-		// il documento è ancora una bozza?
+		// il documento  ancora una bozza?
 		if (!isset($this->state))
 			$this->retrieveGeneralInformation();
 		if ($this->state != DocumentState::BOZZA)
 			return false;
 			
-		// il livello di confidenza dell'utente è sufficiente?
+		// il livello di confidenza dell'utente  sufficiente?
 		if (!isset($this->confidential_level))
 			$this->retrieveGeneralInformation();
 		if ($author->getConfidentialLevel() > $this->confidential_level)
 			return false;
 		
-		// l'utente è tra gli autori?
+		// l'utente  tra gli autori?
 		if (!isset($this->authors))
 			$this->retrieveAuthors();
 		$found = false;
@@ -458,13 +458,13 @@ class Document {
 		return $success;
 	}
 	
-	// restituisce true se l'operazione è andata a buon fine, false altrimenti
+	// restituisce true se l'operazione  andata a buon fine, false altrimenti
 	public function saveDocumentIntoDB() {
 		// controlla il documento
 		$success = false;
 
 		// trovo il nuovo id per il documento se manca
-		if ($this->id < 0) { // il documento non è mai stato salvato, devo effettuare degli INSERT
+		if ($this->id < 0) { // il documento non  mai stato salvato, devo effettuare degli INSERT
 			$dbc = new DBConnector();
 			$dbc->connect();
 		
@@ -489,7 +489,7 @@ class Document {
 
 			// inserimento gruppo di documento
 			// es INSERT INTO doc_gruppo(id_gruppo,id_doc) VALUES ('$id_gruppo','$id')
-			// TODO: in che gruppo dovrei mettere il documento? lo sceglie l'utente? Non è mica il livello di confidenzialità questo...
+			// TODO: in che gruppo dovrei mettere il documento? lo sceglie l'utente? Non  mica il livello di confidenzialità questo...
 			// lasciamo pure vuoto, questo serve a fare gruppi di documento, direi di non implementarlo per la demo, rischiamo di farlo male
 
 			// inserimento autori
@@ -509,7 +509,7 @@ class Document {
 			// eseguo tutte le query o niente
 			$success = $this->doQuerysAsTransaction($querys);
 
-		} else { // il documento è già presente nel db, devo fare degli UPDATE
+		} else { // il documento  già presente nel db, devo fare degli UPDATE
 
 			// generale le query SQL da fare
 			$querys = array();
@@ -526,7 +526,7 @@ class Document {
 
 			// aggiornamento gruppo di appartenenza
 			// es INSERT INTO doc_gruppo(id_gruppo,id_doc) VALUES ('$id_gruppo','$id')
-			// TODO: in che gruppo dovrei mettere il documento? lo sceglie l'utente? Non è mica il livello di confidenzialità questo...
+			// TODO: in che gruppo dovrei mettere il documento? lo sceglie l'utente? Non  mica il livello di confidenzialità questo...
 			// lasciamo pure vuoto, questo serve a fare gruppi di documento, direi di non implementarlo per la demo, rischiamo di farlo male
 
 			// aggiornamento autori
