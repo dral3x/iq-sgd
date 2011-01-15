@@ -104,9 +104,9 @@ if ($ricerca->getTypeOfSearch() == "simple") { ?>
 				</fieldset>
 				
 				<p>
-				<label>Versione: <input class="campo" type="text" name="versione" <?php echo 'value="'.$_POST['versione'].'" '; ?>/></label><br />
-				<label>Anno: 	 <input class="campo" type="text" name="anno" <?php echo 'value="'.$_POST['anno'].'" '; ?>/></label><br />
-				<label>Numero: 	 <input class="campo" type="text" name="cont" <?php echo 'value="'.$_POST['cont'].'" '; ?>/></label><br />
+				<label>Versione: <input style="margin-left: 0.5em;" class="campo" type="text" name="versione" <?php echo 'value="'.$_POST['versione'].'" '; ?>/></label><br />
+				<label>Anno: 	 <input style="margin-left: 2.2em;" class="campo" type="text" name="anno" <?php echo 'value="'.$_POST['anno'].'" '; ?>/></label><br />
+				<label>Numero: 	 <input style="margin-left: 0.9em;" class="campo" type="text" name="cont" <?php echo 'value="'.$_POST['cont'].'" '; ?>/></label><br />
 				</p>
 				
 			</fieldset>

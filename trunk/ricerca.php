@@ -103,7 +103,6 @@ function noParameterIsSet($ricerca) {
 		}
 	}
 	
-	// TODO: livello di confidenzialità, messaggio di errore
 	if ( isset($_POST['livello']) ) {
 		// preleva il livello di confidenzialità dell'utente
 		$level = $ricerca->getSessionUser()->getConfidentialLevel();
@@ -244,7 +243,7 @@ function getAdvancedKeys($ricerca) {
 	}	
 	
 	
-	$fields = array('revisione','anno','cont','giorno','mese','revisione','allegati');
+	$fields = array('versione','anno','cont','giorno','mese','revisione','allegati');
 	
 	foreach($fields as $field) {
 		if ( isset($_POST[$field])  && $_POST[$field]!="" ) {
