@@ -32,14 +32,14 @@ class Ricerca extends Page {
 						"INNER JOIN valori_campo_medium AS vcm ON d.id = vcm.id_doc ".
 						"INNER JOIN valori_campo_long AS vcl ON d.id = vcl.id_doc ".
 						"INNER JOIN campo AS c ON d.id = c.id ".
-						"INNER JOIN classe_documenti AS cd ON cd.id = d.classe ".
+						"INNER JOIN classe_documenti AS cd ON cd.id = d.classe AND cd.versione = d.versione ".
 						"WHERE ";
 		
 		//numero di parole inserite (per controllare se è già stata inserita una parola e serve AND)
 		$j = 0;
 		
 		//TODO: abilita revisione quando è pronta
-		$campi = array('versione','anno','cont',/*'revisione',*/'sede','allegati');
+		$campi = array('versione','anno','cont','revisione','sede','allegati');
 		
 		
 		foreach ( $keywords  as $key ) {

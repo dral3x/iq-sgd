@@ -20,6 +20,11 @@
 			<li><a href="#" title="Print this document">Stampa documento</a></li>
 			<?php
 			}
+			if  (strpos($_SERVER['PHP_SELF'], "compila.php") && isset($document_id) && !isset($_GET['model_id'])) {
+			?>
+			<li><a href="modifica.php?document_id=<?php echo $document_id; ?>" title="Edit document">Modifica documento</a></li>
+			<?php	
+			}
 			if (strpos($_SERVER['PHP_SELF'], "modifica.php") && isset($_REQUEST['document_id'])) {
 			?>
 			<li><a href="visualizza.php?document_id=<?php echo $_REQUEST['document_id']; ?>" title="Back to view document">Annulla modifica</a></li>

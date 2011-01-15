@@ -28,9 +28,9 @@ if (isset($document)) {
 		<legend>Intestazione</legend>
 		<div id="field"><b>Data: </b> <?php echo $document->getCreationDay()."/".$document->getCreationMonth()."/".$document->getCreationYear();?><br /></div>
 		<div id="field"><b>ID.Doc: </b> <?php echo $document->getIdentifier(); ?><br /></div>
-		<div id="field"><b>Revisione: </b> <?php ?><br /></div>
+		<div id="field"><b>Revisione: </b> <?php echo $document->getRevision(); ?><br /></div>
 		<div id="field"><b>Lingua: </b> <?php ?><br /></div>
-		<div id="field"><b>Stato: </b> <?php  echo $document->getState();?><br /></div>
+		<div id="field"><b>Stato: </b> <?php echo $document->getState();?><br /></div>
 		<div id="field"><b>Sede archiviazione: </b> <?php echo $document->getLocation(); ?><br /></div>
 		<div id="field"><b>Liv. Confidenzialit&agrave;: </b> <?php echo $document->getConfidentialLevel();?><br /></div>
 		<div id="field"><b>Autori: </b> <?php echo $document->getAuthor(); ?><br /></div>

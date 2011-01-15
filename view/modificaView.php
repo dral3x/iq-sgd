@@ -25,15 +25,15 @@ if (isset($document)) {
 		echo '<input type="text" name="creation_year" id="field_content" maxlength="4" size="5" value="'.$document->getCreationYear().'" />'."\n";
 		?><br /></div>
 		<div id="field"><b>ID.Doc: </b> (generato automaticamente)<br /></div>
-		<div id="field"><b>Versione: </b> 
-			<input type="text" name="versione" id="field_content" size="3" value="<?php echo $document->getVersion(); ?>" /><br />
+		<div id="field"><b>Revisione: </b> 
+			<input type="text" name="revisione" id="field_content" size="3" value="<?php echo $document->getRevision(); ?>" /><br />
 		</div>
 		<div id="field"><b>Lingua: </b>
 			<input type="radio" name="lingua" value="it" id="field_content" checked /> Italiano | 
-			<input type="radio" name="lingua" value="en" id="field_content" /> English |
-			<input type="radio" name="lingua" value="de" id="field_content" /> Deutsch<br />
+			<input type="radio" name="lingua" value="en" id="field_content" disabled /> English |
+			<input type="radio" name="lingua" value="de" id="field_content" disabled /> Deutsch<br />
 		</div>
-		<div id="field"><b>Stato: </b> <?php ?><br /></div>
+		<div id="field"><b>Stato: </b> <?php echo $document->getState(); ?><br /></div>
 		<div id="field"><b>Sede archiviazione: </b>
 			<input type="text" name="sede" id="field_content" maxlength="30" value="<?php echo $document->getLocation(); ?>" /><br />
 		</div>
@@ -48,7 +48,11 @@ if (isset($document)) {
 		foreach ($tutti_gli_utenti as $autore) {
 			echo "<br />\n";
 			if ($autore->is_in($document->getAuthors())) {
-				echo '<input type="checkbox" name="autore_'.$autore->user_id.'" id="field_content" checked /> '.$autore->getDisplayName();
+				if ($modifica->getSessionUser()->equals($autore)) {
+					echo '<input type="checkbox" name="autore_'.$autore->user_id.'" id="field_content" checked disabled /> '.$autore->getDisplayName();
+				} else { 
+					echo '<input type="checkbox" name="autore_'.$autore->user_id.'" id="field_content" checked /> '.$autore->getDisplayName();
+				}
 			} else {
 				echo '<input type="checkbox" name="autore_'.$autore->user_id.'" id="field_content" /> '.$autore->getDisplayName();
 			}
