@@ -5,7 +5,7 @@
 <title><?php echo $page_title; ?></title>
 <link rel="stylesheet" type="text/css" href="view/stile.css">
 </head>
-<body>
+<body background="logo-iqsolutions.png">
 <!-- Menu -->
 <?php
 if (isset($hide_menu) && $hide_menu) {

@@ -18,14 +18,14 @@ if (isset($highlight_message)) {
 // se la variabile $document è stata impostata dal modello... allora posso mostrarne il contenuto
 if (isset($document)) {
 ?>
-<div id="view">
+<div >
 <fieldset>
 	<legend>Documento Visualizzato</legend>
 	<?php
 	// mostro informationi base sul documento
 	?>
 	<fieldset>
-		<legend>Intestazione</legend>
+		<legend >Intestazione</legend>
 		<div id="field"><b>Data: </b> <?php echo $document->getCreationDay()."/".$document->getCreationMonth()."/".$document->getCreationYear();?><br /></div>
 		<div id="field"><b>ID.Doc: </b> <?php echo $document->getIdentifier(); ?><br /></div>
 		<div id="field"><b>Revisione: </b> <?php echo $document->getRevision(); ?><br /></div>
