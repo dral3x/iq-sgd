@@ -13,7 +13,7 @@ if (isset($error_message)) {
 // se la variabile $document è stata impostata dal modello... allora posso mostrarne il contenuto
 if (isset($document)) {
 ?>
-<div id="view">
+<div id="modify">
 <form name="ModificaDocumento" action="<?php echo $_SERVER['PHP_SELF'];  ?>" method="POST">
 <fieldset>
 	<legend>Documento da modificare</legend>

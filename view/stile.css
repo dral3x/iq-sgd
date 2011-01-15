@@ -99,15 +99,44 @@ Comportamento simil tabella
 
 /* Regole di stile aggiunte */
 
+body {
+	font-family: "Times New Roman",Georgia,Serif;
+}
+
 h1 {margin-left: 1.5em;}
 
 .campo {margin: 5px 2px; }
 
-/* margini + fix per mandare a capo il contenuto della pagina */
-#error, #result, #fillDocument, #showModel, #search, #viewList, #view {
+/* margini + fix per mandare a capo i contenuti delle varie pagine */
+#error, #fillDocument, #modify, #showModel, #result, #search, #viewList, #view {
 	margin-left: 3em;
 	width: 50em;
 	
 	/* fix per mandare a capo il contenuto della pagina */
 	clear: both;
 }
+
+
+.containerBig {
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+    position: fixed;
+    display: table
+ }
+.container {
+	width: 100%;
+	display: table;
+}
+.contained {
+	display: table-cell;
+	vertical-align: middle
+}
+
+.oAlign, #login {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+	

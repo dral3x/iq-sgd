@@ -7,7 +7,7 @@ require_once (dirname(__FILE__) . '/document.php');
 
 class Ricerca extends Page {
 	
-	public $search_result;
+	protected $search_result;
 	protected $search_error;
 	protected $search_msg;
 	protected $search_type;
@@ -38,9 +38,7 @@ class Ricerca extends Page {
 		//numero di parole inserite (per controllare se è già stata inserita una parola e serve AND)
 		$j = 0;
 		
-		//TODO: abilita revisione quando è pronta
 		$campi = array('versione','anno','cont','revisione','sede','allegati');
-		
 		
 		foreach ( $keywords  as $key ) {
 			if ( $j > 0 ) {$queryString .= " AND "; }
@@ -55,11 +53,9 @@ class Ricerca extends Page {
 			"OR c.nome_eng LIKE  $key OR c.nome_de LIKE  $key ".
 			"OR cd.nome LIKE  $key ";
 			
-			
 			foreach( $campi as $campo ) {
 				$queryString .= "OR d.$campo LIKE $key ";
 			}
-			
 			
 			$queryString .= ") ";
 
