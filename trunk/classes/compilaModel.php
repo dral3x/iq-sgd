@@ -12,7 +12,7 @@ class Compilatore extends Page {
 	private $error_message;
 	
 	public function getModelsAvailable() {
-		$queryString = "SELECT id, nome FROM classe_documenti;";
+		$queryString = "SELECT id, versione, nome FROM classe_documenti;";
 		// TODO: aggiungere vincolo sul livello di confidenzialitˆ che l'utente ha
 		
 		// istanza della classe
@@ -24,7 +24,7 @@ class Compilatore extends Page {
 		
 		$results = array();
 		while ($data = $dbc->extract_object($raw_data)) {
-			array_push($results, new Model($data->id, $data->nome));
+			array_push($results, new Model($data->id, $data->versione, $data->nome));
 		}
 		
 		// disconnessione da MySQL
@@ -60,13 +60,13 @@ class Compilatore extends Page {
 		$doc = new Document(-1); // -1 significa che non ha ancora un ID prooprio, non  stato ancora salvato nel DB
 		
 		// dico al documento che modello ha
-		$doc->setModelID($model->getID());
+		$doc->setModel($model->getID(), $model->getVersion());
 		
 		// inserisco le informazioni base
 		// data di creazione
 		$doc->setCreationDate($fields['creation_day'], $fields['creation_month'], $fields['creation_year']);
-		// versione
-		$doc->setVersion($fields['versione']);
+		// revisione
+		$doc->setRevision($fields['revisione']);
 		// sede di archiviazione
 		$doc->setLocation($fields['sede']);
 		// livello di confidenzialitˆ
@@ -88,7 +88,7 @@ class Compilatore extends Page {
 		}
 		
 		// approvatore
-		$doc->setApprover($fields['approvatore']);
+		$doc->setApprover(new User($fields['approvatore']));
 		
 		return $doc;
 	}

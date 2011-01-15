@@ -39,7 +39,7 @@ if (isset($_GET['model_id'])) {
 	$saved = $document->saveDocumentIntoDB();
 	if ($saved) {
 		$highlight_message = "Documento correttamente salvato nel db";
-		
+		$document_id = $document->getID();
 		// carico la vista visualizza documento
 		require ('view/visualizzaView.php');
 		

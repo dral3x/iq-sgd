@@ -37,8 +37,8 @@ class Edit extends Page {
 		// inserisco le informazioni base
 		// data di creazione
 		$doc->setCreationDate($fields['creation_day'], $fields['creation_month'], $fields['creation_year']);
-		// versione
-		$doc->setVersion($fields['versione']);
+		// revisione
+		$doc->setRevision($fields['revisione']);
 		// sede di archiviazione
 		$doc->setLocation($fields['sede']);
 		// livello di confidenzialitˆ

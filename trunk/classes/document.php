@@ -14,13 +14,14 @@ class Document {
 	private $id; // id del documento nel db
 	private $identifier; // identificatore standard, previsto dalla documentazione
 	private $model_id; // classe del documento
+	private $model_version;
 	
 	private $state; // DocumentState::BOZZA ad esempio
 	private $confidential_level;
 	private $approvatore;
 	private $authors;
 
-	private $version;
+	private $revision;
 	private $archived_location;
 	
 	private $day;
@@ -98,8 +99,8 @@ class Document {
 	
 	// genera l'identificatore di un documento, come previsto dalla relazione sulla documentazione
 	// <classe>-<versione>-<anno>-<progressivo>
-	private function generateIdentificator($classe, $revisione, $anno, $progressivo) {
-		return $this->classID($classe).'-'.$revisione.'-'.$anno.'-'.str_pad($progressivo, 5, "0", STR_PAD_LEFT);
+	private function generateIdentificator($classe, $versione, $anno, $progressivo) {
+		return $this->classID($classe).'-'.$versione.'-'.$anno.'-'.str_pad($progressivo, 5, "0", STR_PAD_LEFT);
 	}
 	
 	private function retrieveGeneralInformation() {
@@ -127,16 +128,17 @@ class Document {
 			// livello di confidenza
 			$this->confidential_level = $res->liv_conf;
 			
-			// classe di appartenenza
+			// classe di appartenenza e versione del modello
 			$this->model_id = $res->classe;
+			$this->model_version = $res->versione;
 			
 			// data di creazione 
 			$this->day = $res->giorno;
 			$this->month = $res->mese;
 			$this->year = $res->anno;
 			
-			// versione del documento
-			$this->version = $res->versione;
+			// revisione del documento
+			$this->revision = $res->revisione;
 			
 			// sede di archiviazione
 			$this->archived_location = $res->sede;
@@ -167,7 +169,7 @@ class Document {
 		$sql = "SELECT c.id, c.nome_it, c.tipo, cc.opzionale ".
 				"FROM campo as c ".
 				"INNER JOIN campo_classe as cc ON cc.id_campo = c.id ".
-				"WHERE cc.id_classe = ".$this->model_id.";";
+				"WHERE cc.id_classe = ".$this->model_id." AND cc.versione = ".$this->model_version.";";
 		$raw_data = $dbc->query($sql);
 		
 		$this->content = array();
@@ -204,7 +206,7 @@ class Document {
 		$sql = "SELECT c.id, c.nome_it, c.tipo, cc.opzionale ".
 				"FROM campo as c ".
 				"INNER JOIN campo_classe as cc ON cc.id_campo = c.id ".
-				"WHERE cc.id_classe = ".$this->model_id.";";
+				"WHERE cc.id_classe = ".$this->model_id." AND cc.versione = ".$this->model_version.";";
 		$raw_data = $dbc->query($sql);
 		
 		$this->content = array();
@@ -248,16 +250,16 @@ class Document {
 	}
 	
 	// restituisce la versione del documento
-	public function getVersion() {
-		if (!isset($this->version)) {
+	public function getRevision() {
+		if (!isset($this->revision)) {
 			$this->retrieveGeneralInformation();
 		}
-		return $this->version;		
+		return $this->revision;		
 	}
 	
 	// imposta il numero di versione del documento
-	public function setVersion($version) {
-		$this->version = $version;
+	public function setRevision($version) {
+		$this->revision = $version;
 	}
 	
 	// restituisce la sede di archiviazione del documento
@@ -315,8 +317,9 @@ class Document {
 		return $this->id;
 	}
 	
-	public function setModelID($model) {
-		$this->model_id = $model;
+	public function setModel($model_id, $model_version) {
+		$this->model_id = $model_id;
+		$this->model_version = $model_version;
 		if (!isset($this->content)) {
 			$this->retrieveFieldsFromModel();
 		}
@@ -324,6 +327,10 @@ class Document {
 	
 	public function getModelID() {
 		return $this->model_id;
+	}
+	
+	public function getModelVersion() {
+		return $this->model_version;
 	}
 	
 	public function setState($state) {
@@ -483,8 +490,8 @@ class Document {
 			$querys = array();
 
 			// inserimento documento
-			$sql = "INSERT INTO documento(id,cont,versione, anno,classe,mese,giorno,sede,stato,allegati,liv_conf,supp_it,supp_eng,supp_de,approvatore) ".
-					"VALUES ('".$this->id."','".$progressivo."','".$this->version."','".$this->year."','".$this->model_id."','".$this->month."','".$this->day."','".$this->archived_location."','".$this->state."','0','".$this->confidential_level."','1','0','0', '".$this->approvatore->user_id."');";
+			$sql = "INSERT INTO documento(id,cont,versione, revisione, anno,classe,mese,giorno,sede,stato,allegati,liv_conf,supp_it,supp_eng,supp_de,approvatore) ".
+					"VALUES ('".$this->id."','".$progressivo."','".$this->model_version."','".$this->revision."','".$this->year."','".$this->model_id."','".$this->month."','".$this->day."','".$this->archived_location."','".$this->state."','0','".$this->confidential_level."','1','0','0', '".$this->approvatore->user_id."');";
 			array_push($querys, $sql);
 
 			// inserimento gruppo di documento
@@ -519,7 +526,7 @@ class Document {
 					"mese = '".$this->month."', giorno = '".$this->day."', anno = '".$this->year."', ".
 					"sede = '".$this->archived_location."', stato = '".$this->state."', ".
 					"liv_conf = '".$this->confidential_level."', approvatore = '".$this->approvatore->user_id."', ".
-					"versione = '".$this->version."' ".
+					"revisione = '".$this->revision."' ".
 					"WHERE id = '".$this->id."';";
 			array_push($querys, $sql);
 			// FIXME: non viene aggiornato il numero di allegati, il supporto alle lingue 
