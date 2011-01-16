@@ -61,7 +61,11 @@ if ($ricerca->getTypeOfSearch() == "simple") { ?>
 <form name="RicercaSemplice" action="<?php echo $_SERVER['PHP_SELF'];  ?>" method="POST">
 	<fieldset>
 	<legend>Ricerca Semplice</legend>
-		<input type="text" name="parametroRicerca" size="40" <?php if (isset($_POST['parametroRicerca'])) echo 'value="'.$_POST['parametroRicerca'].'" '; ?> />
+		<input type="text" name="parametroRicerca" size="40" <?php /*if (isset($_POST['parametroRicerca']))*/ echo 'value="'.$_POST['parametroRicerca'].'" '; ?> />
+		
+		<!-- workaround: campo aggiuntivo necessario per aggirare un bug di explorer (pressione del tasto invio non fa submit) -->
+		<input style="display:none;" type="text" name="inutile" size="0" />
+		
 		<input type="hidden" name="search_type" value="simple" />
 		<input type="submit" name="submit" value="Ricerca Semplice" />
 	</fieldset>
