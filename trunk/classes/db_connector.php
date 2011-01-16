@@ -8,16 +8,17 @@ class DBConnector {
     private $connessione = false;
     private $error_message;
     
-    public function connect() {
+    public function connect($select_db = true) {
     	if (!$this->attiva) {
     		$this->connessione = mysql_connect(DBConfig::hostname, DBConfig::username, DBConfig::password);
     		if (!$this->connessione) {
     			die('Could not connect: ' . mysql_error());
 			}
-			
-    		$selezione = mysql_select_db(DBConfig::name, $this->connessione);
-    		if (!$selezione) {
-    			die('Could not select db: ' . mysql_error());
+			if ($select_db) {
+    			$selezione = mysql_select_db(DBConfig::name, $this->connessione);
+    			if (!$selezione) {
+    				die('Could not select db: ' . mysql_error());
+				}
 			}
 			$attiva = true;
     	}
