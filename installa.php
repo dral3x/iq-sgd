@@ -8,9 +8,16 @@
 <h1>Installazione SGD</h1>
 <?php
 
+require_once (dirname(__FILE__) . '/classes/db_connector.php');
+require_once (dirname(__FILE__) . '/config/db_config.php');
+
 function parseSQLFile($sql_file) {
 	$querys = array();
 	
+	// creo il db nel caso non ci sia...
+	array_push($querys, "CREATE DATABASE IF NOT EXISTS ".DBConfig::name.";");
+	array_push($querys, "USE ".DBConfig::name.";");
+
 	$contents = file_get_contents($sql_file);
 	
 	// Remove C style and inline comments
@@ -35,7 +42,7 @@ function parseSQLFile($sql_file) {
 	return $querys;
 }
 
-require_once (dirname(__FILE__) . '/classes/db_connector.php');
+
 
 $absolute_path = substr($_SERVER['SCRIPT_FILENAME'], 0, strrpos($_SERVER['SCRIPT_FILENAME'], "/")+1);
 
@@ -47,7 +54,7 @@ if (isset($_GET['action']) && $_GET['action'] == "install") {
 	
 		// eseguo le query di installazione
 		$dbc = new DBConnector();
-		$dbc->connect();
+		$dbc->connect(false);
 		
 		// inizio la transazione
 		$dbc->begin_transaction();

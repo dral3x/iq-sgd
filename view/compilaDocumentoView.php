@@ -51,7 +51,7 @@ if (isset($model)) {
 		foreach ($tutti_gli_utenti as $autore) {
 			echo "<br />\n";
 			if ($compila->getSessionUser()->equals($autore)) {
-				echo '<input type="checkbox" name="autore_'.$autore->user_id.'" id="field_content" checked disabled /> '.$autore->getDisplayName();
+				echo '<input type="checkbox" name="autore_'.$autore->user_id.'" id="field_content" checked /> '.$autore->getDisplayName();
 			} else {
 				echo '<input type="checkbox" name="autore_'.$autore->user_id.'" id="field_content" /> '.$autore->getDisplayName();
 			}
