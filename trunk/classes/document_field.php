@@ -15,8 +15,10 @@ class DocumentField {
 		$this->id = $id;
 		$this->name = $name;
 		$this->type = $type;
-		$this->optional = optional;
-		if(!is_null($content)) $this->content = $content;
+		
+		$this->optional = $optional;
+		
+		if (!is_null($content)) $this->content = $content;
 	}
 	
 	public function getID() {

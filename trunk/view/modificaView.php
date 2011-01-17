@@ -7,7 +7,25 @@ include (dirname(__FILE__) . '/headerView.php');
 <h1><?php echo $page_title; ?></h1> 
 <?php 
 if (isset($error_message)) {
-	echo '<div id="error">' . $error_message . '</div>';
+	echo '<div id="error">';
+	echo '<fieldset><legend>Messaggio:</legend>';
+	echo '<div style="margin: 2em;">';
+	echo $error_message;
+	echo '</div>';
+	echo '</fieldset>';
+	echo '</div>';
+	echo '<br/>';
+}
+
+if (isset($highlight_message)) {
+	echo '<div id="highlight">';
+	echo '<fieldset><legend>Messaggio:</legend>';
+	echo '<div style="margin: 2em;">';
+	echo $highlight_message;
+	echo '</div>';
+	echo '</fieldset>';
+	echo '</div>';
+	echo '<br/>';
 }
 
 // se la variabile $document è stata impostata dal modello... allora posso mostrarne il contenuto
@@ -48,9 +66,9 @@ if (isset($document)) {
 		foreach ($tutti_gli_utenti as $autore) {
 			echo "<br />\n";
 			if ($autore->is_in($document->getAuthors())) {
-				echo '<input type="checkbox" name="autore_'.$autore->user_id.'" id="field_content" checked /> '.$autore->getDisplayName();
+				echo '<input type="checkbox" name="autore_'.$autore->user_id.'" id="field_content" checked /> '.htmlentities($autore->getDisplayName());
 			} else {
-				echo '<input type="checkbox" name="autore_'.$autore->user_id.'" id="field_content" /> '.$autore->getDisplayName();
+				echo '<input type="checkbox" name="autore_'.$autore->user_id.'" id="field_content" /> '.htmlentities($autore->getDisplayName());
 			}
 		}
 		?><br /></div>
@@ -58,9 +76,9 @@ if (isset($document)) {
 		foreach ($tutti_gli_utenti as $autore) {
 			echo "<br />\n";
 			if ($autore->equals($document->getApprover())) {
-				echo '<input type="radio" name="approvatore" value="'.$autore->user_id.'" id="field_content" checked /> '.$autore->getDisplayName() . ' ';
+				echo '<input type="radio" name="approvatore" value="'.$autore->user_id.'" id="field_content" checked /> '.htmlentities($autore->getDisplayName()) . ' ';
 			} else {
-				echo '<input type="radio" name="approvatore" value="'.$autore->user_id.'" id="field_content" /> '.$autore->getDisplayName() . ' ';
+				echo '<input type="radio" name="approvatore" value="'.$autore->user_id.'" id="field_content" /> '.htmlentities($autore->getDisplayName()) . ' ';
 			}
 			
 		}
@@ -69,7 +87,18 @@ if (isset($document)) {
 	<?php
 	// mostro l'elenco di tutti i campi
 	foreach ($document->getContent() as $field) {
-		echo '<div id="field">'.$field->getName().'<br />'."\n";
+		echo '<div id="field"><b>'.htmlentities($field->getName());
+		
+		// con scrittina a fianco del nome
+		//if ($field->isOptional()) 
+		//	echo " (opzionale)";
+		//else 
+		//	echo " (obbligatorio)";
+			
+		// con * sui campi obbligatori
+		if (!$field->isOptional()) echo "&#42;";
+		
+		echo '</b><br />'."\n";
 		if ($field->getType() == DocumentField::SMALL) {
 			echo '<input type="text" name="'.$field->getID().'" value="'.$field->getContent().'" id="field_content" maxlength="30" size="50" />'."\n";
 		} else if ($field->getType() == DocumentField::MEDIUM) {
@@ -82,6 +111,7 @@ if (isset($document)) {
 	?>
 	<input type="hidden" name="document_id" value="<?php echo $document->getID(); ?>" />
 	<input type="submit" name="submit" value="Salva bozza"> <input type="submit" name="submit" value="Invia all'approvatore">
+	oppure <a href="visualizza.php?document_id=<?php echo $document->getID(); ?>">visualizza il documento senza salvare</a>.
 </fieldset>
 </form>
 </div>

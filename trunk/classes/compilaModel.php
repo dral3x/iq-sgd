@@ -40,7 +40,8 @@ class Compilatore extends Page {
 		$dbc->connect();
 		// interrogazione della tabella
 		$sql = "SELECT u.matricola, u.nome, u.cognome ".
-				"FROM utente AS u;";
+				"FROM utente AS u ".
+				"WHERE matricola > 1;"; // escludo l'amministratore di sistema
 		$raw_data = $dbc->query($sql);
 			
 		$users = array();
@@ -57,7 +58,11 @@ class Compilatore extends Page {
 	
 	public function generateDocumentFromModelWithData($model, $fields) {
 		// genero il nuovo documento
-		$doc = new Document(-1); // -1 significa che non ha ancora un ID prooprio, non  stato ancora salvato nel DB
+		if (isset($fields['document_id']) && $fields['document_id'] > 0) {
+			$doc = new Document($fields['document_id']);
+		} else {
+			$doc = new Document(-1); // -1 significa che non ha ancora un ID prooprio, non  stato ancora salvato nel DB
+		}
 		
 		// dico al documento che modello ha
 		$doc->setModel($model->getID(), $model->getVersion());
@@ -72,11 +77,17 @@ class Compilatore extends Page {
 		// livello di confidenzialitˆ
 		$doc->setConfidentialLevel($fields['liv_conf']);
 		
+		// nel caso di nuove revisioni, devo recuperare anche i dati identificativi del documento originale
+		if ($fields['progressive'] != "")
+			$doc->setProgressive($fields['progressive']);
+		
 		// inserisco i campi generici dal modello
 		$doc->setField($model->getFields());
 		foreach ($doc->getContent() as $field) {
 			if (isset($fields[$field->getID()])) {
-				$field->setContent($fields[$field->getID()]);
+				$field_content = $fields[$field->getID()];
+				$field_content = trim(filter_var($field_content, FILTER_SANITIZE_STRING));
+				$field->setContent($field_content);
 			}
 		}
 		

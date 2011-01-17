@@ -37,20 +37,39 @@ if (isset($_GET['model_id'])) {
 	}
 	
 	$saved = $document->saveDocumentIntoDB();
-	if ($saved) {
-		$highlight_message = "Documento correttamente salvato nel db";
-		$document_id = $document->getID();
-		// carico la vista visualizza documento
-		require ('view/visualizzaView.php');
-		
-	} else {
-		$error_message = "ERRORE: documento non salvato";
-
-		// carico la vista corrispondente
+	
+	if (!$saved) {
+		$error_message = "Errore durante il salvataggio del documento!";
 		require ('view/compilaDocumentoView.php');
-		
+	} else if ($document->getState() == DocumentState::BOZZA) {
+		$highlight_message = "Documento salvato con successo.";
+		$document_id = $document->getID();
+		require ('view/compilaDocumentoView.php');
+	} else {
+		$highlight_message = "Salvataggio completato con successo. Il documento ora &egrave in attesa di approvazione da parte dell'approvatore.";
+		require ('view/visualizzaView.php');
 	}
 	
+} else if (isset($_GET['new_revision_for_document'])) {
+	
+	$document_id = trim(filter_var($_GET['new_revision_for_document'], FILTER_SANITIZE_NUMBER_INT));
+	$document = new Document($document_id);
+	//  imposto la nuova data
+	$document->setCreationDate(date("j"), date("n"), date("Y"));
+	// imposto il nuovo numero di revisione (modificabile comunque)
+	$rev_num = filter_var($document->getRevision(), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+	$rev_num += 1.0;
+	$document->setRevision("$rev_num.0");
+	// aggiungo agli autori, me stesso
+	$auts = $document->getAuthors();
+	if (!in_array($compila->getSessionUser(), $auts)) {
+		$document->addAuthor($compila->getSessionUser());
+	}
+	
+	// estraggo il numero di progressione per la view
+	$old_progressive = $document->getProgressive();
+	
+	require ('view/compilaDocumentoView.php');
 	
 } else {
 	// nessun documento scelto dall'utente, mostro la vista con l'elenco di modelli disponibili

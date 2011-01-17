@@ -22,17 +22,18 @@ class Ricerca extends Page {
 	// ricerca semplice: crea la query da sottoporre a interrogateDB()
 	public function doSimpleSearch($strings) {
 		
-		$strings = $strings;
+		$strings = strtolower($strings);
 		
 		//splittare stringa
 		$keywords = explode(" ",$strings);
 		
 		$queryString = "SELECT DISTINCT d.id FROM documento AS d ".
-						"INNER JOIN valori_campo_small AS vcs ON d.id = vcs.id_doc ".
-						"INNER JOIN valori_campo_medium AS vcm ON d.id = vcm.id_doc ".
-						"INNER JOIN valori_campo_long AS vcl ON d.id = vcl.id_doc ".
 						"INNER JOIN campo AS c ON d.id = c.id ".
-						"INNER JOIN classe_documenti AS cd ON cd.id = d.classe AND cd.versione = d.versione ".
+						"INNER JOIN classe_documenti AS cd ON cd.id = d.classe AND cd.versione = d.versione ".				
+						"LEFT OUTER JOIN valori_campo_small AS vcs ON d.id = vcs.id_doc ".
+						"LEFT OUTER JOIN valori_campo_medium AS vcm ON d.id = vcm.id_doc ".
+						"LEFT OUTER JOIN valori_campo_long AS vcl ON d.id = vcl.id_doc ".
+						
 						"WHERE ";
 		
 		//numero di parole inserite (per controllare se è già stata inserita una parola e serve AND)
@@ -45,16 +46,16 @@ class Ricerca extends Page {
 			
 			$key = "'%$key%'";
 			
-			$queryString .= "( vcs.valore_it LIKE  $key OR vcs.valore_eng LIKE  $key ".
-			"OR vcs.valore_de LIKE  $key OR vcm.valore_it LIKE  $key ".
-			"OR vcm.valore_eng LIKE  $key OR vcm.valore_de LIKE  $key ".
-			"OR vcl.valore_it LIKE  $key OR vcl.valore_eng LIKE  $key ".
-			"OR vcl.valore_de LIKE  $key OR c.nome_it LIKE  $key ".
-			"OR c.nome_eng LIKE  $key OR c.nome_de LIKE  $key ".
-			"OR cd.nome LIKE  $key ";
+			$queryString .= "( lower(vcs.valore_it) LIKE  $key OR lower(vcs.valore_eng) LIKE  $key ".
+			"OR lower(vcs.valore_de) LIKE  $key OR lower(vcm.valore_it) LIKE  $key ".
+			"OR lower(vcm.valore_eng) LIKE  $key OR lower(vcm.valore_de) LIKE  $key ".
+			"OR lower(vcl.valore_it) LIKE  $key OR lower(vcl.valore_eng) LIKE  $key ".
+			"OR lower(vcl.valore_de) LIKE  $key OR lower(c.nome_it) LIKE  $key ".
+			"OR lower(c.nome_eng) LIKE  $key OR lower(c.nome_de) LIKE  $key ".
+			"OR lower(cd.nome) LIKE  $key ";
 			
 			foreach( $campi as $campo ) {
-				$queryString .= "OR d.$campo LIKE $key ";
+				$queryString .= "OR lower(d.$campo) LIKE $key ";
 			}
 			
 			$queryString .= ") ";
@@ -87,7 +88,6 @@ class Ricerca extends Page {
 		$dbc->connect();
 		// interrogazione della tabella
 		$raw_data = $dbc->query($queryString);
-	
 		if ($dbc->rows($raw_data)>0) {
 			// chiamata alla funzione per l'estrazione dei dati
 			$this->search_result = array();

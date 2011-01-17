@@ -160,7 +160,7 @@ function getAdvancedKeys($ricerca) {
 		list($className, $ver, $year, $cont) = explode("-",$id);
 		
 		//controlli per trovare il numero corrispondente alla classe
-		switch($className) {
+		switch(strtoupper($className)) {
 			case "A1":
 				$class = 1;
 				break;

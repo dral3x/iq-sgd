@@ -13,7 +13,8 @@ class Edit extends Page {
 		$dbc->connect();
 		// interrogazione della tabella
 		$sql = "SELECT u.matricola, u.nome, u.cognome ".
-				"FROM utente AS u;";
+				"FROM utente AS u ".
+				"WHERE matricola > 1;"; // escludo l'amministratore di sistema
 		$raw_data = $dbc->query($sql);
 			
 		$users = array();
@@ -47,7 +48,9 @@ class Edit extends Page {
 		// inserisco i campi generici dal modello
 		foreach ($doc->getContent() as $field) {
 			if (isset($fields[$field->getID()])) {
-				$field->setContent($fields[$field->getID()]);
+				$field_content = $fields[$field->getID()];
+				$field_content = trim(filter_var($field_content, FILTER_SANITIZE_STRING));
+				$field->setContent($field_content);
 			}
 		}
 		

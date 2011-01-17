@@ -7,8 +7,27 @@ include (dirname(__FILE__) . '/headerView.php');
 <h1><?php echo $page_title; ?></h1> 
 <?php 
 if (isset($error_message)) {
-	echo '<div id="error">' . $error_message . '</div>';
+	echo '<div id="error">';
+	echo '<fieldset><legend>Messaggio:</legend>';
+	echo '<div style="margin: 2em;">';
+	echo $error_message;
+	echo '</div>';
+	echo '</fieldset>';
+	echo '</div>';
+	echo '<br/>';
 }
+
+if (isset($highlight_message)) {
+	echo '<div id="highlight">';
+	echo '<fieldset><legend>Messaggio:</legend>';
+	echo '<div style="margin: 2em;">';
+	echo $highlight_message;
+	echo '</div>';
+	echo '</fieldset>';
+	echo '</div>';
+	echo '<br/>';
+}
+
 
 // se la variabile $document è stata impostata dal modello... allora posso mostrarne il contenuto
 if (isset($model)) {
@@ -51,16 +70,16 @@ if (isset($model)) {
 		foreach ($tutti_gli_utenti as $autore) {
 			echo "<br />\n";
 			if ($compila->getSessionUser()->equals($autore)) {
-				echo '<input type="checkbox" name="autore_'.$autore->user_id.'" id="field_content" checked /> '.$autore->getDisplayName();
+				echo '<input type="checkbox" name="autore_'.$autore->user_id.'" id="field_content" checked /> '.htmlentities($autore->getDisplayName());
 			} else {
-				echo '<input type="checkbox" name="autore_'.$autore->user_id.'" id="field_content" /> '.$autore->getDisplayName();
+				echo '<input type="checkbox" name="autore_'.$autore->user_id.'" id="field_content" /> '.htmlentities($autore->getDisplayName());
 			}
 		}
 		?><br /></div>
 		<div id="field"><b>Approvatore: </b> <?php
 		foreach ($tutti_gli_utenti as $autore) {
 			echo "<br />\n";
-			echo '<input type="radio" name="approvatore" id="field_content" value="'.$autore->user_id.'" /> '.$autore->getDisplayName() . ' ';
+			echo '<input type="radio" name="approvatore" id="field_content" value="'.$autore->user_id.'" /> '.htmlentities($autore->getDisplayName()) . ' ';
 		}
 		?><br /></div>
 	</fieldset>
@@ -68,7 +87,16 @@ if (isset($model)) {
 	// mostro l'elenco di tutti i campi
 	foreach ($model->getFields() as $field) {
 		echo '<div id="field"><b>'.htmlentities($field->getName());
-		if (!$field->isOptional()) echo "*";
+		
+		// con scrittina a fianco del nome
+		//if ($field->isOptional()) 
+		//	echo " (opzionale)";
+		//else 
+		//	echo " (obbligatorio)";
+			
+		// con * sui campi obbligatori
+		if (!$field->isOptional()) echo "&#42;";
+		
 		echo '</b><br />'."\n";
 		if ($field->getType() == DocumentField::SMALL) {
 			echo '<input type="text" name="'.$field->getID().'" id="field_content" maxlength="30" size="50" />'."\n";
@@ -82,6 +110,7 @@ if (isset($model)) {
 	?>
 	<input type="hidden" name="model_id" value="<?php echo $model->getID(); ?>" />
 	<input type="submit" name="submit" value="Salva come bozza"> <input type="submit" name="submit" value="Invia all'approvatore">
+	oppure <a href="compila.php">annulla compilazione</a>.
 	</form>
 </fieldset>
 </div>
@@ -96,22 +125,22 @@ if (isset($model)) {
 		<fieldset>
 		<legend>Intestazione</legend>
 		<div id="field"><b>Data: </b> <?php
-		echo '<input type="text" name="date_day" id="field_content" maxlength="2" size="3" value="'.$document->getCreationDay().'" />'."/\n";
-		echo '<input type="text" name="date_month" id="field_content" maxlength="2" size="3" value="'.$document->getCreationMonth().'" />'."/\n";
-		echo '<input type="text" name="date_year" id="field_content" maxlength="4" size="5" value="'.$document->getCreationYear().'" />'."\n";
+		echo '<input type="text" name="creation_day" id="field_content" maxlength="2" size="3" value="'.$document->getCreationDay().'" />'."/\n";
+		echo '<input type="text" name="creation_month" id="field_content" maxlength="2" size="3" value="'.$document->getCreationMonth().'" />'."/\n";
+		echo '<input type="text" name="creation_year" id="field_content" maxlength="4" size="5" value="'.$document->getCreationYear().'" />'."\n";
 		?><br /></div>
 		<div id="field"><b>ID.Doc: </b> (sar&agrave; generato durante il salvataggio)<br /></div>
-		<div id="field"><b>Versione: </b> 
-			<input type="text" name="versione" id="field_content" maxlength="2" size="3" value="1.0" /><br />
+		<div id="field"><b>Revisione: </b> 
+			<input type="text" name="revisione" id="field_content" maxlength="5" size="3" value="<?php echo $document->getRevision(); ?>" /><br />
 		</div>
 		<div id="field"><b>Lingua: </b>
 			<input type="radio" name="lingua" value="it" id="field_content" checked /> Italiano | 
-			<input type="radio" name="lingua" value="en" id="field_content" /> English |
-			<input type="radio" name="lingua" value="de" id="field_content" /> Deutsch<br />
+			<input type="radio" name="lingua" value="en" id="field_content" disabled /> English |
+			<input type="radio" name="lingua" value="de" id="field_content" disabled /> Deutsch<br />
 		</div>
-		<div id="field"><b>Stato: </b> <?php ?><br /></div>
+		<div id="field"><b>Stato: </b> <?php echo $document->getState(); ?><br /></div>
 		<div id="field"><b>Sede archiviazione: </b>
-			<input type="text" name="sede" id="field_content" maxlength="30" /><br />
+			<input type="text" name="sede" id="field_content" maxlength="30" value="<?php echo $document->getLocation(); ?>" /><br />
 		</div>
 		<div id="field"><b>Liv. Confidenzialit&agrave;: </b>
 			<input type="radio" name="liv_conf" value="0" id="field_content" /> L0 | 
@@ -123,25 +152,38 @@ if (isset($model)) {
 		$tutti_gli_utenti = $compila->getAllPossibleAuthors();
 		foreach ($tutti_gli_utenti as $autore) {
 			echo "<br />\n";
-			if ($compila->getSessionUser()->equals($autore)) {
-				echo '<input type="checkbox" name="autore_'.$autore->user_id.'" id="field_content" checked /> '.$autore->getDisplayName();
+			if ($autore->is_in($document->getAuthors())) {
+				echo '<input type="checkbox" name="autore_'.$autore->user_id.'" id="field_content" checked /> '.htmlentities($autore->getDisplayName());
 			} else {
-				echo '<input type="checkbox" name="autore_'.$autore->user_id.'" id="field_content" /> '.$autore->getDisplayName();
+				echo '<input type="checkbox" name="autore_'.$autore->user_id.'" id="field_content" /> '.htmlentities($autore->getDisplayName());
 			}
 		}
 		?><br /></div>
 		<div id="field"><b>Approvatore: </b> <?php
 		foreach ($tutti_gli_utenti as $autore) {
 			echo "<br />\n";
-			echo '<input type="radio" name="approvatore" id="field_content" /> '.$autore->getDisplayName() . ' ';
+			if ($autore->equals($document->getApprover())) {
+				echo '<input type="radio" name="approvatore" value="'.$autore->user_id.'" id="field_content" checked /> '.htmlentities($autore->getDisplayName()) . ' ';
+			} else {
+				echo '<input type="radio" name="approvatore" value="'.$autore->user_id.'" id="field_content" /> '.htmlentities($autore->getDisplayName()) . ' ';
+			}
 		}
 		?><br /></div>
 	</fieldset>
 	<?php
 	// mostro l'elenco di tutti i campi
 	foreach ($document->getContent() as $field) {
-		echo '<div id="field"><b>'.$field->getName();
-		if (!$field->isOptional()) echo "*";
+		echo '<div id="field"><b>'.htmlentities($field->getName());
+		
+		// con scrittina a fianco del nome
+		//if ($field->isOptional()) 
+		//	echo " (opzionale)";
+		//else 
+		//	echo " (obbligatorio)";
+			
+		// con * sui campi obbligatori
+		if (!$field->isOptional()) echo "&#42;";
+		
 		echo '</b><br />'."\n";
 		if ($field->getType() == DocumentField::SMALL) {
 			echo '<input type="text" name="'.$field->getID().'" id="field_content" maxlength="30" size="50" value="'.$field->getContent().'" />'."\n";
@@ -153,8 +195,11 @@ if (isset($model)) {
 		echo '</div>'."\n";
 	}
 	?>
+	<input type="hidden" name="document_id" value="<?php echo $document->getID(); ?>" />
 	<input type="hidden" name="model_id" value="<?php echo $document->getModelID(); ?>" />
+	<input type="hidden" name="progressive" value="<?php if (isset($old_progressive)) { echo $old_progressive; } ?>" />
 	<input type="submit" name="submit" value="Salva come bozza"> <input type="submit" name="submit" value="Invia all'approvatore">
+	oppure <a href="visualizza.php?document_id=<?php echo $document->getID(); ?>">visualizza il documento salvato</a>.
 	</form>
 </fieldset>
 </div>

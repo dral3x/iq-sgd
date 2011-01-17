@@ -37,7 +37,7 @@ if ($ricerca->isSetError()) {
 	echo '<div id="container">'."\n";
 	foreach ($results as $document) {
 		echo '<div id="row">';
-		echo '<div id="left"><a href="visualizza.php?document_id='.$document->getID().'"><b>'.$document->getIdentifier().'</b></a> di '.$document->getAuthor().'</div>';
+		echo '<div id="left"><a href="visualizza.php?document_id='.$document->getID().'"><b>'.$document->getIdentifier().' (rev. '.$document->getRevision().')</b></a> di '.htmlentities($document->getAuthor()).'</div>';
 		echo '</div>'."\n";
 	}
 	echo '</div>';
