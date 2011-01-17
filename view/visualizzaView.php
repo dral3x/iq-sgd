@@ -11,14 +11,14 @@ if (isset($error_message)) {
 }
 
 if (isset($highlight_message)) {
-	echo '<div id="hightlight">' . $highlight_message . '</div>';
+	echo '<div id="highlight">' . $highlight_message . '</div>';
 }
 
 
 // se la variabile $document è stata impostata dal modello... allora posso mostrarne il contenuto
 if (isset($document)) {
 ?>
-<div >
+<div id="view">
 <fieldset>
 	<legend>Documento Visualizzato</legend>
 	<?php

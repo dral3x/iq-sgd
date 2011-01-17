@@ -7,7 +7,7 @@ Roba per il menu
 	width: 100%;
 	background: #eee;
 	float: left;
-	margin-bottom: 3.5em;
+	margin-bottom: 3.7em;
 }
 
 #menu ul {
@@ -101,10 +101,16 @@ Comportamento simil tabella
 
 body {
 	font-family: "Times New Roman",Georgia,Serif;
-	
+	background: url(../logo-iqsolutions.png) repeat fixed 50em 0em;
 }
 
-h1 {margin-left: 1.5em;}
+h1 {
+	clear: both;
+	width: 24.9em;
+	margin-left: 1.5em;
+	border: 3px #f5f5f5 double;
+	padding: 5px;	
+}
 
 .campo {margin: 5px 2px; }
 
@@ -112,9 +118,54 @@ h1 {margin-left: 1.5em;}
 #error, #fillDocument, #modify, #showModel, #result, #search, #viewList, #view {
 	margin-left: 3em;
 	width: 50em;
+	border: 3px #f5f5f5 double;
+	padding: 3px;
 	
 	/* fix per mandare a capo il contenuto della pagina */
 	clear: both;
+}
+
+/*sfondo semi-trasparente*/
+h1, #error, #fillDocument, #modify, #showModel, #result, #search, #viewList, #view {
+	/* Fallback for web browsers that doesn't support RGBa */
+	background: rgb(254, 254, 254);
+	/* RGBa with 0.6 opacity */
+	background: rgba(254, 254, 254, 0.85);
+	/* For IE 5.5 - 7*/
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#ddffffff, endColorstr=#ddffffff);
+	/* For IE 8*/
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#ddffffff, endColorstr=#ddffffff)";
+}
+
+.semi60 {
+	/* Fallback for web browsers that doesn't support RGBa */
+	background: rgb(254, 254, 254);
+	/* RGBa with 0.6 opacity */
+	background: rgba(254, 254, 254, 0.7);
+	/* For IE 5.5 - 7*/
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99ffffff, endColorstr=#99ffffff);
+	/* For IE 8*/
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#bbffffff, endColorstr=#bbffffff)";
+}
+
+.semi00 {
+	/* Fallback for web browsers that doesn't support RGBa */
+	background: rgb(254, 254, 254);
+	/* RGBa with 0.6 opacity */
+	background: rgba(254, 254, 254, 0.0);
+	/* For IE 5.5 - 7*/
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#00ffffff, endColorstr=#00ffffff);
+	/* For IE 8*/
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#00ffffff, endColorstr=#00ffffff)";
+}
+
+/* trasparenza della voce "Numero di Pagine del documento */
+.trasp {
+	opacity: 0.5;
+	filter:alpha(opacity=50);
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	width: 100%
+	
 }
 
 
