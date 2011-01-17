@@ -8,8 +8,8 @@ if (isset($error_message)) {
 }
 ?>
 
-<div class="containerBig semi60">
-	<div class="contained">
+<div class="containerBig semi60white">
+	<div class="content">
 	<?php
 	$arr = array();
 	for( $i=0; $i<18; $i++){
@@ -34,8 +34,8 @@ if (isset($error_message)) {
 	
 		<h1 class="oAlign semi00" style="width: 3.4em; border: none;">Accedi</h1>
 		<div style="margin-top: 2em; border: 4px ridge black; height: 13em; width: 35em;">
-			<div class="container">
-				<div class="contained" >
+			<div class="container semi60gray">
+				<div class="content" >
 				<form style="margin: 1em; padding: 1em; border: 3px double gray; width: 16em; height: 8.5em;" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
 					<div style="margin: 20px 0px;">Nome Utente: <input style="float: right; margin-right: 2em; width: 9em;" type="text" name="username" <?php if (isset($username)) echo 'value="'.$username.'"' ?>/></div>
 					<div style="margin: 20px 0px;">Password: <input style="float: right; margin-right: 2em; width: 9em;" type="password" name="password" /></div>
@@ -46,7 +46,7 @@ if (isset($error_message)) {
 				</form>
 				</div>
 				
-				<p class="contained" style="margin-right: 2.5em;">
+				<p class="content" style="margin-right: 2.5em;">
 					<img src="logo-iqsolutions-small.png" style="width: 8.5em; height: 8.5em;" />
 				</p>
 			</div>

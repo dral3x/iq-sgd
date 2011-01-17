@@ -5,12 +5,19 @@ include (dirname(__FILE__) . '/headerView.php');
 <h1><?php echo $page_title; ?></h1> 
 <?php 
 if (isset($error_message)) {
-	echo '<div id="error">' . $error_message . '</div>';
+	echo '<div id="error">';
+	echo '<fieldset style="margin: 0px"><legend>Messaggio:</legend>';
+	echo '<div style="margin: 2em;">';
+	echo $error_message;
+	echo '</div>';
+	echo '</fieldset>';
+	echo '</div>';
+	echo '<br/>';
 } else {
 
 ?>
 <div id="viewList">
-<fieldset>
+<fieldset style="margin: 0px">
 	<legend>Documenti richiesti</legend>
 	<?php
 	// se ci sono documenti, li mostro in forma di elenco

@@ -115,19 +115,7 @@ function noParameterIsSet($ricerca) {
 			}
 		}
 	}
-	
-	
-	/*
-	if ( isset($_POST['livello']) ) {
-		// preleva il livello di confidenzialità dell'utente
-		$level = $ricerca->getSessionUser()->getConfidentialLevel();
 		
-		foreach($_POST['livello'] as $value) {
-			if ( isset($value) && ( $value >= $level ) ) return false;
-		}
-	}
-	 */
-	
 	//a questo punto nessuno dei precedenti parametri è stato impostato
 	return true;
 }
@@ -250,19 +238,19 @@ function getAdvancedKeys($ricerca) {
 			//controlla se esiste almeno una condizione 'AND' preimpostata
 			if ($k > 0) { $partialQuery.= " AND "; }
 			
-			$partialQuery .= "d.$field = ".trim($_POST[$field]);
+			$partialQuery .= "lower(d.$field) = ".strtolower(trim($_POST[$field]));
 			
 			$k++;
 		}
 	}
 	
 	
-	// sede, campo LIKE %chiave%
+	// sede, " campo LIKE %chiave% "
 	if ( isset($_POST['sede']) && $_POST['sede']!="" ) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
-		$partialQuery .= "d.sede LIKE '%".trim($_POST['sede'])."%' ";
+		$partialQuery .= "lower(d.sede) LIKE '%".strtolower(trim($_POST['sede']))."%' ";
 		
 		$k++;
 	}
@@ -315,11 +303,11 @@ function getAdvancedKeys($ricerca) {
 		
 		$from .= "INNER JOIN utente AS ua ON ua.matricola = d.approvatore ";
 		
-		$appr = strtolower(trim( $_POST['approvatore'] ));
+		$appr = strtolower(removeAccent(trim( $_POST['approvatore'] )));
 		list($name, $surname) = explode(" ",$appr);
 		
 		//potrei avere nome in $surname e cognome in $name
-		$partialQuery .= "(ua.nome LIKE '$name' OR ua.nome LIKE '$surname' OR ua.cognome LIKE '$name' OR ua.cognome LIKE '$surname') ";
+		$partialQuery .= "(lower(ua.nome) LIKE '$name' OR lower(ua.nome) LIKE '$surname' OR lower(ua.cognome) LIKE '$name' OR lower(ua.cognome) LIKE '$surname') ";
 		
 		$k++;
 	}
@@ -331,11 +319,11 @@ function getAdvancedKeys($ricerca) {
 		//presenza di join
 		$from .= "INNER JOIN autore AS a ON d.id = a.id_doc INNER JOIN utente AS ub ON ub.matricola = a.mat_utente ";
 		
-		$auth = strtolower(trim( $_POST['autore'] ));
-		list($name, $surname) = explode(" ",$auth);
+		$auth = strtolower(removeAccent(trim( $_POST['autore'] )));
+    	list($name, $surname) = explode(" ",$auth);
 		
 		//potrei avere nome in $surname e cognome in $name
-		$partialQuery .= "(ub.nome LIKE '$name' OR ub.nome LIKE '$surname' OR ub.cognome LIKE '$name' OR ub.cognome LIKE '$surname') ";
+		$partialQuery .= "(lower(ub.nome) LIKE '$name' OR lower(ub.nome) LIKE '$surname' OR lower(ub.cognome) LIKE '$name' OR lower(ub.cognome) LIKE '$surname') ";
 		
 		$k++;
 	}
@@ -345,12 +333,12 @@ function getAdvancedKeys($ricerca) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
-		$strings = ($_POST['abstract']);
+		$strings = strtolower($_POST['abstract']);
 		
 		//splittare stringa
 		$keywords = explode(" ",$strings);
 		
-		$from .= "INNER JOIN valori_campo_medium AS avcm ON d.id = avcm.id_doc ";
+		$from .= "LEFT OUTER JOIN valori_campo_medium AS avcm ON d.id = avcm.id_doc ";
 		
 		$partialQuery .= "avcm.id_campo = 5 AND ";
 		
@@ -362,7 +350,7 @@ function getAdvancedKeys($ricerca) {
 			
 			$key = "'%$key%'";
 			
-			$partialQuery .= "( avcm.valore_it LIKE  $key OR avcm.valore_eng LIKE  $key OR avcm.valore_de LIKE  $key ) ";
+			$partialQuery .= "( lower(avcm.valore_it) LIKE  $key OR lower(avcm.valore_eng) LIKE  $key OR lower(avcm.valore_de) LIKE  $key ) ";
 			
 	   		$j++;
 		}
@@ -375,14 +363,14 @@ function getAdvancedKeys($ricerca) {
 		//controlla se esiste almeno una condizione 'AND' preimpostata
 		if ($k > 0) { $partialQuery.= " AND "; }
 		
-		$strings = ($_POST['doc']);
+		$strings = strtolower($_POST['doc']);
 		
 		//splittare stringa
 		$keywords = explode(" ",$strings);
 		
-		$from .= "INNER JOIN valori_campo_small AS vcs ON d.id = vcs.id_doc ".
-				"INNER JOIN valori_campo_medium AS vcm ON d.id = vcm.id_doc ".
-				"INNER JOIN valori_campo_long AS vcl ON d.id = vcl.id_doc ";
+		$from .= "LEFT OUTER JOIN valori_campo_small AS vcs ON d.id = vcs.id_doc ".
+					"LEFT OUTER JOIN valori_campo_medium AS vcm ON d.id = vcm.id_doc ".
+					"LEFT OUTER JOIN valori_campo_long AS vcl ON d.id = vcl.id_doc ";
 		
 		$partialQuery .= "vcm.id_campo != 5 AND ";
 		
@@ -394,11 +382,11 @@ function getAdvancedKeys($ricerca) {
 			
 			$key = "'%$key%'";
 			
-			$partialQuery .= "( vcs.valore_it LIKE  $key OR vcs.valore_eng LIKE  $key ".
-				"OR vcs.valore_de LIKE  $key OR vcm.valore_it LIKE  $key ".
-				"OR vcm.valore_eng LIKE  $key OR vcm.valore_de LIKE  $key ".
-				"OR vcl.valore_it LIKE  $key OR vcl.valore_eng LIKE  $key ".
-				"OR vcl.valore_de LIKE  $key ) ";
+			$partialQuery .= "( lower(vcs.valore_it) LIKE  $key OR lower(vcs.valore_eng) LIKE  $key ".
+				"OR lower(vcs.valore_de) LIKE  $key OR lower(vcm.valore_it) LIKE  $key ".
+				"OR lower(vcm.valore_eng) LIKE  $key OR lower(vcm.valore_de) LIKE  $key ".
+				"OR lower(vcl.valore_it) LIKE  $key OR lower(vcl.valore_eng) LIKE  $key ".
+				"OR lower(vcl.valore_de) LIKE  $key ) ";
 			
 	   		$j++;
 		}
@@ -411,5 +399,113 @@ function getAdvancedKeys($ricerca) {
 	
 	return $partialQuery;
 }
+
+/* rimuove gli accenti */
+function removeAccent($string) {
+	if ( !preg_match('/[\x80-\xff]/', $string) )
+		return $string;
+
+    $chars = array(
+    // Decompositions for Latin-1 Supplement
+    chr(195).chr(128) => 'A', chr(195).chr(129) => 'A',
+    chr(195).chr(130) => 'A', chr(195).chr(131) => 'A',
+    chr(195).chr(132) => 'A', chr(195).chr(133) => 'A',
+    chr(195).chr(135) => 'C', chr(195).chr(136) => 'E',
+    chr(195).chr(137) => 'E', chr(195).chr(138) => 'E',
+    chr(195).chr(139) => 'E', chr(195).chr(140) => 'I',
+    chr(195).chr(141) => 'I', chr(195).chr(142) => 'I',
+    chr(195).chr(143) => 'I', chr(195).chr(145) => 'N',
+    chr(195).chr(146) => 'O', chr(195).chr(147) => 'O',
+    chr(195).chr(148) => 'O', chr(195).chr(149) => 'O',
+    chr(195).chr(150) => 'O', chr(195).chr(153) => 'U',
+    chr(195).chr(154) => 'U', chr(195).chr(155) => 'U',
+    chr(195).chr(156) => 'U', chr(195).chr(157) => 'Y',
+    chr(195).chr(159) => 's', chr(195).chr(160) => 'a',
+    chr(195).chr(161) => 'a', chr(195).chr(162) => 'a',
+    chr(195).chr(163) => 'a', chr(195).chr(164) => 'a',
+    chr(195).chr(165) => 'a', chr(195).chr(167) => 'c',
+    chr(195).chr(168) => 'e', chr(195).chr(169) => 'e',
+    chr(195).chr(170) => 'e', chr(195).chr(171) => 'e',
+    chr(195).chr(172) => 'i', chr(195).chr(173) => 'i',
+    chr(195).chr(174) => 'i', chr(195).chr(175) => 'i',
+    chr(195).chr(177) => 'n', chr(195).chr(178) => 'o',
+    chr(195).chr(179) => 'o', chr(195).chr(180) => 'o',
+    chr(195).chr(181) => 'o', chr(195).chr(182) => 'o',
+    chr(195).chr(182) => 'o', chr(195).chr(185) => 'u',
+    chr(195).chr(186) => 'u', chr(195).chr(187) => 'u',
+    chr(195).chr(188) => 'u', chr(195).chr(189) => 'y',
+    chr(195).chr(191) => 'y',
+    // Decompositions for Latin Extended-A
+    chr(196).chr(128) => 'A', chr(196).chr(129) => 'a',
+    chr(196).chr(130) => 'A', chr(196).chr(131) => 'a',
+    chr(196).chr(132) => 'A', chr(196).chr(133) => 'a',
+    chr(196).chr(134) => 'C', chr(196).chr(135) => 'c',
+    chr(196).chr(136) => 'C', chr(196).chr(137) => 'c',
+    chr(196).chr(138) => 'C', chr(196).chr(139) => 'c',
+    chr(196).chr(140) => 'C', chr(196).chr(141) => 'c',
+    chr(196).chr(142) => 'D', chr(196).chr(143) => 'd',
+    chr(196).chr(144) => 'D', chr(196).chr(145) => 'd',
+    chr(196).chr(146) => 'E', chr(196).chr(147) => 'e',
+    chr(196).chr(148) => 'E', chr(196).chr(149) => 'e',
+    chr(196).chr(150) => 'E', chr(196).chr(151) => 'e',
+    chr(196).chr(152) => 'E', chr(196).chr(153) => 'e',
+    chr(196).chr(154) => 'E', chr(196).chr(155) => 'e',
+    chr(196).chr(156) => 'G', chr(196).chr(157) => 'g',
+    chr(196).chr(158) => 'G', chr(196).chr(159) => 'g',
+    chr(196).chr(160) => 'G', chr(196).chr(161) => 'g',
+    chr(196).chr(162) => 'G', chr(196).chr(163) => 'g',
+    chr(196).chr(164) => 'H', chr(196).chr(165) => 'h',
+    chr(196).chr(166) => 'H', chr(196).chr(167) => 'h',
+    chr(196).chr(168) => 'I', chr(196).chr(169) => 'i',
+    chr(196).chr(170) => 'I', chr(196).chr(171) => 'i',
+    chr(196).chr(172) => 'I', chr(196).chr(173) => 'i',
+    chr(196).chr(174) => 'I', chr(196).chr(175) => 'i',
+    chr(196).chr(176) => 'I', chr(196).chr(177) => 'i',
+    chr(196).chr(178) => 'IJ',chr(196).chr(179) => 'ij',
+    chr(196).chr(180) => 'J', chr(196).chr(181) => 'j',
+    chr(196).chr(182) => 'K', chr(196).chr(183) => 'k',
+    chr(196).chr(184) => 'k', chr(196).chr(185) => 'L',
+    chr(196).chr(186) => 'l', chr(196).chr(187) => 'L',
+    chr(196).chr(188) => 'l', chr(196).chr(189) => 'L',
+    chr(196).chr(190) => 'l', chr(196).chr(191) => 'L',
+    chr(197).chr(128) => 'l', chr(197).chr(129) => 'L',
+    chr(197).chr(130) => 'l', chr(197).chr(131) => 'N',
+    chr(197).chr(132) => 'n', chr(197).chr(133) => 'N',
+    chr(197).chr(134) => 'n', chr(197).chr(135) => 'N',
+    chr(197).chr(136) => 'n', chr(197).chr(137) => 'N',
+    chr(197).chr(138) => 'n', chr(197).chr(139) => 'N',
+    chr(197).chr(140) => 'O', chr(197).chr(141) => 'o',
+    chr(197).chr(142) => 'O', chr(197).chr(143) => 'o',
+    chr(197).chr(144) => 'O', chr(197).chr(145) => 'o',
+    chr(197).chr(146) => 'OE',chr(197).chr(147) => 'oe',
+    chr(197).chr(148) => 'R',chr(197).chr(149) => 'r',
+    chr(197).chr(150) => 'R',chr(197).chr(151) => 'r',
+    chr(197).chr(152) => 'R',chr(197).chr(153) => 'r',
+    chr(197).chr(154) => 'S',chr(197).chr(155) => 's',
+    chr(197).chr(156) => 'S',chr(197).chr(157) => 's',
+    chr(197).chr(158) => 'S',chr(197).chr(159) => 's',
+    chr(197).chr(160) => 'S', chr(197).chr(161) => 's',
+    chr(197).chr(162) => 'T', chr(197).chr(163) => 't',
+    chr(197).chr(164) => 'T', chr(197).chr(165) => 't',
+    chr(197).chr(166) => 'T', chr(197).chr(167) => 't',
+    chr(197).chr(168) => 'U', chr(197).chr(169) => 'u',
+    chr(197).chr(170) => 'U', chr(197).chr(171) => 'u',
+    chr(197).chr(172) => 'U', chr(197).chr(173) => 'u',
+    chr(197).chr(174) => 'U', chr(197).chr(175) => 'u',
+    chr(197).chr(176) => 'U', chr(197).chr(177) => 'u',
+    chr(197).chr(178) => 'U', chr(197).chr(179) => 'u',
+    chr(197).chr(180) => 'W', chr(197).chr(181) => 'w',
+    chr(197).chr(182) => 'Y', chr(197).chr(183) => 'y',
+    chr(197).chr(184) => 'Y', chr(197).chr(185) => 'Z',
+    chr(197).chr(186) => 'z', chr(197).chr(187) => 'Z',
+    chr(197).chr(188) => 'z', chr(197).chr(189) => 'Z',
+    chr(197).chr(190) => 'z', chr(197).chr(191) => 's'
+    );
+
+    $string = strtr($string, $chars);
+
+	return $string;
+}
+	
 
 ?>

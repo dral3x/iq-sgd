@@ -118,7 +118,7 @@ $_ls = new LoginSession();
 <ul>
   <li><h2>Profilo utente</h2>
   	<ul>
-  	  <li><a href="#" title="Profile page">Profilo di <?php echo $_ls->getUser()->getDisplayName(); ?></a></li>
+  	  <li><a href="#" title="Profile page">Profilo di <?php echo htmlentities($_ls->getUser()->getDisplayName()); ?></a></li>
       <li><a href="login.php?action=logout" title="Logout user">Logout</a></li>
   	</ul>
   </li>

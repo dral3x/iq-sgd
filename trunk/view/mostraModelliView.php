@@ -10,7 +10,7 @@ include (dirname(__FILE__) . '/headerView.php');
 
 if (isset($error_message)) {
 	echo '<div id="error">';
-	echo '<fieldset><legend>Messaggio:</legend>';
+	echo '<fieldset style="margin: 0px"><legend>Messaggio:</legend>';
 	echo '<div style="margin: 2em;">';
 	echo $error_message;
 	echo '</div>';
@@ -21,7 +21,7 @@ if (isset($error_message)) {
 
 ?>
 <div id="showModel">
-<fieldset>
+<fieldset style="margin: 0px">
 	<legend><?php echo $page_subtitle; ?></legend>
 	<?php
 	// se ci sono documenti, li mostro in forma di elenco

@@ -2,13 +2,12 @@
 // aggiungo header
 $page_title = "Visualizza documento";
 include (dirname(__FILE__) . '/headerView.php');
-
 ?>
 <h1><?php echo $page_title; ?></h1> 
 <?php 
 if (isset($error_message)) {
 	echo '<div id="error">';
-	echo '<fieldset><legend>Messaggio:</legend>';
+	echo '<fieldset style="margin: 0px"><legend>Messaggio:</legend>';
 	echo '<div style="margin: 2em;">';
 	echo $error_message;
 	echo '</div>';
@@ -19,7 +18,7 @@ if (isset($error_message)) {
 
 if (isset($highlight_message)) {
 	echo '<div id="highlight">';
-	echo '<fieldset><legend>Messaggio:</legend>';
+	echo '<fieldset style="margin: 0px"><legend>Messaggio:</legend>';
 	echo '<div style="margin: 2em;">';
 	echo $highlight_message;
 	echo '</div>';
@@ -33,7 +32,7 @@ if (isset($highlight_message)) {
 if (isset($document)) {
 ?>
 <div id="view">
-<fieldset>
+<fieldset style="margin: 0px">
 	<legend>Documento Visualizzato</legend>
 	<?php
 	// mostro informationi base sul documento

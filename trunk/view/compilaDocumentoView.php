@@ -8,7 +8,7 @@ include (dirname(__FILE__) . '/headerView.php');
 <?php 
 if (isset($error_message)) {
 	echo '<div id="error">';
-	echo '<fieldset><legend>Messaggio:</legend>';
+	echo '<fieldset style="margin: 0px"><legend>Messaggio:</legend>';
 	echo '<div style="margin: 2em;">';
 	echo $error_message;
 	echo '</div>';
@@ -19,7 +19,7 @@ if (isset($error_message)) {
 
 if (isset($highlight_message)) {
 	echo '<div id="highlight">';
-	echo '<fieldset><legend>Messaggio:</legend>';
+	echo '<fieldset style="margin: 0px"><legend>Messaggio:</legend>';
 	echo '<div style="margin: 2em;">';
 	echo $highlight_message;
 	echo '</div>';
@@ -29,11 +29,11 @@ if (isset($highlight_message)) {
 }
 
 
-// se la variabile $document  stata impostata dal modello... allora posso mostrarne il contenuto
+// se la variabile $document e' stata impostata dal modello... allora posso mostrarne il contenuto
 if (isset($model)) {
 ?>
 <div id="fillDocument">
-<fieldset>
+<fieldset style="margin: 0px">
 	<legend>Documento da compilare</legend>
 	<form name="CompilazioneDocumento" action="<?php echo $_SERVER['PHP_SELF'];  ?>" method="POST">
 	<?php
@@ -119,7 +119,7 @@ if (isset($model)) {
 } else if (isset($document)) {
 ?>
 <div id="fillDocument">
-<fieldset>
+<fieldset style="margin: 0px">
 	<legend>Documento da compilare</legend>
 	<form name="CompilazioneDocumento" action="<?php echo $_SERVER['PHP_SELF'];  ?>" method="POST">
 		<fieldset>
