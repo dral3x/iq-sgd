@@ -4,8 +4,17 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title><?php echo $page_title; ?></title>
 <link rel="stylesheet" type="text/css" href="view/stile.css">
+<!--[if gte IE 5]>
+	<style>
+	.semi60, .semi00, h1, #error, #fillDocument, #modify, #showModel, #result, #search, #viewList, #view {
+		background: transparent;
+	}
+	.trasp {color: gray;}
+	</style>
+	<![endif]-->
 </head>
-<body background="logo-iqsolutions.png">
+<body>
+	
 <!-- Menu -->
 <?php
 if (isset($hide_menu) && $hide_menu) {

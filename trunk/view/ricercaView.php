@@ -61,7 +61,7 @@ if ($ricerca->getTypeOfSearch() == "simple") { ?>
 <form name="RicercaSemplice" action="<?php echo $_SERVER['PHP_SELF'];  ?>" method="POST">
 	<fieldset>
 	<legend>Ricerca Semplice</legend>
-		<input type="text" name="parametroRicerca" size="40" <?php /*if (isset($_POST['parametroRicerca']))*/ echo 'value="'.$_POST['parametroRicerca'].'" '; ?> />
+		<input type="text" name="parametroRicerca" size="40" <?php echo 'value="'.$_POST['parametroRicerca'].'" '; ?> />
 		
 		<!-- workaround: campo aggiuntivo necessario per aggirare un bug di explorer (pressione del tasto invio non fa submit) -->
 		<input style="display:none;" type="text" name="inutile" size="0" />
@@ -156,7 +156,7 @@ if ($ricerca->getTypeOfSearch() == "simple") { ?>
 		  	<p>
 			<label>Numero di Allegati: <input class="campo" type="text" name="allegati" <?php echo 'value="'.$_POST['allegati'].'" '; ?>/></label><br />
 		
-			<label>Numero di Pagine del Documento: <input class="campo" style="background-color:lightgrey; text-align:center;" disabled value="(campo disabilitato)" type="text" name="pagine" /></label><br />
+			<label class="trasp">Numero di Pagine del Documento: <input class="campo" style="background-color:lightgrey; text-align:center;" disabled value="(campo disabilitato)" type="text" name="pagine" /></label><br />
 		  
 			<label>Approvato da: <input class="campo" type="text" name="approvatore" <?php echo 'value="'.$_POST['approvatore'].'" '; ?>/></label><br />
 		

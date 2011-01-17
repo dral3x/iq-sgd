@@ -8,7 +8,7 @@ if (isset($error_message)) {
 }
 ?>
 
-<div class="containerBig">
+<div class="containerBig semi60">
 	<div class="contained">
 	<?php
 	$arr = array();
@@ -32,13 +32,13 @@ if (isset($error_message)) {
 	-->
 	<div id="login" style="width: 36em; margin-bottom: 4em;">
 	
-		<h1 class="oAlign" style="width: 3.5em;">Accedi</h1>
+		<h1 class="oAlign semi00" style="width: 3.4em; border: none;">Accedi</h1>
 		<div style="margin-top: 2em; border: 4px ridge black; height: 13em; width: 35em;">
 			<div class="container">
 				<div class="contained" >
 				<form style="margin: 1em; padding: 1em; border: 3px double gray; width: 16em; height: 8.5em;" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
-					<div style="margin: 20px 0px;">Nome Utente: <input style="float: right; margin-right: 2em;" type="text" name="username" size="15" <?php if (isset($username)) echo 'value="'.$username.'"' ?>/></div>
-					<div style="margin: 20px 0px;">Password: <input style="float: right; margin-right: 2em;" type="password" name="password" size="15" /></div>
+					<div style="margin: 20px 0px;">Nome Utente: <input style="float: right; margin-right: 2em; width: 9em;" type="text" name="username" <?php if (isset($username)) echo 'value="'.$username.'"' ?>/></div>
+					<div style="margin: 20px 0px;">Password: <input style="float: right; margin-right: 2em; width: 9em;" type="password" name="password" /></div>
 					
 					<span style="width: 7em; float: right; margin-right: 1.5em; text-align: center;">
 					<input type="submit" value="Login" name="submit">
