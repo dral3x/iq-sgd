@@ -21,6 +21,7 @@ class Document {
 	private $approvatore;
 	private $authors;
 
+	private $progressivo; //campo "cont" del db
 	private $revision;
 	private $archived_location;
 	
@@ -137,6 +138,9 @@ class Document {
 			$this->month = $res->mese;
 			$this->year = $res->anno;
 			
+			// numero progressivo (cont)
+			$this->progressivo = $res->cont;
+			
 			// revisione del documento
 			$this->revision = $res->revisione;
 			
@@ -186,8 +190,8 @@ class Document {
 
 			$raw_data = $dbc->query($sql);
 			$data = $dbc->extract_object($raw_data);
-			
 			$field->setContent($data->valore_it);
+			
 		}		
 		
 		// disconnessione dal db
@@ -262,6 +266,19 @@ class Document {
 		$this->revision = $version;
 	}
 	
+	// restitiuisce il numero progressivo (cont nel db) del documento
+	public function getProgressive() {
+		if (!isset($this->progressivo)) {
+			$this->retrieveGeneralInformation();
+		}
+		return $this->progressivo;	
+	}
+	
+	// imposta il progressivo (cont nel db) del documento
+	public function setProgressive($progress) {
+		$this->progressivo = $progress;
+	}
+		
 	// restituisce la sede di archiviazione del documento
 	public function getLocation() {
 		if (!isset($this->archived_location)) {
@@ -404,6 +421,10 @@ class Document {
 	// controlla lo stato del documento, l'essere tra gli auturi ed avere un livello di confidenzialitˆ sufficiente
 	public function canBeEditedBy($author) {
 		
+		// il tizio  l'amministratore? lui pu˜ tutto
+		if ($author->user_id == 1)
+			return true;
+		
 		// il documento  ancora una bozza?
 		if (!isset($this->state))
 			$this->retrieveGeneralInformation();
@@ -440,12 +461,12 @@ class Document {
 		$success = true;
 		// ciclo di query
 		foreach ($querys as $query) {
-			 //echo "<p>$query";
+			//echo "<p>$query";
 			// eseguo la singola query e verifico vada in porto
 			$success = $dbc->query($query, true);
 			if (!$success) {
 				$this->error_message = $dbc->getErrorMessage();
-				//echo " -> ERRORE: ".$this->error_message."</p>\n";
+				echo "<p>ERRORE su query \"".$query."\" : ".$this->error_message."</p>\n";
 				break;
 			//} else {
 				//echo " -> OK</p>\n";
@@ -453,10 +474,10 @@ class Document {
 		}
 
 		// termino la transazione, bene o mane a seconda del successo delle query
-		if (!$success) {
-			$dbc->rollback_transaction();
-		} else {
+		if ($success) {
 			$dbc->commit_transaction();
+		} else {
+			$dbc->rollback_transaction();
 		}
 			
 		// disconnessione dal db
@@ -480,18 +501,20 @@ class Document {
 			$data = $dbc->extract_object($raw_data);
 			$this->id = $data->count + 1;
 
-			$sql = "SELECT MAX(cont) as max FROM documento WHERE classe = ".$this->model_id.";";
-			$raw_data = $dbc->query($sql, true);
-			$data = $dbc->extract_object($raw_data);
-			$progressivo = $data->max + 1;
-			$dbc->disconnect();
+			if (!isset($this->progressivo)) {
+				$sql = "SELECT MAX(cont) as max FROM documento WHERE classe = ".$this->model_id.";";
+				$raw_data = $dbc->query($sql, true);
+				$data = $dbc->extract_object($raw_data);
+				$this->progressivo = $data->max + 1;
+				$dbc->disconnect();
+			}
 
 			// generale le query SQL da fare
 			$querys = array();
 
 			// inserimento documento
-			$sql = "INSERT INTO documento(id,cont,versione, revisione, anno,classe,mese,giorno,sede,stato,allegati,liv_conf,supp_it,supp_eng,supp_de,approvatore) ".
-					"VALUES ('".$this->id."','".$progressivo."','".$this->model_version."','".$this->revision."','".$this->year."','".$this->model_id."','".$this->month."','".$this->day."','".$this->archived_location."','".$this->state."','0','".$this->confidential_level."','1','0','0', '".$this->approvatore->user_id."');";
+			$sql = "INSERT INTO documento(id,cont,versione,revisione,anno,classe,mese,giorno,sede,stato,allegati,liv_conf,supp_it,supp_eng,supp_de,approvatore) ".
+					"VALUES ('".$this->id."','".$this->progressivo."','".$this->model_version."','".$this->revision."','".$this->year."','".$this->model_id."','".$this->month."','".$this->day."','".$this->archived_location."','".$this->state."','0','".$this->confidential_level."','1','0','0', '".$this->approvatore->user_id."');";
 			array_push($querys, $sql);
 
 			// inserimento gruppo di documento
@@ -508,8 +531,11 @@ class Document {
 
 			// inserimento campi
 			foreach ($this->content as $c) {
+				$field_content = filter_var($c->getContent(), FILTER_SANITIZE_STRING);
+				$field_content = filter_var($field_content, FILTER_SANITIZE_MAGIC_QUOTES);
+				$field_content = trim($field_content);
 				$sql = "INSERT INTO valori_campo_".$c->getType()." (id_doc,id_campo,valore_it,valore_eng,valore_de) ".
-						"VALUES ('".$this->id."','".$c->getID()."','".$c->getContent()."', NULL, NULL)";
+						"VALUES ('".$this->id."','".$c->getID()."','".$field_content."', NULL, NULL)";
 				array_push($querys, $sql);
 			}
 

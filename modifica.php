@@ -46,13 +46,19 @@ if (isset($_GET['document_id'])) { // prima modifica
 				$document->setState(DocumentState::BOZZA);
 			}
 	
-			$document->saveDocumentIntoDB();
+			$success = $document->saveDocumentIntoDB();
 			
-			if ($document->getState() == DocumentState::BOZZA) {
+			if (!$success) {
+				$error_message = "Errore durante il salvataggio del documento!";
+				require ('view/modificaView.php');
+			} else if ($document->getState() == DocumentState::BOZZA) {
+				$highlight_message = "Salvataggio completato con successo.";
 				require ('view/modificaView.php');
 			} else {
+				$highlight_message = "Salvataggio completato con successo. Il documento ora &egrave in attesa di approvazione da parte dell'approvatore.";
 				require ('view/visualizzaView.php');
 			}
+			
 			
 		} else {
 			// l'utente non ha un livello di riservatezza abbastanza elevato per vedere il documento

@@ -11,7 +11,11 @@ $visualizza = new VisualizzaDocumento();
 if (isset($_GET['type'])) {
 	// l'utente vuole visualizzare qualche elenco di documenti
 	// specifico cosa vuole vedere
-	if ($_GET['type'] == "draft_documents") {
+	if ($_GET['type'] == "all") {
+		// recupero tutti i documenti 
+		$documents = $visualizza->retrieveAllDocuments();
+		$page_title = "Tutti i documenti inseriti";
+	} else if ($_GET['type'] == "draft_documents") {
 		// recupero i documenti di tipo draft da modello
 		$documents = $visualizza->retrieveDraftDocuments();
 		$page_title = "Bozze di documento";

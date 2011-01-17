@@ -9,7 +9,14 @@ include (dirname(__FILE__) . '/headerView.php');
 <?php
 
 if (isset($error_message)) {
-	echo '<div id="error">' . $error_message . '</div>';
+	echo '<div id="error">';
+	echo '<fieldset><legend>Messaggio:</legend>';
+	echo '<div style="margin: 2em;">';
+	echo $error_message;
+	echo '</div>';
+	echo '</fieldset>';
+	echo '</div>';
+	echo '<br/>';
 } else {
 
 ?>
@@ -22,7 +29,7 @@ if (isset($error_message)) {
 		echo '<div id="container">'."\n";
 		foreach ($models as $model) {
 			echo '<div id="row">';
-			echo '<div id="left"><a href="compila.php?model_id='.$model->getID().'"><b>'.$model->getName().'</b></a></div>';
+			echo '<div id="left"><a href="compila.php?model_id='.$model->getID().'"><b>'.htmlentities($model->getName()).'</b></a></div>';
 			echo '</div>'."\n";
 		}
 		echo '</div>'."\n";
