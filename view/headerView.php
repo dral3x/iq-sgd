@@ -6,7 +6,7 @@
 <link rel="stylesheet" type="text/css" href="view/stile.css">
 <!--[if gte IE 5]>
 	<style>
-	.semi60white, .semi60gray, .semi00, h1, #error, #highlight, #fillDocument, #modify, #showModel, #result, #search, #viewList, #view {
+	.semi60white, .semi60gray, .semi00, h1, #errorLogin, #warning, #error, #highlight, #fillDocument, #modify, #showModel, #result, #search, #viewList, #view {
 		background: transparent;
 	}
 	.trasp {color: gray;}

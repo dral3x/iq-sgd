@@ -114,7 +114,7 @@ h1 {
 }
 
 /* CONTENUTI delle varie pagine: margini + fix per mandare a capo i contenuti  */
-#error, #highlight, #fillDocument, #modify, #showModel, #result, #search, #viewList, #view {
+#warning, #error, #highlight, #fillDocument, #modify, #showModel, #result, #search, #viewList, #view {
 	margin-left: 3em;
 	width: 50em;
 	border: 3px #e0e0e0 double;
@@ -124,6 +124,15 @@ h1 {
 	clear: both;
 }
 
+/* errore di login per essere centrato non deve avere margini fissati */
+#errorLogin {
+	width: 34.5em;
+	border: 4px ridge black;
+	padding: 3px;
+	
+	/* fix per mandare a capo il contenuto della pagina */
+	clear: both;
+}
 
 fieldset {
 	padding: 10px 30px 15px 20px;
@@ -164,14 +173,18 @@ legend {
 }
 
 /* ALLINEAMENTO CENTRALE orizzontale */
-.oAlign, #login, #menu {
+.oAlign, #menu {
 	margin-left: auto;
 	margin-right: auto;
 }
 
+#login {
+	width: 36em;
+	margin-bottom: 4em;
+}
 	
 /* SFONDI SEMI-TRASPARENTI */
-h1, #error, #highlight, #fillDocument, #modify, #showModel, #result, #search, #viewList, #view {
+h1, #highlight, #fillDocument, #modify, #showModel, #result, #search, #viewList, #view {
 	/* Fallback for web browsers that doesn't support RGBa */
 	background: rgb(239, 239, 239);
 	/* RGBa with 0.6 opacity */
@@ -181,6 +194,30 @@ h1, #error, #highlight, #fillDocument, #modify, #showModel, #result, #search, #v
 	/* For IE 8*/
 	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#ddefefef, endColorstr=#ddefefef)";
 }
+
+/* rosso */
+#errorLogin, #error {
+	/* Fallback for web browsers that doesn't support RGBa */
+	background: rgb(239, 140, 140);
+	/* RGBa with 0.6 opacity */
+	background: rgba(239, 140, 140, 0.85);
+	/* For IE 5.5 - 7*/
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#ddef8c8c, endColorstr=#ddef8c8c);
+	/* For IE 8*/
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#ddef8c8c, endColorstr=#ddef8c8c)";
+}
+/* giallo */
+#warning {
+	/* Fallback for web browsers that doesn't support RGBa */
+	background: rgb(239, 239, 100);
+	/* RGBa with 0.6 opacity */
+	background: rgba(239, 239, 100, 0.85);
+	/* For IE 5.5 - 7*/
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#ddefef64, endColorstr=#ddefef64);
+	/* For IE 8*/
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#ddefef64, endColorstr=#ddefef64)";
+}
+
 /* 60% bianco */
 .semi60white {
 	/* Fallback for web browsers that doesn't support RGBa */
