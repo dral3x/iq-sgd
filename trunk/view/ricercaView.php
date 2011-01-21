@@ -5,7 +5,7 @@ include (dirname(__FILE__) . '/headerView.php');
 
 //eventuali messaggi ( per ora riguardanti solo livello di confidenzialità non accessibile dall'utente )
 if ($ricerca->isSetMessage()) {
-	echo '<div id="error">';
+	echo '<div id="warning">';
 	echo '<fieldset style="margin: 0px"><legend>Messaggio:</legend>';
 	echo '<div style="margin: 2em;">';
 	echo $ricerca->getMessage();

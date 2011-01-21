@@ -2,15 +2,12 @@
 // aggiungo header
 $page_title = "Login";
 include (dirname(__FILE__) . '/headerView.php');
-
-if (isset($error_message)) {
-	echo '<div id="error">' . $error_message . '</div>';
-}
 ?>
 
 <div class="containerBig semi60white">
-	<div class="content">
+<div class="content">
 	<?php
+	
 	$arr = array();
 	for( $i=0; $i<18; $i++){
 		$arr[]= pow( 1.2,(1+($i/2)) );
@@ -30,10 +27,22 @@ if (isset($error_message)) {
 	<!--
 	<div style="width: 100%; height: 2em; margin-bottom: 4em; background-color: gray;">&nbsp;</div>
 	-->
-	<div id="login" style="width: 36em; margin-bottom: 4em;">
+	<div class="oAlign" id="login">
 	
 		<h1 class="oAlign semi00" style="width: 3.4em; border: none;">Accedi</h1>
-		<div style="margin-top: 2em; border: 4px ridge black; height: 13em; width: 35em;">
+		
+		<?php 
+if (isset($error_message)) {
+	echo '<div class="oAlign" id="errorLogin" >';
+	echo '<fieldset style="margin: 0px"><legend>Messaggio:</legend>';
+	echo $error_message;
+	echo '</fieldset>';
+	echo '</div>';
+}	
+		
+		?>
+		
+		<div class="oAlign" style="margin-top: 1em; border: 4px ridge black; height: 13em; width: 35em;">
 			<div class="container semi60gray">
 				<div class="content" >
 				<form style="margin: 1em; padding: 1em; border: 3px double gray; width: 16em; height: 8.5em;" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
