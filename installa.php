@@ -35,7 +35,8 @@ function parseSQLFile($sql_file) {
 	foreach ($statements as $query) {
 		if (trim($query) != '') {
 			//echo '<p>' . $query . "</p>\n";
-			array_push($querys, $query);
+			$q = trim(filter_var($query, FILTER_SANITIZE_STRING));
+			array_push($querys, $q);
 		}
 	}
 
